@@ -1,0 +1,22 @@
+#graphdb env variables
+GDB_REPO=kgap
+REPOLABEL=label_repo_here
+GDB_HOME_FOLDER=/opt/graphdb/home
+GDB_MAX_HEADER=65536
+
+#jupyter env variables
+SRC_FOLDER=/kgap/notebooks
+
+# sembench env variables
+# NOTE -- these deprecated variants:
+# INPUT_DATA_LOCATION=/data
+# OUTPUT_DATA_LOCATION=/data
+# SEMBENCH_DATA_LOCATION=/data
+# NOTE -- should be changed to:
+SEMBENCH_INPUT_PATH=/data
+SEMBENCH_OUTPUT_PATH=/data
+SEMBENCH_HOME_PATH=/data
+SEMBENCH_CONFIG_PATH=/data/sembench.yaml
+SCHEDULER_INTERVAL_SECONDS=86400
+
+REG_NS=ghcr.io/vliz-be-opsci/kgap
