@@ -1,0 +1,206 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.embrc.eu/emobon/EmoBonOntology>
+  a owl:Ontology ;
+  owl:versionIRI <http://www.embrc.eu/emobon/v.0.0.1/EmoBonOntology.rdf> .
+
+geo:wktLiteral a rdfs:Datatype .
+<http://www.w3.org/ns/shacl#IRI> a rdfs:Datatype .
+schema:address
+  a owl:ObjectProperty ;
+  rdfs:range schema:PostalAddress .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#broadBiome>
+  a owl:ObjectProperty ;
+  rdfs:subPropertyOf <http://www.embrc.eu/emobon/EmoBonOntology#hasBiome> .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#geoLocation>
+  a owl:ObjectProperty ;
+  rdfs:range <http://www.opengis.net/ont/sf#Point> .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#hasBiome>
+  a owl:ObjectProperty ;
+  rdfs:domain <http://www.embrc.eu/emobon/EmoBonOntology#Observatory> ;
+  rdfs:range <http://purl.obolibrary.org/obo/ENVO_00000428> .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#localBiome>
+  a owl:ObjectProperty ;
+  rdfs:subPropertyOf <http://www.embrc.eu/emobon/EmoBonOntology#hasBiome> .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#sampleType>
+  a owl:ObjectProperty ;
+  rdfs:range <http://www.embrc.eu/emobon/EmoBonOntology#SampleType> .
+
+schema:addressCountry
+  a owl:DatatypeProperty ;
+  rdfs:range xsd:string .
+
+schema:description
+  a owl:DatatypeProperty ;
+  rdfs:range xsd:string .
+
+schema:identifier
+  a owl:DatatypeProperty, owl:FunctionalProperty ;
+  rdfs:range xsd:anyURI .
+
+schema:legalName
+  a owl:DatatypeProperty, owl:FunctionalProperty ;
+  rdfs:domain schema:Organization ;
+  rdfs:range xsd:string .
+
+schema:postalCode a owl:DatatypeProperty .
+schema:streetAddress
+  a owl:DatatypeProperty ;
+  rdfs:domain schema:PostalAddress ;
+  rdfs:range xsd:string .
+
+<http://www.embrc.eu/emo-bon/EmoBonOntology.rdf#edmoId>
+  a owl:DatatypeProperty, owl:FunctionalProperty ;
+  rdfs:domain <http://www.embrc.eu/emo-bon/EmoBonOntology.rdf#Organization> ;
+  rdfs:range xsd:positiveInteger .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#marineRegion>
+  a owl:DatatypeProperty ;
+  rdfs:range xsd:anyURI .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#observatoryId>
+  a owl:DatatypeProperty ;
+  rdfs:domain <http://www.embrc.eu/emobon/EmoBonOntology#Observatory> ;
+  rdfs:range xsd:string .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#observatorySampleId>
+  a owl:DatatypeProperty ;
+  rdfs:domain <http://www.embrc.eu/emobon/EmoBonOntology#Observatory> ;
+  rdfs:range xsd:string .
+
+geo:asWKT
+  a owl:DatatypeProperty ;
+  rdfs:domain <http://www.opengis.net/ont/sf#Geometry> ;
+  rdfs:range geo:wktLiteral .
+
+<http://purl.obolibrary.org/obo/ENVO_00000428> a owl:Class .
+schema:ContactPoint a owl:Class .
+schema:Organization
+  a owl:Class ;
+  rdfs:subClassOf schema:Thing, [
+    a owl:Restriction ;
+    owl:onProperty schema:address ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onClass schema:PostalAddress
+  ], [
+    a owl:Restriction ;
+    owl:onProperty schema:legalName ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:string
+  ] .
+
+schema:PostalAddress
+  a owl:Class ;
+  rdfs:subClassOf schema:ContactPoint, [
+    a owl:Restriction ;
+    owl:onProperty schema:addressCountry ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:string
+  ], [
+    a owl:Restriction ;
+    owl:onProperty schema:postalCode ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:string
+  ], [
+    a owl:Restriction ;
+    owl:onProperty schema:streetAddress ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:string
+  ] .
+
+schema:Thing
+  a owl:Class ;
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty schema:identifier ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange <http://www.w3.org/ns/shacl#IRI>
+  ], [
+    a owl:Restriction ;
+    owl:onProperty schema:description ;
+    owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:string
+  ] .
+
+<http://www.embrc.eu/emo-bon/EmoBonOntology.rdf#Organization>
+  a owl:Class ;
+  rdfs:subClassOf schema:Organization, [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emo-bon/EmoBonOntology.rdf#edmoId> ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:positiveInteger
+  ] .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#Observatory>
+  a owl:Class ;
+  rdfs:subClassOf schema:Thing, [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emobon/EmoBonOntology#broadBiome> ;
+    owl:someValuesFrom <http://purl.obolibrary.org/obo/ENVO_00000428>
+  ], [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emobon/EmoBonOntology#localBiome> ;
+    owl:someValuesFrom <http://purl.obolibrary.org/obo/ENVO_00000428>
+  ], [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emobon/EmoBonOntology#geoLocation> ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onClass <http://www.opengis.net/ont/sf#Point>
+  ], [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emobon/EmoBonOntology#sampleType> ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onClass <http://www.embrc.eu/emobon/EmoBonOntology#SampleType>
+  ], [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emobon/EmoBonOntology#marineRegion> ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:anyURI
+  ], [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emobon/EmoBonOntology#observatoryId> ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:string
+  ], [
+    a owl:Restriction ;
+    owl:onProperty <http://www.embrc.eu/emobon/EmoBonOntology#observatorySampleId> ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange xsd:string
+  ] .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#SampleType>
+  a owl:Class ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:oneOf (
+     <http://www.embrc.eu/emobon/EmoBonOntology#Hard>
+     <http://www.embrc.eu/emobon/EmoBonOntology#Soil>
+     <http://www.embrc.eu/emobon/EmoBonOntology#Water>
+   )
+  ] .
+
+<http://www.opengis.net/ont/sf#Geometry>
+  a owl:Class ;
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty geo:asWKT ;
+    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onDataRange geo:wktLiteral
+  ] .
+
+<http://www.opengis.net/ont/sf#Point>
+  a owl:Class ;
+  rdfs:subClassOf <http://www.opengis.net/ont/sf#Geometry> .
+
+<http://www.embrc.eu/emobon/EmoBonOntology#Hard> a owl:NamedIndividual, <http://www.embrc.eu/emobon/EmoBonOntology#SampleType> .
+<http://www.embrc.eu/emobon/EmoBonOntology#Soil> a owl:NamedIndividual, <http://www.embrc.eu/emobon/EmoBonOntology#SampleType> .
+<http://www.embrc.eu/emobon/EmoBonOntology#Water> a owl:NamedIndividual, <http://www.embrc.eu/emobon/EmoBonOntology#SampleType> .
