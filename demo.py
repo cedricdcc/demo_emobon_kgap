@@ -6,6 +6,7 @@ READ_URI_STORE = "http://localhost:7200/repositories/kgap"
 WRITE_URI_STORE = "http://localhost:7200/repositories/kgap/statements"
 
 DEMO_QUESTION = "How many observations are there?"
+MODEL = "qwen:0.5b"  # llama3:8b
 
 
 # the main problem that i'm facing right now is the query ontology
@@ -17,7 +18,7 @@ graph = OntotextGraphDBGraph(
 
 # specify ollama endpoint
 
-llama_three = ollama.Ollama(model="llama3:8b")
+llama_three = ollama.Ollama(model=MODEL)
 
 chain = OntotextGraphDBQAChain.from_llm(llama_three, graph=graph, verbose=True)
 

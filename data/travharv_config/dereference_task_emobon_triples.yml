@@ -1,19 +1,32 @@
-snooze-till-graph-age-minutes: 100000000
+snooze-till-graph-age-minutes: 0
 prefix:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   dcat: http://www.w3.org/ns/dcat#
   schema: https://schema.org/
   org: http://www.w3.org/ns/org#
-  dct: http://purl.org/dc/terms/ 
+  dct: http://purl.org/dc/terms/
   mi: http://www.marineinfo.org/ns/ontology#
 assert:
   - subjects:
       literal:
-        - https://data.emobon.embrc.eu/metadata.ttl
-        - https://data.emobon.embrc.eu/observatory-hcmr-1-crate/all-triples.ttl
-        - https://data.emobon.embrc.eu/observatory-nrmcb-crate/all-triples.ttl
-        - https://data.emobon.embrc.eu/observatory-bpns-crate/all-triples.ttl
-        - https://data.emobon.embrc.eu/observatory-rformosa-crate/all-triples.ttl
+        - https://data.emobon.embrc.eu
     paths:
-      - "schema:result / schema:observation"
       - "schema:person / schema:name"
+
+  - subjects:
+      SPARQL: >
+        SELECT DISTINCT ?o
+        WHERE {
+              ?s schema:itemListElement ?o .
+              }
+    paths:
+      - "schema:hasPart"
+  - subjects:
+      SPARQL: >
+        SELECT DISTINCT ?o
+        WHERE {
+              ?s schema:hasPart ?o .
+              FILTER regex(str(?o), ".*\\.ttl$")
+              }
+    paths:
+      - "schema:hasPart"
