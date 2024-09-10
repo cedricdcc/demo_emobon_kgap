@@ -1,0 +1,11 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+SELECT DISTINCT ?observations ?observationresult ?unit ?resultnumeric ?sample ?metadatasample 
+WHERE  {
+	?observations a sosa:Observation .
+    ?observationresult <http://qudt.org/schema/qudt/unit> ?unit .
+    ?observationresult <http://qudt.org/schema/qudt/numericValue> ?resultnumeric .
+    ?observations sosa:hasResult ?observationresult .
+    ?observations sosa:hasFeatureOfInterest ?sample .
+    ?sample sosa:hasResult ?metadatasample .
+}
