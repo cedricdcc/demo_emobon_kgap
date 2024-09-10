@@ -1,4 +1,4 @@
-snooze-till-graph-age-minutes: 0
+snooze-till-graph-age-minutes: 100000
 prefix:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   dcat: http://www.w3.org/ns/dcat#
@@ -29,4 +29,4 @@ assert:
               FILTER regex(str(?o), ".*\\.ttl$")
               }
     paths:
-      - "schema:hasPart"
+      - "*"

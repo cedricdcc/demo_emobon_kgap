@@ -44,3 +44,24 @@ services:
     depends_on:
       graphdb:
         condition: service_healthy
+  
+  jupyter:
+    build:
+      context: ./jupyter
+    image: ${REG_NS:-kgap}/kgap_jupyter:${BUILD_TAG:-latest}
+    container_name: test_kgap_jupyter
+    ports:
+      - "8889:8888"
+    links:
+      - graphdb
+    volumes:
+      - "./notebooks:/notebooks"
+      - "./data:/data"
+    env_file:
+      - ./.env
+    environment:
+      GDB_BASE: "http://graphdb:7200/"
+      NOTEBOOK_ARGS: "--NotebookApp.token=''"
+    depends_on:
+      graphdb:
+        condition: service_healthy
