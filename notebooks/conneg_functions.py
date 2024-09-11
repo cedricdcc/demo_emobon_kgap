@@ -1,5 +1,5 @@
-#from sema.query import DefaultSparqlBuilder, GraphSource as KGSource, QueryResult
-from pykg2tbl import  DefaultSparqlBuilder, KGSource, QueryResult
+from sema.query import DefaultSparqlBuilder, GraphSource as KGSource, QueryResult
+# from pykg2tbl import  DefaultSparqlBuilder, KGSource, QueryResult
 from pathlib import Path
 from pandas import DataFrame
 import os

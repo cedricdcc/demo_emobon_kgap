@@ -1,0 +1,8 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+SELECT ?sample (COUNT(?observations) AS ?observationCount)
+WHERE {
+    ?observations a sosa:Observation .
+    ?observations sosa:hasFeatureOfInterest ?sample .
+}
+GROUP BY ?sample

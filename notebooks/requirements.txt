@@ -1,7 +1,7 @@
 
 
 #Python packages for data science
-pykg2tbl
+pysema
 numpy 
 pandas 
 matplotlib 

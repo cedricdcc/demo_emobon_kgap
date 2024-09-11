@@ -1,0 +1,7 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+SELECT DISTINCT ?property 
+WHERE  {
+	?observations a sosa:Observation .
+    ?observations sosa:observedProperty ?property .
+}
