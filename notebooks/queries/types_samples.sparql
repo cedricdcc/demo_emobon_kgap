@@ -1,0 +1,10 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX w3c: <http://www.w3.org/2004/02/skos/core#>
+SELECT ?issampleof (COUNT(DISTINCT ?sample) AS ?sampleCount)
+WHERE {
+    ?observations a sosa:Observation .
+    ?observations sosa:hasFeatureOfInterest ?sample .
+    ?sample sosa:isSampleOf ?issampleof .
+}
+GROUP BY ?issampleof

@@ -2,10 +2,14 @@
 
 #Python packages for data science
 pysema
+jupyter
+jupyterlab
+jupyterlab_widgets
 numpy 
 mplcursors
 pandas 
 matplotlib 
+ipywidgets
 plotly
 seaborn 
 #scikit-learn 
