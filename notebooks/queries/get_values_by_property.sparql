@@ -1,10 +1,14 @@
 PREFIX owl: <http://www.w3.org/2002/07/owl#> 
 PREFIX sosa: <http://www.w3.org/ns/sosa/>
-SELECT DISTINCT ?property ?resultnumeric ?sample
+PREFIX w3c: <http://www.w3.org/2004/02/skos/core#>
+SELECT DISTINCT ?property ?resultnumeric ?sample ?unitlabel ?propertylabel ?unitaltlabel
 WHERE {
     ?observations a sosa:Observation .
     ?observations sosa:observedProperty ?property .
     ?observationresult <http://qudt.org/schema/qudt/unit> ?unit .
+    ?unit w3c:prefLabel ?unitlabel .
+    ?unit w3c:altLabel ?unitaltlabel .
+    ?property w3c:prefLabel ?propertylabel .
     ?observationresult <http://qudt.org/schema/qudt/numericValue> ?resultnumeric .
     ?observations sosa:hasResult ?observationresult .
     ?observations sosa:hasFeatureOfInterest ?sample .

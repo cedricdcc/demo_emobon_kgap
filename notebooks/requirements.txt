@@ -3,8 +3,10 @@
 #Python packages for data science
 pysema
 numpy 
+mplcursors
 pandas 
 matplotlib 
+plotly
 seaborn 
 #scikit-learn 
 #scipy 

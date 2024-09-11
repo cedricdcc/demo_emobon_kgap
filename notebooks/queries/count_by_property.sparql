@@ -8,5 +8,6 @@ WHERE {
     ?observationresult <http://qudt.org/schema/qudt/numericValue> ?resultnumeric .
     ?observations sosa:hasResult ?observationresult .
     ?observations sosa:hasFeatureOfInterest ?sample .
+    ?sample sosa:hasResult ?metadatasample .
 }
 GROUP BY ?property

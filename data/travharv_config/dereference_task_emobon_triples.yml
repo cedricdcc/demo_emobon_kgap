@@ -30,3 +30,35 @@ assert:
               }
     paths:
       - "*"
+  - subjects:
+      SPARQL: >
+        PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+        PREFIX sosa: <http://www.w3.org/ns/sosa/>
+        SELECT DISTINCT ?unit
+        WHERE  {
+          ?observations a sosa:Observation .
+            ?observations sosa:observedProperty ?property .
+            ?observationresult <http://qudt.org/schema/qudt/unit> ?unit .
+            ?observationresult <http://qudt.org/schema/qudt/numericValue> ?resultnumeric .
+            ?observations sosa:hasResult ?observationresult .
+            ?observations sosa:hasFeatureOfInterest ?sample .
+            ?sample sosa:hasResult ?metadatasample .
+        }
+    paths:
+      - "*"
+  - subjects:
+      SPARQL: >
+        PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+        PREFIX sosa: <http://www.w3.org/ns/sosa/>
+        SELECT DISTINCT ?property
+        WHERE  {
+          ?observations a sosa:Observation .
+            ?observations sosa:observedProperty ?property .
+            ?observationresult <http://qudt.org/schema/qudt/unit> ?unit .
+            ?observationresult <http://qudt.org/schema/qudt/numericValue> ?resultnumeric .
+            ?observations sosa:hasResult ?observationresult .
+            ?observations sosa:hasFeatureOfInterest ?sample .
+            ?sample sosa:hasResult ?metadatasample .
+        }
+    paths:
+      - "*"
