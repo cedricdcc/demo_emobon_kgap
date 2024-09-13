@@ -12,7 +12,6 @@ assert:
         - https://data.emobon.embrc.eu
     paths:
       - "schema:person / schema:name"
-
   - subjects:
       SPARQL: >
         SELECT DISTINCT ?o
@@ -20,7 +19,7 @@ assert:
               ?s schema:itemListElement ?o .
               }
     paths:
-      - "schema:hasPart"
+      - "*"
   - subjects:
       SPARQL: >
         SELECT DISTINCT ?o
