@@ -1,0 +1,24 @@
+name: ROhub sync
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: RO-Crate to Pages
+        uses: vliz-be-opsci/rohub-sync-action@latest
+        with:
+          rohub-user: ${{ secrets.ROHUB_USER }}
+          rohub-password: ${{ secrets.ROHUB_PASSWORD }}
+      # commit back to the repository
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Sync RO-Crate to ROhub"
+          git push
