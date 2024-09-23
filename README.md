@@ -14,3 +14,6 @@ python demo.py
 ```
 
 in demo.py change DEMO_QUESTION to get a different query.
+
+
+[![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/430f9644-290a-451c-97a4-ac6b9b91af85)
