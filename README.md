@@ -13,4 +13,4 @@ docker-compose up
 python demo.py
 ```
 
-in demo.py change DEMO_QUESTION to get a different query
+in demo.py change DEMO_QUESTION to get a different query.
