@@ -13,7 +13,7 @@ docker-compose up
 python demo.py
 ```
 
-in demo.py change DEMO_QUESTION to get a different query.
-
+In demo.py change DEMO_QUESTION to get a different query.
+The quality of the query depends on the quality of the data in the RDF graph and the quality of the OLLAMA model.
 
 [![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/430f9644-290a-451c-97a4-ac6b9b91af85)
