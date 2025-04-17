@@ -11,13 +11,25 @@ assert:
       literal:
         - https://data.emobon.embrc.eu
     paths:
-      - "schema:person / schema:name"
-  - subjects:
+      - "*"
+  - subjects: # get the data from all Catalogs , first the catalogs since they can contain more datasets
       SPARQL: >
         SELECT DISTINCT ?o
-        WHERE {
-              ?s schema:itemListElement ?o .
-              }
+        WHERE { 
+          {?s dcat:catalog ?o . }
+          UNION
+          {?s a dcat:Catalog . }
+        }
+    paths:
+      - "*"
+  - subjects: # get the data from all Datasets
+      SPARQL: >
+        SELECT DISTINCT ?o
+        WHERE { 
+          {?s dcat:dataset ?o . }
+          UNION
+          {?s a dcat:Dataset . }
+        }
     paths:
       - "*"
   - subjects:
