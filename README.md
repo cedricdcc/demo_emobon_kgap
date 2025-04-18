@@ -20,3 +20,6 @@ The quality of the query depends on the quality of the data in the RDF graph and
 
 
 [![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/046a10d6-e461-4811-acf2-309697ff34db)
+
+
+[![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/4c2dac41-99d7-433c-a09d-a13530c4d07f)
