@@ -26,3 +26,19 @@ The quality of the query depends on the quality of the data in the RDF graph and
 
 
 [![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/2d347e53-b18f-4ba7-8a2c-64c7d7e3e5e9)
+
+### Extra query for getting MR info in sembench
+    
+    ```yaml
+     - subjects:
+      SPARQL: >
+        SELECT DISTINCT ?mr 
+        WHERE  {
+          ?observatory a <https://data.emobon.embrc.eu/ns/core#Observatory> .
+            ?observatory <https://data.emobon.embrc.eu/ns/core#marineRegion> ?mr .
+        }
+    paths:
+      - "*"
+    ```
+
+This is not used since the base URi is incorrect in graphDB

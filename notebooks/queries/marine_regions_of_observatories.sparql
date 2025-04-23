@@ -1,0 +1,8 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX w3c: <http://www.w3.org/2004/02/skos/core#>
+SELECT DISTINCT ?observatory ?mr 
+WHERE  {
+	?observatory a <https://data.emobon.embrc.eu/ns/core#Observatory> .
+    ?observatory <https://data.emobon.embrc.eu/ns/core#marineRegion> ?mr .
+}
