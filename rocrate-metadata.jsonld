@@ -22,82 +22,97 @@
     },
     {
       "@id": "./",
-      "identifier": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321",
+      "identifier": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6",
       "hasPart": [
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/235fec86-2a39-44aa-a60b-d67886882bed"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/aef9ec3b-29eb-4925-bb2a-3b98d53d78f5"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/544952ce-60ba-4274-99ab-48bd3dc818f9"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/8f8bf76b-23f4-4587-a066-836a7f6618a4"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/b13de206-db8c-4641-92d0-8b32c4e2e4a4"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/ac548019-da77-4ab9-9051-1505c7a3f1bb"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/c4ffbf57-e7f7-4075-8e1f-f1e644559d0a"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/fa90b92f-254b-4d9a-9371-e4b0a8132e11"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/cb844ea8-e3ba-426c-9dd0-dc0a3946201f"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/cb40decc-559a-4cfa-bd94-c3dcd7e84426"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/9fa9cd23-37da-40e2-89c1-7cd7c2c3b3d8"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/26bb0dc9-2692-4016-b575-342fa803cda5"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/d8d14280-3190-4015-a7c9-cec9a902c274"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/efef983d-8718-4e42-af9c-96285f1bb237"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/668dc81c-833a-4d65-ab67-f2a9559d65a4"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/7ecb69b7-1701-4793-99b3-9f083471923b"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/b85f5694-26da-44ff-b351-f9ab9d7824e6"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/da6c687b-824e-48ce-a983-25f081d12156"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/ea1cc12d-50f6-4f7f-939e-486acc4dea69"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/fd0b4397-793a-4bfd-8d6f-9345b27b7587"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/ea91347a-0222-45bc-bd99-d1d634dced20"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/20580c19-dfcb-499e-a998-3a7f995ed0c4"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/fe5896a6-fca2-4fee-a3f4-13688865d1e3"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/a4d33e58-5292-417a-95dd-3060c22d05b4"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/7983cbde-3395-445c-bfb7-4b6d7044b6b7"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/5e723f64-1cf2-4d85-af73-986372fcea44"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/9ef55b30-c265-42e6-8c78-2358c949acc0"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/ce1a8810-c73e-49b8-b999-3c98fa81dde4"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/6629599e-4cf9-48cd-a9ed-4649dcbb5d22"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/769363d4-a52a-4926-8f1b-f5d478e8986d"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/79a53d9a-dfbb-4df2-bc16-bba57e2457e4"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/210f73ce-ae45-45cf-b377-ec9c36de6896"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/2c5f1424-4a4b-4b24-a392-ac6d6f9f9384"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/70a84049-2736-4cf7-989d-caea98bb8bbc"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/f3028c86-53d7-458b-af35-cddc4c600984"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/05474c52-27df-4fcf-a6bc-bdd56e657fc1"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/ad1a4780-1412-4a24-84fe-a6be9525b61c"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/294aba6b-c975-4661-b745-60349cba12b4"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/70d64231-bda2-4fdf-9953-6bf64df88ee7"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/3522db8d-ad24-45f7-a90b-be0f492ec834"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/7b20ed2a-eee8-4de9-b3ca-2f39b4270287"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/3d345e40-a5e3-42fb-ada7-dcf669f7ed4f"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/0f21ae72-78f4-4abb-840f-3bba80e4413d"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/94e2a21c-212c-43e5-bbf5-01c4ffe614f8"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/511e748c-038d-41fa-8914-b8a2d34e8b96"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/fe06ce69-042b-4cca-b769-ec0c59c3a279"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/d1feacee-38c1-40d5-92d5-5d9e9b0a921e"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/c64cbfbf-fb65-4225-bdcf-f575cd17ee32"
         },
         {
-          "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/0b300cb8-52a5-4f55-a001-78286d62a555"
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/8288c0db-2cd2-41c3-8574-40249852ce76"
+        },
+        {
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/83e4b6a6-8e6f-4910-b644-7b88dbe73a7d"
+        },
+        {
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/05f5d787-9b53-41cc-a415-d42a42783e8e"
+        },
+        {
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/293cba76-de43-4a6d-9af1-ef80a923d5ae"
+        },
+        {
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/2e0dfbbf-0a2b-4929-aba3-786198b06038"
+        },
+        {
+          "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/d00f86cb-3a65-41e8-895d-2c2aba731c7a"
         }
       ],
       "@type": [
@@ -113,24 +128,24 @@
       "studySubject": [
         "http://eurovoc.europa.eu/3952"
       ],
-      "citeAs": "Decruw, Cedric. \"demo_emobon_kgap.\" ROHub. Apr 23 ,2025. https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321.",
-      "datePublished": "2025-04-23 17:06:08.406339+00:00",
-      "dateCreated": "2025-04-23 17:06:08.406339+00:00",
-      "dateModified": "2025-04-23 17:06:27.435467+00:00",
+      "citeAs": "Decruw, Cedric. \"demo_emobon_kgap.\" ROHub. Apr 24 ,2025. https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6.",
+      "datePublished": "2025-04-24 16:18:40.512384+00:00",
+      "dateCreated": "2025-04-24 16:18:40.512384+00:00",
+      "dateModified": "2025-04-24 16:19:01.947842+00:00",
       "contributor": [],
       "name": "demo_emobon_kgap",
-      "description": "RO-crate archive generated by rohub2020 (v2.1.24)",
-      "contentSize": 604747,
+      "description": "RO-crate archive generated by rohub2020 (v2.1.25)",
+      "contentSize": 608766,
       "encodingFormat": "application/ld+json",
-      "contentUrl": "https://api.rohub.org/api/ros/1b6199bb-29bf-4f60-9205-f072a5a5e321/crate/download/",
+      "contentUrl": "https://api.rohub.org/api/ros/ba5d8b5e-7973-4916-9fea-74120726cec6/crate/download/",
       "license": {
         "@id": "https://choosealicense.com/no-permission/"
       },
       "http://w3id.org/ro-id/rohub/model#creation_mode": "MANUAL",
-      "modifiedTime": "2025-04-23 17:06:41.391260+00:00"
+      "modifiedTime": "2025-04-24 16:19:18.959912+00:00"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/235fec86-2a39-44aa-a60b-d67886882bed",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/aef9ec3b-29eb-4925-bb2a-3b98d53d78f5",
       "@type": [
         "File"
       ],
@@ -141,14 +156,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.124767+00:00",
-      "dateCreated": "2025-04-23 17:06:16.124767+00:00",
-      "dateModified": "2025-04-23 17:06:25.225521+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/235fec86-2a39-44aa-a60b-d67886882bed/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.320413+00:00",
+      "dateCreated": "2025-04-24 16:18:47.320413+00:00",
+      "dateModified": "2025-04-24 16:18:57.955445+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/aef9ec3b-29eb-4925-bb2a-3b98d53d78f5/download/",
       "contentSize": 912325
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/544952ce-60ba-4274-99ab-48bd3dc818f9",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/8f8bf76b-23f4-4587-a066-836a7f6618a4",
       "@type": [
         "File"
       ],
@@ -159,14 +174,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.120290+00:00",
-      "dateCreated": "2025-04-23 17:06:16.120290+00:00",
-      "dateModified": "2025-04-23 17:06:24.999278+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/544952ce-60ba-4274-99ab-48bd3dc818f9/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.315224+00:00",
+      "dateCreated": "2025-04-24 16:18:47.315224+00:00",
+      "dateModified": "2025-04-24 16:18:57.740461+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/8f8bf76b-23f4-4587-a066-836a7f6618a4/download/",
       "contentSize": 828
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/b13de206-db8c-4641-92d0-8b32c4e2e4a4",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/ac548019-da77-4ab9-9051-1505c7a3f1bb",
       "@type": [
         "File"
       ],
@@ -177,14 +192,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.119656+00:00",
-      "dateCreated": "2025-04-23 17:06:16.119656+00:00",
-      "dateModified": "2025-04-23 17:06:24.565369+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/b13de206-db8c-4641-92d0-8b32c4e2e4a4/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.314610+00:00",
+      "dateCreated": "2025-04-24 16:18:47.314610+00:00",
+      "dateModified": "2025-04-24 16:18:57.521327+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/ac548019-da77-4ab9-9051-1505c7a3f1bb/download/",
       "contentSize": 1207
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/c4ffbf57-e7f7-4075-8e1f-f1e644559d0a",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/fa90b92f-254b-4d9a-9371-e4b0a8132e11",
       "@type": [
         "File"
       ],
@@ -195,14 +210,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.118998+00:00",
-      "dateCreated": "2025-04-23 17:06:16.118998+00:00",
-      "dateModified": "2025-04-23 17:06:24.073114+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/c4ffbf57-e7f7-4075-8e1f-f1e644559d0a/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.313877+00:00",
+      "dateCreated": "2025-04-24 16:18:47.313877+00:00",
+      "dateModified": "2025-04-24 16:18:57.054122+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/fa90b92f-254b-4d9a-9371-e4b0a8132e11/download/",
       "contentSize": 327
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/cb844ea8-e3ba-426c-9dd0-dc0a3946201f",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/cb40decc-559a-4cfa-bd94-c3dcd7e84426",
       "@type": [
         "File"
       ],
@@ -213,14 +228,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.118350+00:00",
-      "dateCreated": "2025-04-23 17:06:16.118350+00:00",
-      "dateModified": "2025-04-23 17:06:23.845170+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/cb844ea8-e3ba-426c-9dd0-dc0a3946201f/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.313043+00:00",
+      "dateCreated": "2025-04-24 16:18:47.313043+00:00",
+      "dateModified": "2025-04-24 16:18:56.842247+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/cb40decc-559a-4cfa-bd94-c3dcd7e84426/download/",
       "contentSize": 365
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/9fa9cd23-37da-40e2-89c1-7cd7c2c3b3d8",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/26bb0dc9-2692-4016-b575-342fa803cda5",
       "@type": [
         "File"
       ],
@@ -231,14 +246,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.117727+00:00",
-      "dateCreated": "2025-04-23 17:06:16.117727+00:00",
-      "dateModified": "2025-04-23 17:06:23.367092+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/9fa9cd23-37da-40e2-89c1-7cd7c2c3b3d8/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.312107+00:00",
+      "dateCreated": "2025-04-24 16:18:47.312107+00:00",
+      "dateModified": "2025-04-24 16:18:56.609685+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/26bb0dc9-2692-4016-b575-342fa803cda5/download/",
       "contentSize": 299
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/d8d14280-3190-4015-a7c9-cec9a902c274",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/efef983d-8718-4e42-af9c-96285f1bb237",
       "@type": [
         "File"
       ],
@@ -249,14 +264,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.117076+00:00",
-      "dateCreated": "2025-04-23 17:06:16.117076+00:00",
-      "dateModified": "2025-04-23 17:06:23.124692+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/d8d14280-3190-4015-a7c9-cec9a902c274/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.311228+00:00",
+      "dateCreated": "2025-04-24 16:18:47.311228+00:00",
+      "dateModified": "2025-04-24 16:18:56.279045+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/efef983d-8718-4e42-af9c-96285f1bb237/download/",
       "contentSize": 828
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/668dc81c-833a-4d65-ab67-f2a9559d65a4",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/7ecb69b7-1701-4793-99b3-9f083471923b",
       "@type": [
         "File"
       ],
@@ -267,14 +282,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.116449+00:00",
-      "dateCreated": "2025-04-23 17:06:16.116449+00:00",
-      "dateModified": "2025-04-23 17:06:22.896011+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/668dc81c-833a-4d65-ab67-f2a9559d65a4/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.310288+00:00",
+      "dateCreated": "2025-04-24 16:18:47.310288+00:00",
+      "dateModified": "2025-04-24 16:18:55.806511+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/7ecb69b7-1701-4793-99b3-9f083471923b/download/",
       "contentSize": 709
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/b85f5694-26da-44ff-b351-f9ab9d7824e6",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/da6c687b-824e-48ce-a983-25f081d12156",
       "@type": [
         "File"
       ],
@@ -285,14 +300,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.115800+00:00",
-      "dateCreated": "2025-04-23 17:06:16.115800+00:00",
-      "dateModified": "2025-04-23 17:06:22.186534+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/b85f5694-26da-44ff-b351-f9ab9d7824e6/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.309348+00:00",
+      "dateCreated": "2025-04-24 16:18:47.309348+00:00",
+      "dateModified": "2025-04-24 16:18:55.551073+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/da6c687b-824e-48ce-a983-25f081d12156/download/",
       "contentSize": 265
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/ea1cc12d-50f6-4f7f-939e-486acc4dea69",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/fd0b4397-793a-4bfd-8d6f-9345b27b7587",
       "@type": [
         "File"
       ],
@@ -303,14 +318,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.115146+00:00",
-      "dateCreated": "2025-04-23 17:06:16.115146+00:00",
-      "dateModified": "2025-04-23 17:06:21.955277+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/ea1cc12d-50f6-4f7f-939e-486acc4dea69/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.308456+00:00",
+      "dateCreated": "2025-04-24 16:18:47.308456+00:00",
+      "dateModified": "2025-04-24 16:18:55.282767+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/fd0b4397-793a-4bfd-8d6f-9345b27b7587/download/",
       "contentSize": 570
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/ea91347a-0222-45bc-bd99-d1d634dced20",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/20580c19-dfcb-499e-a998-3a7f995ed0c4",
       "@type": [
         "File"
       ],
@@ -321,14 +336,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.114513+00:00",
-      "dateCreated": "2025-04-23 17:06:16.114513+00:00",
-      "dateModified": "2025-04-23 17:06:21.420800+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/ea91347a-0222-45bc-bd99-d1d634dced20/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.307556+00:00",
+      "dateCreated": "2025-04-24 16:18:47.307556+00:00",
+      "dateModified": "2025-04-24 16:18:54.768530+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/20580c19-dfcb-499e-a998-3a7f995ed0c4/download/",
       "contentSize": 95
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/fe5896a6-fca2-4fee-a3f4-13688865d1e3",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/a4d33e58-5292-417a-95dd-3060c22d05b4",
       "@type": [
         "File"
       ],
@@ -339,15 +354,15 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.113865+00:00",
-      "dateCreated": "2025-04-23 17:06:16.113865+00:00",
-      "dateModified": "2025-04-23 17:06:20.907746+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/fe5896a6-fca2-4fee-a3f4-13688865d1e3/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.306717+00:00",
+      "dateCreated": "2025-04-24 16:18:47.306717+00:00",
+      "dateModified": "2025-04-24 16:18:54.520571+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/a4d33e58-5292-417a-95dd-3060c22d05b4/download/",
       "contentSize": 1166,
       "encodingFormat": "text/x-python"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/7983cbde-3395-445c-bfb7-4b6d7044b6b7",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/5e723f64-1cf2-4d85-af73-986372fcea44",
       "@type": [
         "File"
       ],
@@ -358,15 +373,15 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.113203+00:00",
-      "dateCreated": "2025-04-23 17:06:16.113203+00:00",
-      "dateModified": "2025-04-23 17:06:16.751750+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/7983cbde-3395-445c-bfb7-4b6d7044b6b7/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.305964+00:00",
+      "dateCreated": "2025-04-24 16:18:47.305964+00:00",
+      "dateModified": "2025-04-24 16:18:48.446102+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/5e723f64-1cf2-4d85-af73-986372fcea44/download/",
       "contentSize": 277,
       "encodingFormat": "text/plain"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/9ef55b30-c265-42e6-8c78-2358c949acc0",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/ce1a8810-c73e-49b8-b999-3c98fa81dde4",
       "@type": [
         "File"
       ],
@@ -377,15 +392,15 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.112564+00:00",
-      "dateCreated": "2025-04-23 17:06:16.112564+00:00",
-      "dateModified": "2025-04-23 17:06:20.669696+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/9ef55b30-c265-42e6-8c78-2358c949acc0/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.305371+00:00",
+      "dateCreated": "2025-04-24 16:18:47.305371+00:00",
+      "dateModified": "2025-04-24 16:18:54.279666+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/ce1a8810-c73e-49b8-b999-3c98fa81dde4/download/",
       "contentSize": 1367,
       "encodingFormat": "text/x-python"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/6629599e-4cf9-48cd-a9ed-4649dcbb5d22",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/769363d4-a52a-4926-8f1b-f5d478e8986d",
       "@type": [
         "File"
       ],
@@ -396,14 +411,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.111839+00:00",
-      "dateCreated": "2025-04-23 17:06:16.111839+00:00",
-      "dateModified": "2025-04-23 17:06:20.385245+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/6629599e-4cf9-48cd-a9ed-4649dcbb5d22/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.304682+00:00",
+      "dateCreated": "2025-04-24 16:18:47.304682+00:00",
+      "dateModified": "2025-04-24 16:18:53.907868+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/769363d4-a52a-4926-8f1b-f5d478e8986d/download/",
       "contentSize": 740159
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/79a53d9a-dfbb-4df2-bc16-bba57e2457e4",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/210f73ce-ae45-45cf-b377-ec9c36de6896",
       "@type": [
         "File"
       ],
@@ -414,68 +429,90 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.105603+00:00",
-      "dateCreated": "2025-04-23 17:06:16.105603+00:00",
-      "dateModified": "2025-04-23 17:06:19.912851+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/79a53d9a-dfbb-4df2-bc16-bba57e2457e4/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.297408+00:00",
+      "dateCreated": "2025-04-24 16:18:47.297408+00:00",
+      "dateModified": "2025-04-24 16:18:53.389179+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/210f73ce-ae45-45cf-b377-ec9c36de6896/download/",
       "contentSize": 298
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/2c5f1424-4a4b-4b24-a392-ac6d6f9f9384",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/70a84049-2736-4cf7-989d-caea98bb8bbc",
       "@type": [
         "File"
       ],
-      "name": "rohub.yml",
+      "name": "script.js",
       "creator": [
         "mailto:cedricdecruw@gmail.com"
       ],
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.104958+00:00",
-      "dateCreated": "2025-04-23 17:06:16.104958+00:00",
-      "dateModified": "2025-04-23 17:06:19.685867+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/2c5f1424-4a4b-4b24-a392-ac6d6f9f9384/download/",
-      "contentSize": 682
+      "sdDatePublished": "2025-04-24 16:18:47.296699+00:00",
+      "dateCreated": "2025-04-24 16:18:47.296699+00:00",
+      "dateModified": "2025-04-24 16:18:52.940763+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/70a84049-2736-4cf7-989d-caea98bb8bbc/download/",
+      "contentSize": 1144,
+      "encodingFormat": "application/javascript"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/f3028c86-53d7-458b-af35-cddc4c600984",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/05474c52-27df-4fcf-a6bc-bdd56e657fc1",
       "@type": [
         "File"
       ],
-      "name": "dereference_task_emobon_triples.yml",
+      "name": "index.html",
       "creator": [
         "mailto:cedricdecruw@gmail.com"
       ],
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.104291+00:00",
-      "dateCreated": "2025-04-23 17:06:16.104291+00:00",
-      "dateModified": "2025-04-23 17:06:19.441098+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/f3028c86-53d7-458b-af35-cddc4c600984/download/",
-      "contentSize": 2389
+      "sdDatePublished": "2025-04-24 16:18:47.295700+00:00",
+      "dateCreated": "2025-04-24 16:18:47.295700+00:00",
+      "dateModified": "2025-04-24 16:18:52.593822+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/05474c52-27df-4fcf-a6bc-bdd56e657fc1/download/",
+      "contentSize": 573,
+      "encodingFormat": "text/html"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/ad1a4780-1412-4a24-84fe-a6be9525b61c",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/294aba6b-c975-4661-b745-60349cba12b4",
       "@type": [
         "File"
       ],
-      "name": "sembench.yaml",
+      "name": "styles.css",
       "creator": [
         "mailto:cedricdecruw@gmail.com"
       ],
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.103623+00:00",
-      "dateCreated": "2025-04-23 17:06:16.103623+00:00",
-      "dateModified": "2025-04-23 17:06:18.966767+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/ad1a4780-1412-4a24-84fe-a6be9525b61c/download/",
-      "contentSize": 375
+      "sdDatePublished": "2025-04-24 16:18:47.294766+00:00",
+      "dateCreated": "2025-04-24 16:18:47.294766+00:00",
+      "dateModified": "2025-04-24 16:18:52.359564+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/294aba6b-c975-4661-b745-60349cba12b4/download/",
+      "contentSize": 867,
+      "encodingFormat": "text/css"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/70d64231-bda2-4fdf-9953-6bf64df88ee7",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/3522db8d-ad24-45f7-a90b-be0f492ec834",
+      "@type": [
+        "File"
+      ],
+      "name": "server.py",
+      "creator": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "author": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "sdDatePublished": "2025-04-24 16:18:47.293790+00:00",
+      "dateCreated": "2025-04-24 16:18:47.293790+00:00",
+      "dateModified": "2025-04-24 16:18:51.553686+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/3522db8d-ad24-45f7-a90b-be0f492ec834/download/",
+      "contentSize": 1466,
+      "encodingFormat": "text/x-python"
+    },
+    {
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/3d345e40-a5e3-42fb-ada7-dcf669f7ed4f",
       "@type": [
         "File"
       ],
@@ -486,15 +523,69 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.102886+00:00",
-      "dateCreated": "2025-04-23 17:06:16.102886+00:00",
-      "dateModified": "2025-04-23 17:06:18.716555+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/70d64231-bda2-4fdf-9953-6bf64df88ee7/download/",
-      "contentSize": 1346,
+      "sdDatePublished": "2025-04-24 16:18:47.292819+00:00",
+      "dateCreated": "2025-04-24 16:18:47.292819+00:00",
+      "dateModified": "2025-04-24 16:18:50.111911+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/3d345e40-a5e3-42fb-ada7-dcf669f7ed4f/download/",
+      "contentSize": 873,
       "encodingFormat": "text/markdown"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/7b20ed2a-eee8-4de9-b3ca-2f39b4270287",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/94e2a21c-212c-43e5-bbf5-01c4ffe614f8",
+      "@type": [
+        "File"
+      ],
+      "name": "rohub.yml",
+      "creator": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "author": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "sdDatePublished": "2025-04-24 16:18:47.291884+00:00",
+      "dateCreated": "2025-04-24 16:18:47.291884+00:00",
+      "dateModified": "2025-04-24 16:18:51.241748+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/94e2a21c-212c-43e5-bbf5-01c4ffe614f8/download/",
+      "contentSize": 682
+    },
+    {
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/fe06ce69-042b-4cca-b769-ec0c59c3a279",
+      "@type": [
+        "File"
+      ],
+      "name": "dereference_task_emobon_triples.yml",
+      "creator": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "author": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "sdDatePublished": "2025-04-24 16:18:47.290924+00:00",
+      "dateCreated": "2025-04-24 16:18:47.290924+00:00",
+      "dateModified": "2025-04-24 16:18:51.021209+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/fe06ce69-042b-4cca-b769-ec0c59c3a279/download/",
+      "contentSize": 2389
+    },
+    {
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/c64cbfbf-fb65-4225-bdcf-f575cd17ee32",
+      "@type": [
+        "File"
+      ],
+      "name": "sembench.yaml",
+      "creator": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "author": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "sdDatePublished": "2025-04-24 16:18:47.290026+00:00",
+      "dateCreated": "2025-04-24 16:18:47.290026+00:00",
+      "dateModified": "2025-04-24 16:18:50.342405+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/c64cbfbf-fb65-4225-bdcf-f575cd17ee32/download/",
+      "contentSize": 376
+    },
+    {
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/8288c0db-2cd2-41c3-8574-40249852ce76",
       "@type": [
         "File"
       ],
@@ -505,15 +596,15 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.102177+00:00",
-      "dateCreated": "2025-04-23 17:06:16.102177+00:00",
-      "dateModified": "2025-04-23 17:06:18.412063+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/7b20ed2a-eee8-4de9-b3ca-2f39b4270287/download/",
-      "contentSize": 4433,
+      "sdDatePublished": "2025-04-24 16:18:47.288524+00:00",
+      "dateCreated": "2025-04-24 16:18:47.288524+00:00",
+      "dateModified": "2025-04-24 16:18:49.864027+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/8288c0db-2cd2-41c3-8574-40249852ce76/download/",
+      "contentSize": 4899,
       "encodingFormat": "application/zip"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/0f21ae72-78f4-4abb-840f-3bba80e4413d",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/83e4b6a6-8e6f-4910-b644-7b88dbe73a7d",
       "@type": [
         "File"
       ],
@@ -524,15 +615,15 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.101376+00:00",
-      "dateCreated": "2025-04-23 17:06:16.101376+00:00",
-      "dateModified": "2025-04-23 17:06:18.155460+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/0f21ae72-78f4-4abb-840f-3bba80e4413d/download/",
-      "contentSize": 888,
+      "sdDatePublished": "2025-04-24 16:18:47.287895+00:00",
+      "dateCreated": "2025-04-24 16:18:47.287895+00:00",
+      "dateModified": "2025-04-24 16:18:49.395260+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/83e4b6a6-8e6f-4910-b644-7b88dbe73a7d/download/",
+      "contentSize": 1272,
       "encodingFormat": "text/x-python"
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/511e748c-038d-41fa-8914-b8a2d34e8b96",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/05f5d787-9b53-41cc-a415-d42a42783e8e",
       "@type": [
         "File"
       ],
@@ -543,14 +634,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.100498+00:00",
-      "dateCreated": "2025-04-23 17:06:16.100498+00:00",
-      "dateModified": "2025-04-23 17:06:17.668013+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/511e748c-038d-41fa-8914-b8a2d34e8b96/download/",
-      "contentSize": 21568
+      "sdDatePublished": "2025-04-24 16:18:47.287303+00:00",
+      "dateCreated": "2025-04-24 16:18:47.287303+00:00",
+      "dateModified": "2025-04-24 16:18:49.161832+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/05f5d787-9b53-41cc-a415-d42a42783e8e/download/",
+      "contentSize": 22391
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/d1feacee-38c1-40d5-92d5-5d9e9b0a921e",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/293cba76-de43-4a6d-9af1-ef80a923d5ae",
       "@type": [
         "File"
       ],
@@ -561,14 +652,14 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.099392+00:00",
-      "dateCreated": "2025-04-23 17:06:16.099392+00:00",
-      "dateModified": "2025-04-23 17:06:17.295572+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/d1feacee-38c1-40d5-92d5-5d9e9b0a921e/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.286615+00:00",
+      "dateCreated": "2025-04-24 16:18:47.286615+00:00",
+      "dateModified": "2025-04-24 16:18:48.682059+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/293cba76-de43-4a6d-9af1-ef80a923d5ae/download/",
       "contentSize": 2089
     },
     {
-      "@id": "https://w3id.org/ro-id/1b6199bb-29bf-4f60-9205-f072a5a5e321/resources/0b300cb8-52a5-4f55-a001-78286d62a555",
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/2e0dfbbf-0a2b-4929-aba3-786198b06038",
       "@type": [
         "File"
       ],
@@ -579,11 +670,30 @@
       "author": [
         "mailto:cedricdecruw@gmail.com"
       ],
-      "sdDatePublished": "2025-04-23 17:06:16.097098+00:00",
-      "dateCreated": "2025-04-23 17:06:16.097098+00:00",
-      "dateModified": "2025-04-23 17:06:16.160848+00:00",
-      "contentUrl": "https://api.rohub.org/api/resources/0b300cb8-52a5-4f55-a001-78286d62a555/download/",
+      "sdDatePublished": "2025-04-24 16:18:47.285266+00:00",
+      "dateCreated": "2025-04-24 16:18:47.285266+00:00",
+      "dateModified": "2025-04-24 16:18:47.696743+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/2e0dfbbf-0a2b-4929-aba3-786198b06038/download/",
       "contentSize": 538
+    },
+    {
+      "@id": "https://w3id.org/ro-id/ba5d8b5e-7973-4916-9fea-74120726cec6/resources/d00f86cb-3a65-41e8-895d-2c2aba731c7a",
+      "@type": [
+        "File"
+      ],
+      "name": "library.md",
+      "creator": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "author": [
+        "mailto:cedricdecruw@gmail.com"
+      ],
+      "sdDatePublished": "2025-04-24 16:18:47.284019+00:00",
+      "dateCreated": "2025-04-24 16:18:47.284019+00:00",
+      "dateModified": "2025-04-24 16:18:47.353336+00:00",
+      "contentUrl": "https://api.rohub.org/api/resources/d00f86cb-3a65-41e8-895d-2c2aba731c7a/download/",
+      "contentSize": 337,
+      "encodingFormat": "text/markdown"
     },
     {
       "@id": "mailto:cedricdecruw@gmail.com",
