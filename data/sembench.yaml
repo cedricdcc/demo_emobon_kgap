@@ -1,3 +1,9 @@
+sync_task:
+  func: sync-fs-triples
+  args:
+    root: /data
+    read_uri: http://graphdb:7200/repositories/kgap
+    write_uri: http://graphdb:7200/repositories/kgap/statements
 travharv_task:
   func: harvest
   args:
@@ -5,9 +11,4 @@ travharv_task:
     target_store_info:
       - http://graphdb:7200/repositories/kgap
       - http://graphdb:7200/repositories/kgap/statements
-sync_task:
-  func: sync-fs-triples
-  args:
-    root: /data
-    read_uri: http://graphdb:7200/repositories/kgap
-    write_uri: http://graphdb:7200/repositories/kgap/statements
+
