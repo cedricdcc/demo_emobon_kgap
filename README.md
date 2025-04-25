@@ -43,6 +43,15 @@ The quality of the query depends on the quality of the data in the RDF graph and
 
 This is not used since the base URi is incorrect in graphDB
 
+## docker compose
+
+```code
+docker compose --profile cpu pull
+docker compose create && docker compose --profile cpu up
+```
+
+## rocrates
+
 [![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/1b6199bb-29bf-4f60-9205-f072a5a5e321)
 
 
