@@ -7,7 +7,12 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-MODEL = "llama3.1:8b"
+# MODEL = "llama3.1:8b"  # llama3.1:8b" # Specify the model you want to use
+
+# for lower end models, use the following:
+# MODEL = "gemma3:1b" # or 4b
+MODEL = "deepseek-r1:1.5b"  # Specify the model you want to use
+
 # Specify ollama endpoint
 llama_three = OllamaLLM(model=MODEL)
 
