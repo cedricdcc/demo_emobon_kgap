@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 from langchain.chains import OntotextGraphDBQAChain
 from langchain_community.graphs import OntotextGraphDBGraph
 from langchain_ollama import OllamaLLM
-
 from flask_cors import CORS
+import time
+import logging
 
 app = Flask(__name__)
 CORS(app)
@@ -11,13 +12,22 @@ CORS(app)
 
 # for lower end models, use the following:
 # MODEL = "gemma3:1b" # or 4b
-MODEL = "deepseek-r1:1.5b"  # Specify the model you want to use
+MODEL = "llama3.1:8b"  # Specify the model you want to use llama3.1:8b deepseek-r1:1.5b
+
+# ollama url
+url_ollama = "http://ollama:11434"  # Specify the URL of your Ollama instance
+
 
 # Specify ollama endpoint
-llama_three = OllamaLLM(model=MODEL)
+llama_three = OllamaLLM(model=MODEL, base_url=url_ollama)
 
-READ_URI_STORE = "http://localhost:7200/repositories/kgap"
-WRITE_URI_STORE = "http://localhost:7200/repositories/kgap/statements"
+READ_URI_STORE = "http://graphdb:7200/repositories/kgap"
+WRITE_URI_STORE = "http://graphdb:7200/repositories/kgap/statements"
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+time.sleep(10)  # Wait for the GraphDB service to be ready
 
 # Configure the Ontotext GraphDB connection
 graph = OntotextGraphDBGraph(
@@ -29,6 +39,11 @@ graph = OntotextGraphDBGraph(
 qa_chain = OntotextGraphDBQAChain.from_llm(
     llm=llama_three, graph=graph, verbose=True, allow_dangerous_requests=True
 )
+
+
+@app.route("/test", methods=["GET"])
+def hello_world():
+    return "Hello, World!"
 
 
 @app.route("/api/chat", methods=["POST"])
@@ -51,4 +66,4 @@ def chat():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

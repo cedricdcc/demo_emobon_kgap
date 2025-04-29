@@ -28,7 +28,31 @@ x-init-ollama: &init-ollama
     - "-c"
     - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull ${OLLAMA_MODEL:-llama3.1:8b};"
 
-services: 
+services:
+  backend:
+    build:
+      context: ./app/backend
+    image: backend-service:latest
+    container_name: backend_service
+    networks: ['demo']
+    ports:
+      - "5000:5000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: ./app/frontend
+    image: frontend-service:latest
+    container_name: frontend_service
+    networks: ['demo']
+    ports:
+      - "3000:80"
+    volumes:
+      - ./app/frontend:/usr/share/nginx/html
+    command: nginx -g "daemon off;"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   #yasgui:
   #  image: redpencil/yasgui:latest
   #  container_name: test_kgap_yasgui
@@ -41,7 +65,7 @@ services:
       context: ./graphdb
     image: ${REG_NS:-kgap}/kgap_graphdb:${BUILD_TAG:-latest}
     networks: ['demo']
-    container_name: test_kgap_graphdb
+    container_name: kgap_graphdb
     env_file:
       - ./.env
     #environment: 
@@ -98,6 +122,19 @@ services:
   ollama-cpu:
     profiles: ["cpu"]
     <<: *service-ollama
+
+  ollama-gpu-rocm:
+    profiles: ["gpu-rocm"]
+    <<: *service-ollama
+    container_name: ollama-gpu-rocm-unique
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    devices:
+      - "/dev/kfd:/dev/kfd"
+      - "/dev/dri:/dev/dri"
 
   ollama-gpu:
     profiles: ["gpu-nvidia"]

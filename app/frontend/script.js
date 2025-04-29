@@ -1,4 +1,4 @@
-const serverBaseURL = "http://127.0.0.1:5000";
+const serverBaseURL = "http://localhost:5000";
 
 const messagesDiv = document.getElementById("messages");
 const userInput = document.getElementById("user-input");

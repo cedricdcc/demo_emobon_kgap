@@ -1,0 +1,9 @@
+langchain
+langchain_community
+langchain-core
+langgraph
+rdflib
+langchain_ollama
+flask
+jsonify
+flask_cors
