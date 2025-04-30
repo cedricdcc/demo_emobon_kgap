@@ -6,7 +6,8 @@ body {
 }
 
 #chatbot-container {
-    max-width: 600px;
+    min-width: 600px;
+    max-width: 80vw;
     margin: 50px auto;
     padding: 20px;
     background: #ffffff;
@@ -28,6 +29,29 @@ body {
     flex-direction: column;
     gap: 10px;
 }
+
+.message-human {
+    align-self: flex-end;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.message-chatbot {
+    align-self: flex-start;
+    /* Changed background to a light blue */
+    background-color: #cfe2ff;
+    /* Changed text color to a dark blue for contrast */
+    color: #052c65;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
 
 #user-input {
     width: calc(100% - 80px);

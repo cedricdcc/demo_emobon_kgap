@@ -21,4 +21,4 @@ SCHEDULER_INTERVAL_SECONDS=86400
 
 REG_NS=ghcr.io/vliz-be-opsci/kgap
 
-OLLAMA_MODEL=deepseek-r1:1.5b
+OLLAMA_MODEL=qwen3:0.6b
