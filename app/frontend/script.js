@@ -22,7 +22,7 @@ function addMessage(sender, message) {
 
 async function fetchResponse(userMessage) {
   try {
-    const response = await fetch(`${serverBaseURL}/api/querysparql`, {
+    const response = await fetch(`${serverBaseURL}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: userMessage }),

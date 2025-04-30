@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from langchain_community.chains.graph_qa.ontotext_graphdb import OntotextGraphDBQAChain
 from langchain_community.graphs import OntotextGraphDBGraph
 from langchain_ollama import OllamaLLM
+from langchain_core.prompts import ChatPromptTemplate
 from flask_cors import CORS
 import time
 import logging
@@ -52,6 +53,19 @@ qa_chain = OntotextGraphDBQAChain.from_llm(
     max_fix_retries=1,
 )
 
+SYSTEM = """You are a helpful assistant. You will be given a question and you need to answer it based on the provided knowledge graph.
+If you don't know the answer, say "I don't know". If the question is not related to the knowledge graph, say "I can't help with that".
+"""
+
+USER_PROMPT = """QUESTION: {question}
+GRAPH: {graph}"""
+
+
+##### Define the Flask routes
+@app.route("/")
+def index():
+    return "to be implemented"
+
 
 @app.route("/test", methods=["GET"])
 def hello_world():
@@ -92,7 +106,30 @@ def querysparql():
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
-    pass
+    prompt_template = ChatPromptTemplate(
+        [
+            ("system", SYSTEM),
+            ("user", USER_PROMPT),
+        ]
+    )
+    user_message = request.json.get("message", "")
+    logging.info(f"Received message: {user_message}")
+    if not user_message:
+        return jsonify({"reply": "Error: No message provided."}), 400
+
+    try:
+        prompt = prompt_template.invoke(
+            {"question": user_message, "graph": graph.schema}
+        )
+        logging.info(f"Prompt: {prompt}")
+        response = llm.invoke(prompt)
+        logging.info(f"Response: {response}")
+        bot_reply = (
+            response if response else "I couldn't find an answer to your question."
+        )
+        return jsonify({"reply": bot_reply})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
