@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from langchain.chains import OntotextGraphDBQAChain
+from langchain_community.chains.graph_qa.ontotext_graphdb import OntotextGraphDBQAChain
 from langchain_community.graphs import OntotextGraphDBGraph
 from langchain_ollama import OllamaLLM
 from flask_cors import CORS
@@ -19,7 +19,15 @@ url_ollama = "http://ollama:11434"  # Specify the URL of your Ollama instance
 
 
 # Specify ollama endpoint
-llama_three = OllamaLLM(model=MODEL, base_url=url_ollama)
+llm = OllamaLLM(
+    model=MODEL,
+    base_url=url_ollama,
+    temperature=0.7,
+    num_predict=400,
+    repeat_penalty=1.3,
+    repeat_last_n=256,
+    num_ctx=8192,
+)
 
 READ_URI_STORE = "http://graphdb:7200/repositories/kgap"
 WRITE_URI_STORE = "http://graphdb:7200/repositories/kgap/statements"
@@ -37,7 +45,11 @@ graph = OntotextGraphDBGraph(
 
 # Initialize the QA chain
 qa_chain = OntotextGraphDBQAChain.from_llm(
-    llm=llama_three, graph=graph, verbose=True, allow_dangerous_requests=True
+    llm=llm,
+    graph=graph,
+    verbose=True,
+    allow_dangerous_requests=True,
+    max_fix_retries=1,
 )
 
 
@@ -46,16 +58,29 @@ def hello_world():
     return "Hello, World!"
 
 
-@app.route("/api/chat", methods=["POST"])
-def chat():
+@app.route("/api/schema", methods=["GET"])
+def get_schema():
+    try:
+        # Get the schema from the graph
+        schema = graph.schema
+        logging.info(f"Schema: {schema}")
+        return jsonify({"schema": schema})
+    except Exception as e:
+        logging.error(f"Error retrieving schema: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/querysparql", methods=["POST"])
+def querysparql():
     user_message = request.json.get("message", "")
-    print(f"User message: {user_message}")
+    logging.info(f"Received message: {user_message}")
     if not user_message:
         return jsonify({"reply": "Error: No message provided."}), 400
 
     try:
         # Use the QA chain to process the user's message
         response = qa_chain.run(user_message)
+        logging.info(f"Response: {response}")
         bot_reply = (
             response if response else "I couldn't find an answer to your question."
         )
@@ -63,6 +88,11 @@ def chat():
         bot_reply = f"Error: {str(e)}"
 
     return jsonify({"reply": bot_reply})
+
+
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    pass
 
 
 if __name__ == "__main__":
