@@ -38,7 +38,10 @@ function addMessage(sender, message, id = null) {
   }
 }
 
+currentMessage = ""; // Reset currentMessage for each new user query
 async function fetchResponse(userMessage, uniqueId) {
+  currentMessage = ""; // Reset currentMessage for each new user query
+  addMessage("Bot", "Loading...", uniqueId); // Add loading message
   try {
     const response = await fetch(`${serverBaseURL}/users/chat`, {
       method: "POST",

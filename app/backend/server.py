@@ -15,7 +15,7 @@ CORS(app)
 
 # for lower end models, use the following:
 # MODEL = "gemma3:1b" # or 4b or qwen3:0.6b
-MODEL = "qwen3:0.6b"  # Specify the model you want to use llama3.1:8b deepseek-r1:1.5b
+MODEL = "qwen3:8b"  # Specify the model you want to use llama3.1:8b deepseek-r1:1.5b
 
 dev_mode = True  # Set to True if running in development mode
 
@@ -66,15 +66,34 @@ qa_chain = OntotextGraphDBQAChain.from_llm(
     graph=graph,
     verbose=True,
     allow_dangerous_requests=True,
-    max_fix_retries=1,
+    max_fix_retries=2,
 )
 
 SYSTEM = """You are a helpful assistant. You will be given a question and you need to answer it based on the provided knowledge graph.
 If you don't know the answer, say "I don't know". If the question is not related to the knowledge graph, say "I can't help with that".
+Be concise and clear in your answers.
+You are not allowed to use any external knowledge or information outside of the provided knowledge graph.
+Keep your answers short and to the point.
+Do not include any explanations or apologies in your responses.
 """
 
-USER_PROMPT = """QUESTION: {question}
-GRAPH: {graph}"""
+USER_PROMPT = """
+Write a SPARQL SELECT query for querying a graph database.
+The ontology schema delimited by triple backticks in Turtle format is:
+```
+{graph}
+```
+Use only the classes and properties provided in the schema to construct the SPARQL query.
+Do not use any classes or properties that are not explicitly provided in the SPARQL query.
+Include all necessary prefixes.
+Do not include any explanations or apologies in your responses.
+Do not wrap the query in backticks.
+Do not include any text except the SPARQL query generated.
+The question delimited by triple backticks is:
+```
+{question}
+```
+"""
 
 
 ##### Define the Flask routes
@@ -109,7 +128,7 @@ def querysparql():
 
     try:
         # Use the QA chain to process the user's message
-        response = qa_chain.run(user_message)
+        response = qa_chain.invoke(user_message)
         logging.info(f"Response: {response}")
         bot_reply = (
             response if response else "I couldn't find an answer to your question."

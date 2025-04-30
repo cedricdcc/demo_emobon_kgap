@@ -28,6 +28,17 @@ x-init-ollama: &init-ollama
     - "-c"
     - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull ${OLLAMA_MODEL:-llama3.1:8b};"
 
+x-init-ollama-rocm: &init-ollama-rocm
+  image: ollama/ollama:rocm
+  networks: ['demo']
+  container_name: ollama-pull-llama-rocm
+  volumes:
+    - ollama_storage:/root/.ollama
+  entrypoint: /bin/sh
+  command:
+    - "-c"
+    - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull ${OLLAMA_MODEL:-llama3.1:8b};"
+
 services:
   backend:
     build:
@@ -158,3 +169,9 @@ services:
     <<: *init-ollama
     depends_on:
       - ollama-gpu
+  
+  ollama-pull-llama-gpu-rocm:
+    profiles: ["gpu-rocm"]
+    <<: *init-ollama-rocm
+    depends_on:
+      - ollama-gpu-rocm
