@@ -144,7 +144,7 @@ services:
           devices:
             - capabilities: [gpu]
     devices:
-      - "/dev/kfd:/dev/kfd"
+      - "/dev/dxg:/dev/dxg"
       - "/dev/dri:/dev/dri"
 
   ollama-gpu:

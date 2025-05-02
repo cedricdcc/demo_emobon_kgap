@@ -17,10 +17,10 @@ CORS(app)
 # MODEL = "gemma3:1b" # or 4b or qwen3:0.6b
 MODEL = "qwen3:8b"  # Specify the model you want to use llama3.1:8b deepseek-r1:1.5b
 
-dev_mode = True  # Set to True if running in development mode
+dev_mode = False  # Set to True if running in development mode
 
 # ollama url
-url_ollama = "http://ollama:11434"  # Specify the URL of your Ollama instance
+url_ollama = "http://localhost:11434"  # Specify the URL of your Ollama instance
 if dev_mode:
     url_ollama = "http://localhost:11434"  # Specify the URL of your Ollama instance
 
