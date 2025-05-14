@@ -1,0 +1,1 @@
+git+https://github.com/fair-ease/py-udal-interface.git
