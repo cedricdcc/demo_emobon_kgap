@@ -17,3 +17,7 @@ QueryName = Literal[
     "urn:embrc.eu:emobon:instrument-usage",
     "urn:embrc.eu:emobon:all-samples",
 ]
+
+
+QUERY_NAMES: typing.Tuple[QueryName, ...] = typing.get_args(QueryName)
+"""List of the supported query names."""
