@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "emobon"
+version = "0.1.0"
+description = "udal implementation for the EMOBON project data"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+py-udal-interface = {git = "https://github.com/fair-ease/py-udal-interface.git"}
+pysema = {git = "https://github.com/vliz-be-opsci/py-sema.git"}
+pandas = "^2.2.3"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

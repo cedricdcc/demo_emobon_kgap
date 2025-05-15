@@ -3,7 +3,7 @@
 
 from udal.specification import NamedQueryInfo
 import udal.specification as udal
-from typing import Any, Dict, List, Optional, Tuple, Union, Literal
+from typing import Any, Tuple, Union, Literal
 import typing
 
 
@@ -17,7 +17,33 @@ QueryName = Literal[
     "urn:embrc.eu:emobon:instrument-usage",
     "urn:embrc.eu:emobon:all-samples",
 ]
+"""Type to help development restricting query names to existing ones."""
 
-
-QUERY_NAMES: typing.Tuple[QueryName, ...] = typing.get_args(QueryName)
+QUERY_NAMES: Tuple[QueryName, ...] = typing.get_args(QueryName)
 """List of the supported query names."""
+
+# Ordered alphabetically
+QUERY_REGISTER: dict[QueryName, NamedQueryInfo] = {
+    "urn:embrc.eu:emobon:observatories": NamedQueryInfo(
+        "urn:embrc.eu:emobon:observatories"
+    ),
+    "urn:embrc.eu:emobon:observations": NamedQueryInfo(
+        "urn:embrc.eu:emobon:observations"
+    ),
+    "urn:embrc.eu:emobon:observatory-overview": NamedQueryInfo(
+        "urn:embrc.eu:emobon:observatory-overview"
+    ),
+    "urn:embrc.eu:emobon:observatory-overview-totals": NamedQueryInfo(
+        "urn:embrc.eu:emobon:observatory-overview-totals"
+    ),
+    "urn:embrc.eu:emobon:measured-values": NamedQueryInfo(
+        "urn:embrc.eu:emobon:measured-values"
+    ),
+    "urn:embrc.eu:emobon:sop-usage": NamedQueryInfo("urn:embrc.eu:emobon:sop-usage"),
+    "urn:embrc.eu:emobon:instrument-usage": NamedQueryInfo(
+        "urn:embrc.eu:emobon:instrument-usage"
+    ),
+    "urn:embrc.eu:emobon:all-samples": NamedQueryInfo(
+        "urn:embrc.eu:emobon:all-samples"
+    ),
+}

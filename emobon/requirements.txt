@@ -1,1 +1,6 @@
 git+https://github.com/fair-ease/py-udal-interface.git
+git+https://github.com/vliz-be-opsci/py-sema.git
+pandas
+
+# dev dependencies
+pytest
