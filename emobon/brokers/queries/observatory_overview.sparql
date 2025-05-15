@@ -1,0 +1,25 @@
+# Query to get the list of observatories
+# col names: uri, name, obs-id, type, country , location , habitat info 
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX emobon: <https://data.emobon.embrc.eu/ns/core#>
+SELECT DISTINCT ?uri
+(GROUP_CONCAT(DISTINCT ?obs_id; SEPARATOR="|") AS ?observatory_id)
+(GROUP_CONCAT(DISTINCT ?type; SEPARATOR="|") AS ?types)
+(GROUP_CONCAT(DISTINCT ?marine_region; SEPARATOR="|") AS ?marine_regions)
+(GROUP_CONCAT(DISTINCT ?marine_region_id; SEPARATOR="|") AS ?marine_region_ids)
+(GROUP_CONCAT(DISTINCT ?country; SEPARATOR="|") AS ?countries)
+(GROUP_CONCAT(DISTINCT ?broadbiome; SEPARATOR="|") AS ?broadbiomes)
+(GROUP_CONCAT(DISTINCT ?localbiome; SEPARATOR="|") AS ?localbiomes)
+
+WHERE  {
+    ?uri a emobon:Observatory .
+    ?uri emobon:sampleType ?type .
+    ?uri emobon:observatoryId ?obs_id .
+    OPTIONAL { ?uri emobon:originCountry ?country . }
+    OPTIONAL { ?uri emobon:marineRegionName ?marine_region . }
+    OPTIONAL { ?uri emobon:marineRegion ?marine_region_id . }
+    OPTIONAL { ?uri emobon:broadBiome ?broadbiome . }
+    OPTIONAL { ?uri emobon:localBiome ?localbiome . }
+}
+GROUP BY ?uri

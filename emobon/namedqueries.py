@@ -3,13 +3,11 @@
 
 from udal.specification import NamedQueryInfo
 import udal.specification as udal
-from typing import Any, Tuple, Union, Literal
+from typing import Tuple, Literal
 import typing
 
 
 QueryName = Literal[
-    "urn:embrc.eu:emobon:observatories",
-    "urn:embrc.eu:emobon:observations",
     "urn:embrc.eu:emobon:observatory-overview",
     "urn:embrc.eu:emobon:observatory-overview-totals",
     "urn:embrc.eu:emobon:measured-values",
@@ -24,12 +22,6 @@ QUERY_NAMES: Tuple[QueryName, ...] = typing.get_args(QueryName)
 
 # Ordered alphabetically
 QUERY_REGISTER: dict[QueryName, NamedQueryInfo] = {
-    "urn:embrc.eu:emobon:observatories": NamedQueryInfo(
-        "urn:embrc.eu:emobon:observatories"
-    ),
-    "urn:embrc.eu:emobon:observations": NamedQueryInfo(
-        "urn:embrc.eu:emobon:observations"
-    ),
     "urn:embrc.eu:emobon:observatory-overview": NamedQueryInfo(
         "urn:embrc.eu:emobon:observatory-overview"
     ),
@@ -37,7 +29,10 @@ QUERY_REGISTER: dict[QueryName, NamedQueryInfo] = {
         "urn:embrc.eu:emobon:observatory-overview-totals"
     ),
     "urn:embrc.eu:emobon:measured-values": NamedQueryInfo(
-        "urn:embrc.eu:emobon:measured-values"
+        "urn:embrc.eu:emobon:measured-values",
+        {
+            "observatory_id": ["str", udal.tlist("str")],
+        },
     ),
     "urn:embrc.eu:emobon:sop-usage": NamedQueryInfo("urn:embrc.eu:emobon:sop-usage"),
     "urn:embrc.eu:emobon:instrument-usage": NamedQueryInfo(

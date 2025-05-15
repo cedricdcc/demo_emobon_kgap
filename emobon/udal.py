@@ -1,4 +1,7 @@
 import udal.specification as udal
+from .namedqueries import QUERY_NAMES, QueryName
+from .result import Result
+from .brokers.triplestore import TriplestoreBroker
 
 
 class MyResult(udal.Result[str]):
@@ -34,3 +37,22 @@ class MyUDAL(udal.UDAL):
                 return MyResult(self.queries[name], "example data")
             case _:
                 raise Exception(f'query "{name}" not supported')
+
+
+class UDAL(udal.UDAL):
+    """Uniform Data Access Layer"""
+
+    def __init__(self, config: udal.Config = udal.Config()):
+        self._config = config
+        self._broker = TriplestoreBroker()
+
+    def execute(self, name: str, params: dict | None = None) -> Result:
+        """Find and execute the query with the given name."""
+        if name in QUERY_NAMES:
+            return self._broker.execute(name, params)
+        else:
+            raise Exception(f"query {name} not supported")
+
+    @property
+    def queries(self) -> dict[str, udal.NamedQueryInfo]:
+        return self._broker.queries

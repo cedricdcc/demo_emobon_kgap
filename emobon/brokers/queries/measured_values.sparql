@@ -1,0 +1,35 @@
+# basic query first
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX emobon: <https://data.emobon.embrc.eu/ns/core#>
+PREFIX smp: <https://data.emobon.embrc.eu/ns/sampling#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX qudt: <http://qudt.org/schema/qudt/>
+PREFIX schema: <https://schema.org/>
+SELECT DISTINCT ?measured_parameter ?value ?unit ?sampling_event ?type ?observatory ?date ?instrument_type
+(GROUP_CONCAT(DISTINCT ?obs_id; SEPARATOR="|") AS ?observatory_id)
+
+WHERE  {
+    ?observatory a emobon:Observatory .
+    ?observation sosa:observedProperty ?property .
+    ?property rdfs:label ?measured_parameter .
+    ?observation a sosa:Observation .
+    ?observation sosa:hasFeatureOfInterest/sosa:isResultOf/smp:linkedToObservatory ?observatory .
+    ?observation sosa:hasFeatureOfInterest ?sample .
+    ?sample sosa:isResultOf ?sampling_event .
+    ?observatory emobon:sampleType ?type .
+    ?observatory emobon:observatoryId ?obs_id .
+    ?sampling_event prov:startedAtTime ?date .
+    ?observation sosa:hasResult ?observationresult .
+    ?observationresult qudt:unit ?unit .
+    ?observationresult qudt:numericValue ?value .
+    # depth
+    ?sampling_event emobon:waterColumnDepth ?depth .
+    # location
+    # for now not in the query yet, ask if needed for MR to be harvested
+    # instrument_type
+    ?observation schema:measurementTechnique ?instrument_type .
+    FILTER (?obs_id IN ({{observatory_id}}))
+}
+GROUP BY ?measured_parameter ?value ?unit ?sampling_event ?type ?observatory ?date ?instrument_type
+LIMIT 100
