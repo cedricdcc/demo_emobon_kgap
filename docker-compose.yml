@@ -79,6 +79,8 @@ services:
     container_name: kgap_graphdb
     env_file:
       - ./.env
+    environment:
+      - JAVA_OPTIONS=-Xms4g -Xmx8g
     #environment: 
       #GDB_REPO: kgap                       # default should be changed to reflect the name of your particular case
       #GDB_HOME_FOLDER: /opt/graphdb/home/  # default might be changed to externalise/persist the storage 
