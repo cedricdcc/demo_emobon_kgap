@@ -43,11 +43,11 @@ assert:
       - "*"
   - subjects: # get data from all downloadurls that are ttl files from s3 buckets
       SPARQL: >
-        SELECT DISTINCT ?o2
+        SELECT DISTINCT ?o
         WHERE {
-            ?s ?p ?o .
-            FILTER regex(str(?o), ".*\\.ttl$")
-            ?o <https://w3id.org/ro/crate/1.2-DRAFT/contextdownloadUrl> ?o2
+            ?s ?p ?oo .
+            FILTER regex(str(?oo), ".*\\.ttl$")
+            ?oo <https://w3id.org/ro/crate/1.2-DRAFT/contextdownloadUrl> ?o
         }
     paths:
       - "*"
