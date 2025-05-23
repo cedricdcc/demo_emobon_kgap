@@ -7,3 +7,4 @@ langchain_ollama
 flask
 jsonify
 flask_cors
+pandas
