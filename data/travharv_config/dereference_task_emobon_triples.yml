@@ -32,13 +32,23 @@ assert:
         }
     paths:
       - "*"
-  - subjects:
+  - subjects: # get the data from all distributions ttl files
       SPARQL: >
         SELECT DISTINCT ?o
         WHERE {
               ?s ?p ?o .
               FILTER regex(str(?o), ".*\\.ttl$")
               }
+    paths:
+      - "*"
+  - subjects: # get data from all downloadurls that are ttl files from s3 buckets
+      SPARQL: >
+        SELECT DISTINCT ?o2
+        WHERE {
+            ?s ?p ?o .
+            FILTER regex(str(?o), ".*\\.ttl$")
+            ?o <https://w3id.org/ro/crate/1.2-DRAFT/contextdownloadUrl> ?o2
+        }
     paths:
       - "*"
   - subjects:

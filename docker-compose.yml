@@ -98,7 +98,8 @@ services:
       - "./data:/data"
     env_file:
       - ./.env
-    # environment:
+    #environment:
+    #   - LOGLEVEL=DEBUG 
     #   - INPUT_DATA_LOCATION=/data
     #   - OUTPUT_DATA_LOCATION=/data
     #   - SEMBENCH_DATA_LOCATION=/data
