@@ -1,0 +1,8 @@
+prefix prod: <https://data.emobon.embrc.eu/ns/product#> 
+prefix dct: <http://purl.org/dc/terms/>
+select ?sname (count(?annotation) as ?annotationCount) where { 
+  ?annotation a prod:TaxonomicAnnotation .
+  ?annotation dct:identifier ?id .
+  ?id dct:scientificName ?sname .
+} group by ?sname
+order by desc(?annotationCount)
