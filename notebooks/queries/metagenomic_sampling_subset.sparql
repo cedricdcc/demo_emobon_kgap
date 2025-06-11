@@ -29,7 +29,32 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX onto: <http://www.ontotext.com/>
 PREFIX qudt: <http://qudt.org/schema/qudt/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT ?sample ?observatory ?observations ?event ?labelproperty ?resultval
+SELECT
+  ?sample
+  ?observatory
+  ?event
+  {% if property_filters %}
+    ?observations
+    {% for pf in property_filters %}
+      ?label_{{ pf.property }}
+      ?result_{{ pf.property }}
+      ?value_{{ pf.property }}
+    {% endfor %}
+  {% endif %}
+  {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
+    ?taxonannotation
+    ?taxonid
+    {% if species_name %}
+      ?sname
+    {% endif %}
+    {% if taxon_rank %}
+      ?rank
+    {% endif %}
+    {% if abundance_threshold %}
+      ?lsuval
+      ?ssuval
+    {% endif %}
+  {% endif %}
 
 WHERE {
   ?sample a sosa:Sample .
