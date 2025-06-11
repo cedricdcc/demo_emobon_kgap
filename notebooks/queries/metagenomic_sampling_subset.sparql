@@ -128,7 +128,7 @@ WHERE {
     {% for pf in property_filters %}
       ?observations sosa:observedProperty ?{{ pf.property }} .
       ?{{ pf.property }} rdfs:label ?label_{{ pf.property }} .
-      ?label_{{ pf.property }} onto:fts "{{pf.property}}~3" .
+      ?label_{{ pf.property }} onto:fts "{{pf.property}}~5" .
       ?observations sosa:hasResult ?result_{{ pf.property }} .
       ?result_{{ pf.property }} qudt:numericValue ?value_{{ pf.property }} .
       FILTER(?value_{{ pf.property }} {{ pf.operator }} {{ pf.value }}{{ "^^xsd:" + pf.value_type if pf.value_type else "" }})
