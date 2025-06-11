@@ -42,11 +42,11 @@ WHERE {
   {% if marine_region_id %}
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "{{ marine_region_id }}")
+  FILTER regex(str(?mrgid), "{{ marine_region_id }}") .
   {% endif %}
 
 
-  {% if marine_region % }
+  {% if marine_region %}
 # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
   ?mrgn onto:fts ("{{ marine_region }}~5") .
@@ -55,17 +55,17 @@ WHERE {
   ?event prov:startedAtTime ?datetime_begin . 
   {% if datetime_begin %}
   # dateTime event
-  FILTER(?datetime_begin >= "{{ datetime_begin }}"^^xsd:date)
+  FILTER(?datetime_begin >= "{{ datetime_begin }}"^^xsd:date) .
   {% endif %}
   
   {% if datetime_end %}
-  FILTER(?datetime_begin <= "{{ datetime_end }}"^^xsd:date)
+  FILTER(?datetime_begin <= "{{ datetime_end }}"^^xsd:date) .
   {% endif %}
 
   {% if sampling_method %}
   # Sampling Method
   ?event sosa:madeBySampler ?samplemethod .
-  FILTER(?samplemethod = "{{ sampling_method }}"^^xsd:string)
+  FILTER(?samplemethod = "{{ sampling_method }}"^^xsd:string) .
   {% endif %}
   
     {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
@@ -79,19 +79,19 @@ WHERE {
       {% endif %}
       {% if taxon_rank %}
         ?taxonid dct:taxonRank ?rank .
-        FILTER regex(str(?rank), "{{ taxon_rank }}")
+        FILTER regex(str(?rank), "{{ taxon_rank }}") .
       {% endif %}
       {% if taxon_id %}
-        FILTER regex(str(?taxonid), "{{ taxon_id }}")
+        FILTER regex(str(?taxonid), "{{ taxon_id }}") .
       {% endif %}
       {% if abundance_threshold %}
         OPTIONAL {
            ?taxonannotation prod:lsuRNA ?lsuval .
-           FILTER(?lsuval >= {{ abundance_threshold }})   
+           FILTER(?lsuval >= {{ abundance_threshold }}) . 
         }
           OPTIONAL {
            ?taxonannotation prod:ssuRNA ?ssuval .
-           FILTER(?ssuval >= {{ abundance_threshold }})   
+           FILTER(?ssuval >= {{ abundance_threshold }}) .  
         }
         FILTER(BOUND(?lsuval) || BOUND(?ssuval))
       {% endif %}
