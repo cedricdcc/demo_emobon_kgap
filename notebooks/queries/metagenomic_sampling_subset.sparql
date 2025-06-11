@@ -1,0 +1,112 @@
+{#
+# This template is used to generate a SPARQL query for metagenomic sampling subset.
+# Parameters:
+# - marine_region_id: The ID of the marine region to filter by.
+# - marine_region: The name of the marine region to filter by.
+# - datetime_begin: The start date for the sampling (inclusive).
+# - datetime_end: The end date for the sampling (inclusive).
+# - sampling_method: The method of sampling to filter by.
+# - species_name: The scientific name of the species to filter by.
+# - taxon_rank: The taxonomic rank to filter by.
+# - taxon_id: The taxonomic ID to filter by.
+# - sampling_id: The ID of the sampling event to filter by.
+# - sampling_type: The type of sampling to filter by.
+# - abundance_threshold: The threshold for sampling abundance to filter by (minimum value).
+# - property_filters: A list of dictionaries for filtering based on property values. Each dictionary contains:
+#   - property: The property to filter by.
+#   - value: The value to filter by.
+#   - operator: The operator to use for filtering (e.g., '=', '>', '<', '>=', '<=').
+#   - value_type: The type of the value (e.g., 'int', 'float', 'str').
+#}
+PREFIX prod: <https://data.emobon.embrc.eu/ns/product#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX emobon: <https://data.emobon.embrc.eu/ns/core#>
+PREFIX sampl: <https://data.emobon.embrc.eu/ns/sampling#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX onto: <http://www.ontotext.com/>
+PREFIX qudt: <http://qudt.org/schema/qudt/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?sample ?observatory ?observations ?event ?labelproperty ?resultval
+
+WHERE {
+  ?sample a sosa:Sample .
+  # link event
+  ?sample sosa:isResultOf ?event .
+  # link observatory
+  ?event sampl:linkedToObservatory ?observatory .
+  # Optional filters
+
+  {% if marine_region_id %}
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "{{ marine_region_id }}")
+  {% endif %}
+
+
+  {% if marine_region % }
+# marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("{{ marine_region }}~5") .
+  {% endif %}
+
+  ?event prov:startedAtTime ?datetime_begin . 
+  {% if datetime_begin %}
+  # dateTime event
+  FILTER(?datetime_begin >= "{{ datetime_begin }}"^^xsd:date)
+  {% endif %}
+  
+  {% if datetime_end %}
+  FILTER(?datetime_begin <= "{{ datetime_end }}"^^xsd:date)
+  {% endif %}
+
+  {% if sampling_method %}
+  # Sampling Method
+  ?event sosa:madeBySampler ?samplemethod .
+  FILTER(?samplemethod = "{{ sampling_method }}"^^xsd:string)
+  {% endif %}
+  
+    {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
+      # linking between taxon annotations and sample
+      ?taxonannotation a prod:TaxonomicAnnotation .
+      ?taxonannotation prod:ofSample ?sample .
+      ?taxonannotation dct:identifier ?taxonid .
+      {% if species_name %}
+        ?taxonid dct:scientificName ?sname .
+        ?sname onto:fts ("{{ species_name }}~5") .
+      {% endif %}
+      {% if taxon_rank %}
+        ?taxonid dct:taxonRank ?rank .
+        FILTER regex(str(?rank), "{{ taxon_rank }}")
+      {% endif %}
+      {% if taxon_id %}
+        FILTER regex(str(?taxonid), "{{ taxon_id }}")
+      {% endif %}
+      {% if abundance_threshold %}
+        OPTIONAL {
+           ?taxonannotation prod:lsuRNA ?lsuval .
+           FILTER(?lsuval >= {{ abundance_threshold }})   
+        }
+          OPTIONAL {
+           ?taxonannotation prod:ssuRNA ?ssuval .
+           FILTER(?ssuval >= {{ abundance_threshold }})   
+        }
+        FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+      {% endif %}
+    {% endif %}
+
+  {% if property_filters %}
+    ?observations a sosa:Observation .
+    ?observations sosa:hasFeatureOfInterest ?sample .
+    {% for pf in property_filters %}
+      ?observations sosa:observedProperty ?{{ pf.property }} .
+      ?{{ pf.property }} rdfs:label ?label_{{ pf.property }} .
+      ?label_{{ pf.property }} onto:fts "{{pf.property}}~3" .
+      ?observations sosa:hasResult ?result_{{ pf.property }} .
+      ?result_{{ pf.property }} qudt:numericValue ?value_{{ pf.property }} .
+      FILTER(?value_{{ pf.property }} {{ pf.operator }} {{ pf.value }}{{ "^^xsd:" + pf.value_type if pf.value_type else "" }})
+    {% endfor %}
+  {% endif %}
+}
