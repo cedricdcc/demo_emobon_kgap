@@ -17,17 +17,19 @@ SELECT
   
   ?observations
   
-  ?label_density
-  ?result_density
-  ?value_density
-  ?label_pigments
-  ?result_pigments
-  ?value_pigments
+  ?label_chlorophyll
+  ?result_chlorophyll
+  ?value_chlorophyll
+  ?label_silicate
+  ?result_silicate
+  ?value_silicate
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
   ?taxonannotation
   ?taxonid
     ?sname
-  ?lsuval
-  ?ssuval
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -38,7 +40,7 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5 ESC68N~5 LMO~5") .# depth filter
+  ?observatory_id onto:fts ("MBAL4~5") .# depth filter
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
@@ -46,37 +48,36 @@ WHERE {
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-02-06T12:30:24Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-11-23T12:25:48Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2022-04-21T03:49:20Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-09-02T23:50:56Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Storeatula_sp._CCMP1868~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 17.404209828468765) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 17.404209828468765) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?sname onto:fts ("Erysipelotrichaceae~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("kingdom~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density > 8.906855928733892)
-  ?observations sosa:observedProperty ?pigments .
-  ?pigments rdfs:label ?label_pigments .
-  ?label_pigments onto:fts "pigments~5" .
-  ?observations sosa:hasResult ?result_pigments .
-  ?result_pigments qudt:numericValue ?value_pigments .
-  FILTER(?value_pigments >= 48.38791000968528)
+  ?observations sosa:observedProperty ?chlorophyll .
+  ?chlorophyll rdfs:label ?label_chlorophyll .
+  ?label_chlorophyll onto:fts "chlorophyll~5" .
+  ?observations sosa:hasResult ?result_chlorophyll .
+  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
+  FILTER(?value_chlorophyll > 53)
+  ?observations sosa:observedProperty ?silicate .
+  ?silicate rdfs:label ?label_silicate .
+  ?label_silicate onto:fts "silicate~5" .
+  ?observations sosa:hasResult ?result_silicate .
+  ?result_silicate qudt:numericValue ?value_silicate .
+  FILTER(?value_silicate > 37)
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate >= 67)
 }

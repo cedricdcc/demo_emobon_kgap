@@ -18,6 +18,7 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -26,24 +27,27 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("VB~5 NRMCB~5 BPNS~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 593) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2389") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Atlantic Ocean~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-12-22T16:03:03Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-04-05T07:30:17Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-11-28T05:17:45Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-08-02T02:18:31Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Dorea_longicatena~5") .
+  ?sname onto:fts ("Pithophoraceae~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("genus~5") .
 }

@@ -15,20 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?label_sea_subsurf_salinity
-  ?result_sea_subsurf_salinity
-  ?value_sea_subsurf_salinity
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?lsuval
   ?ssuval
 WHERE {
@@ -39,56 +28,30 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("RFormosa~5 HCMR-1~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 333) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/26567") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Eastern Basin~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2359") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-10-06T21:44:46Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-12T19:26:08Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-02-12T01:57:11Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-07-14T21:42:33Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Alcaligenaceae~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 8.893441306301442) . 
+    FILTER(?lsuval >= 37) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 8.893441306301442) .  
+    FILTER(?ssuval >= 37) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph > 65.68513043511487)
-  ?observations sosa:observedProperty ?sea_subsurf_salinity .
-  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
-  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
-  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
-  FILTER(?value_sea_subsurf_salinity <= 78.95678728581468)
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium <= 28.062513771432428)
 }

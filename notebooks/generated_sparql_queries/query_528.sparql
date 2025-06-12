@@ -15,11 +15,18 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_nitrate
+  ?result_nitrate
+  ?value_nitrate
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,24 +37,36 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("IUIEilat~5 ROSKOGO~5") .# depth filter
+  ?observatory_id onto:fts ("HCMR-1~5 OOB~5 NRMCB~5") .# depth filter
   
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Bay of Biscay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-03-25T18:45:08Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-07-13T14:34:42Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Cutibacterium~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 64.11715583628178) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 64.11715583628178) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("species~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?nitrate .
+  ?nitrate rdfs:label ?label_nitrate .
+  ?label_nitrate onto:fts "nitrate~5" .
+  ?observations sosa:hasResult ?result_nitrate .
+  ?result_nitrate qudt:numericValue ?value_nitrate .
+  FILTER(?value_nitrate < 45)
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential > 83)
 }

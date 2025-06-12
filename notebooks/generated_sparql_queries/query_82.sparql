@@ -18,7 +18,8 @@ SELECT
   ?taxonannotation
   ?taxonid
     
-  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,15 +28,30 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("AAOT~5 OSD74~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-11-16T11:21:22Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-22T14:48:17Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 100) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 100) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

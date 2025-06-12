@@ -15,6 +15,14 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_pigments
+  ?result_pigments
+  ?value_pigments
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,11 +31,32 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("ESC68N~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3315") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-10-14T17:49:59Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-01T05:57:17Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-02-28T10:51:07Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-10-19T23:21:03Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Desulfobulbaceae_bacterium_BRH_c16a~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?pigments .
+  ?pigments rdfs:label ?label_pigments .
+  ?label_pigments onto:fts "pigments~5" .
+  ?observations sosa:hasResult ?result_pigments .
+  ?result_pigments qudt:numericValue ?value_pigments .
+  FILTER(?value_pigments > 29)
 }

@@ -15,6 +15,14 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_turbidity
+  ?result_turbidity
+  ?value_turbidity
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
   ?taxonannotation
   ?taxonid
     
@@ -28,17 +36,16 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("PiEGetxo~5 OOB~5 LMO~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 555.6966030091115) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Atlantic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-04-06T21:50:15Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-01T18:58:06Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-06-16T12:35:18Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-10-23T08:27:22Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
@@ -46,11 +53,26 @@ WHERE {
       
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 86.7561417362429) . 
+    FILTER(?lsuval >= 94) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 86.7561417362429) .  
+    FILTER(?ssuval >= 94) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?turbidity .
+  ?turbidity rdfs:label ?label_turbidity .
+  ?label_turbidity onto:fts "turbidity~5" .
+  ?observations sosa:hasResult ?result_turbidity .
+  ?result_turbidity qudt:numericValue ?value_turbidity .
+  FILTER(?value_turbidity <= 10)
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite > 60)
 }

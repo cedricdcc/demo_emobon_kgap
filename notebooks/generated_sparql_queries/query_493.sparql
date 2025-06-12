@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,15 +25,11 @@ WHERE {
   # name of observatory
   # depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 817) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3314") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium > 27.260558385360934)
 }

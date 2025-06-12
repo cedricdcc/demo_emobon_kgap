@@ -15,6 +15,16 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_density
+  ?result_density
+  ?value_density
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -26,7 +36,41 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 774.4174242885028) .
+  FILTER(?depth_value < 436) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3386") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("North Atlantic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-07-23T13:50:03Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-06-26T11:43:01Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Chaetonotidae~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 11) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 11) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?density .
+  ?density rdfs:label ?label_density .
+  ?label_density onto:fts "density~5" .
+  ?observations sosa:hasResult ?result_density .
+  ?result_density qudt:numericValue ?value_density .
+  FILTER(?value_density <= 8)
 }

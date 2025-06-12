@@ -17,8 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?rank
+    
   ?lsuval
   ?ssuval
 WHERE {
@@ -29,34 +28,33 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 386.60104969137285) .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("EMT21~5 MBAL4~5") .# depth filter
+  
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4280") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Western Basin~5") .
+  ?mrgn onto:fts ("Gulf of Venice~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-05-15T22:21:11Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-07-28T16:23:05Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Mycobacteriaceae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 49.924304644417525) . 
+    FILTER(?lsuval >= 53) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 49.924304644417525) .  
+    FILTER(?ssuval >= 53) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

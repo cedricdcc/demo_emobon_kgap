@@ -15,6 +15,14 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_pigments
+  ?result_pigments
+  ?value_pigments
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
   ?taxonannotation
   ?taxonid
     
@@ -28,12 +36,21 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 3.5321449178981057) .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("ROSKOGO~5 OOB~5 HCMR-1~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/29473") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Vigo Seamount~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-04-07T08:16:49Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-07-28T06:44:32Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
@@ -41,11 +58,26 @@ WHERE {
       
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 62.54695857972962) . 
+    FILTER(?lsuval >= 90) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 62.54695857972962) .  
+    FILTER(?ssuval >= 90) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?pigments .
+  ?pigments rdfs:label ?label_pigments .
+  ?label_pigments onto:fts "pigments~5" .
+  ?observations sosa:hasResult ?result_pigments .
+  ?result_pigments qudt:numericValue ?value_pigments .
+  FILTER(?value_pigments >= 35)
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential <= 30)
 }

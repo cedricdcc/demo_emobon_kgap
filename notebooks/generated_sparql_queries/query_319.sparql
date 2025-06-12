@@ -15,14 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_down_par
-  ?result_down_par
-  ?value_down_par
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
   ?lsuval
   ?ssuval
@@ -34,38 +29,30 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("OOB~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 359.8360833009149) .
+  FILTER(?depth_value <= 934) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-09-18T04:56:22Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-29T07:06:55Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Comamonadaceae~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
+  ?rank onto:fts ("order~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 96.53647113542439) . 
+    FILTER(?lsuval >= 41) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 96.53647113542439) .  
+    FILTER(?ssuval >= 41) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?down_par .
-  ?down_par rdfs:label ?label_down_par .
-  ?label_down_par onto:fts "down_par~5" .
-  ?observations sosa:hasResult ?result_down_par .
-  ?result_down_par qudt:numericValue ?value_down_par .
-  FILTER(?value_down_par <= 62.192566730587316)
 }

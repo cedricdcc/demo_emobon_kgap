@@ -15,6 +15,22 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_density
+  ?result_density
+  ?value_density
+  ?label_nitrate
+  ?result_nitrate
+  ?value_nitrate
+  ?label_down_par
+  ?result_down_par
+  ?value_down_par
+  ?taxonannotation
+  ?taxonid
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,8 +41,46 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("EMT21~5") .# depth filter
+  ?observatory_id onto:fts ("OSD74~5 EMT21~5 BPNS~5") .# depth filter
   
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Swedish part of the Baltic Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 80) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 80) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?density .
+  ?density rdfs:label ?label_density .
+  ?label_density onto:fts "density~5" .
+  ?observations sosa:hasResult ?result_density .
+  ?result_density qudt:numericValue ?value_density .
+  FILTER(?value_density <= 26)
+  ?observations sosa:observedProperty ?nitrate .
+  ?nitrate rdfs:label ?label_nitrate .
+  ?label_nitrate onto:fts "nitrate~5" .
+  ?observations sosa:hasResult ?result_nitrate .
+  ?result_nitrate qudt:numericValue ?value_nitrate .
+  FILTER(?value_nitrate > 10)
+  ?observations sosa:observedProperty ?down_par .
+  ?down_par rdfs:label ?label_down_par .
+  ?label_down_par onto:fts "down_par~5" .
+  ?observations sosa:hasResult ?result_down_par .
+  ?result_down_par qudt:numericValue ?value_down_par .
+  FILTER(?value_down_par >= 36)
 }

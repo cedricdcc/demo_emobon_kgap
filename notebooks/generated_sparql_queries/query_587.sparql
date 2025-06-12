@@ -15,15 +15,12 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_density
-  ?result_density
-  ?value_density
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -32,34 +29,29 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5 OSD74~5") .# depth filter
-  
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Baltic Sea~5") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 338) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-08-06T00:56:57Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-04T02:30:24Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Candidatus_Aerophobetes~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density >= 43.46814391833813)
+  ?rank onto:fts ("kingdom~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 92) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 92) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

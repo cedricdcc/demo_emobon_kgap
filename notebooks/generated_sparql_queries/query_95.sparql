@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_phosphate
-  ?result_phosphate
-  ?value_phosphate
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -32,13 +27,4 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?phosphate .
-  ?phosphate rdfs:label ?label_phosphate .
-  ?label_phosphate onto:fts "phosphate~5" .
-  ?observations sosa:hasResult ?result_phosphate .
-  ?result_phosphate qudt:numericValue ?value_phosphate .
-  FILTER(?value_phosphate <= 99.839790300724)
 }

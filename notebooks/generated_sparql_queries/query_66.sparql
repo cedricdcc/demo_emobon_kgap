@@ -18,7 +18,6 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -29,32 +28,34 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("PiEGetxo~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 758) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Vigo Seamount~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3452") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-07-10T03:08:08Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-10-19T01:46:21Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Thalassobium_sp._R2A62~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
+  ?sname onto:fts ("Rubeoparvulum~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 48.21949129415039) . 
+    FILTER(?lsuval >= 42) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 48.21949129415039) .  
+    FILTER(?ssuval >= 42) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

@@ -17,7 +17,9 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,6 +30,9 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Crete Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -35,6 +40,13 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Alicyclobacillus~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 11) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 11) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

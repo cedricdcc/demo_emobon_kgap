@@ -15,6 +15,20 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?label_chlorophyll
+  ?result_chlorophyll
+  ?value_chlorophyll
+  ?label_diss_oxygen
+  ?result_diss_oxygen
+  ?value_diss_oxygen
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,11 +37,44 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("BPNS~5 EMT21~5 AAOT~5") .# depth filter
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25678") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2401") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-03-07T07:19:55Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-04-09T23:49:39Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Aureococcus~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph >= 48)
+  ?observations sosa:observedProperty ?chlorophyll .
+  ?chlorophyll rdfs:label ?label_chlorophyll .
+  ?label_chlorophyll onto:fts "chlorophyll~5" .
+  ?observations sosa:hasResult ?result_chlorophyll .
+  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
+  FILTER(?value_chlorophyll < 24)
+  ?observations sosa:observedProperty ?diss_oxygen .
+  ?diss_oxygen rdfs:label ?label_diss_oxygen .
+  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
+  ?observations sosa:hasResult ?result_diss_oxygen .
+  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
+  FILTER(?value_diss_oxygen > 19)
 }

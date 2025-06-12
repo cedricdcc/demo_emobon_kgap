@@ -15,10 +15,17 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
+  ?label_pigments
+  ?result_pigments
+  ?value_pigments
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,17 +38,29 @@ WHERE {
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3452") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-11-09T06:02:45Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-24T23:08:59Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Aplidium~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate >= 22)
+  ?observations sosa:observedProperty ?pigments .
+  ?pigments rdfs:label ?label_pigments .
+  ?label_pigments onto:fts "pigments~5" .
+  ?observations sosa:hasResult ?result_pigments .
+  ?result_pigments qudt:numericValue ?value_pigments .
+  FILTER(?value_pigments < 15)
 }

@@ -15,11 +15,11 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sea_subsurf_salinity
-  ?result_sea_subsurf_salinity
-  ?value_sea_subsurf_salinity
+  ?taxonannotation
+  ?taxonid
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,17 +28,24 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("AAOT~5 MBAL4~5 PiEGetxo~5") .# depth filter
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sea_subsurf_salinity .
-  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
-  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
-  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
-  FILTER(?value_sea_subsurf_salinity >= 46.07211426580305)
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 4) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 4) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

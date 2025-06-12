@@ -17,7 +17,10 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -26,15 +29,14 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 345.2661759683248) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Baltic Sea~5") .
+  ?mrgn onto:fts ("Arctic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -42,6 +44,15 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Lepidodinium~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("kingdom~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 97) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 97) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

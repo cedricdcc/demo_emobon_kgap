@@ -15,12 +15,14 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
+  ?observations
+  
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,34 +31,31 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("HCMR-1~5 OOB~5 ROSKOGO~5") .# depth filter
+  # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 96.76632833028054) .
+  FILTER(?depth_value >= 842) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2389") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17527") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-10-11T14:46:01Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-04-11T18:10:06Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 25.99192544429634) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 25.99192544429634) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  FILTER(?datetime_begin >= "2024-04-16T13:38:17Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-06-22T16:46:41Z"^^xsd:date) .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph >= 78)
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc <= 87)
 }

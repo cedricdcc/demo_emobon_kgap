@@ -17,8 +17,10 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,21 +29,31 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Villefranche Bay - Point B~5") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("NRMCB~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4889") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-08-19T18:09:47Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-08T00:29:39Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Rhodovulum_sp._PH10~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
+  ?rank onto:fts ("order~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 64) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 64) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

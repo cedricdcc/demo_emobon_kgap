@@ -15,9 +15,16 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
   ?taxonannotation
   ?taxonid
     ?sname
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -26,18 +33,40 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("OSD74~5 IUIEilat~5 HCMR-1~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 526) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/26567") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-05-13T16:01:27Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-25T11:50:40Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Sporomusaceae~5") .
+  ?sname onto:fts ("Desulfarculaceae_bacterium_JdFR-97~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 7) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 7) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate > 24)
 }

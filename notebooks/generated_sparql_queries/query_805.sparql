@@ -15,22 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -39,56 +23,14 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("EMT21~5") .# depth filter
-  
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Crete Sea~5") .
+  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-12-25T18:46:24Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-11-29T16:48:14Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Sporadotrichida~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 78.6603576319694) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 78.6603576319694) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll >= 4.623319143811533)
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp < 87.4767309453043)
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc > 20.53454320919881)
+  FILTER(?datetime_begin >= "2023-04-26T06:51:27Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-02-23T04:41:15Z"^^xsd:date) .
 }

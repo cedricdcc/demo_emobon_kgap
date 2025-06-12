@@ -17,12 +17,9 @@ SELECT
   
   ?observations
   
-  ?label_density
-  ?result_density
-  ?value_density
-  ?label_redox_potential
-  ?result_redox_potential
-  ?value_redox_potential
+  ?label_sea_surf_salinity
+  ?result_sea_surf_salinity
+  ?value_sea_surf_salinity
   ?taxonannotation
   ?taxonid
     ?sname
@@ -37,35 +34,31 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5 LMO~5 AAOT~5") .# depth filter
+  ?observatory_id onto:fts ("OSD74~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 146) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-10-20T11:51:19Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-03-18T03:41:45Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-11-22T02:54:15Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-02-16T01:42:45Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Olpidiomycetes~5") .
+  ?sname onto:fts ("Legionella_adelaidensis~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  ?rank onto:fts ("family~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density >= 35.93265178056957)
-  ?observations sosa:observedProperty ?redox_potential .
-  ?redox_potential rdfs:label ?label_redox_potential .
-  ?label_redox_potential onto:fts "redox_potential~5" .
-  ?observations sosa:hasResult ?result_redox_potential .
-  ?result_redox_potential qudt:numericValue ?value_redox_potential .
-  FILTER(?value_redox_potential > 2.213672406587386)
+  ?observations sosa:observedProperty ?sea_surf_salinity .
+  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
+  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_surf_salinity .
+  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
+  FILTER(?value_sea_surf_salinity <= 70)
 }

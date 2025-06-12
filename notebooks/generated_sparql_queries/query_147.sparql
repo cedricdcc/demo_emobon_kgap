@@ -18,7 +18,8 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,18 +30,31 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Eastern Basin~5") .
+  ?mrgn onto:fts ("North Atlantic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-04-30T18:45:23Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-04-05T05:07:29Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Larcopyle_butschlii~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
+  ?sname onto:fts ("Chaetonotus~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 81) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 81) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

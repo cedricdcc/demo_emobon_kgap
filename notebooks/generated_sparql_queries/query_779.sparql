@@ -17,10 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,26 +26,20 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 841) .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-12-13T09:22:31Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-08-02T17:35:58Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 19.18490465779934) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 19.18490465779934) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Oscillatoriaceae~5") .
 }

@@ -17,7 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?lsuval
   ?ssuval
 WHERE {
@@ -30,27 +30,26 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 642.4187829703703) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1902") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2350") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-08-05T01:12:01Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-08-16T19:49:37Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Rhodospirillales_bacterium_URHD0017~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 29.34407804397545) . 
+    FILTER(?lsuval >= 92) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 29.34407804397545) .  
+    FILTER(?ssuval >= 92) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

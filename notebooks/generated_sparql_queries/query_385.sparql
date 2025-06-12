@@ -28,24 +28,13 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 357.8766138509949) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1904") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Western Basin~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-03-18T11:25:41Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-10-26T17:34:39Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Veillonellales~5") .
+  ?sname onto:fts ("Inmirania~5") .
 }

@@ -15,12 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -32,31 +26,7 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 739.2169274682137) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1904") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Villefranche Bay - Point B~5") .
+  FILTER(?depth_value < 43) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Akashiwo~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 11.607859718493597) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 11.607859718493597) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

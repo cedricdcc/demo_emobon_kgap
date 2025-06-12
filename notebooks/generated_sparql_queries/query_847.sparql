@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
   ?taxonannotation
   ?taxonid
     
@@ -34,42 +29,28 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4280") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Bay of Biscay~5") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("LMO~5 EMT21~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 614) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-10-03T11:54:14Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-01-19T04:09:40Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
+  ?rank onto:fts ("genus~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 54.43225424518565) . 
+    FILTER(?lsuval >= 32) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 54.43225424518565) .  
+    FILTER(?ssuval >= 32) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure >= 39.66294752092481)
 }

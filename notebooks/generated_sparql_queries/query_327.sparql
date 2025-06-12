@@ -19,6 +19,8 @@ SELECT
   ?taxonid
     
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,10 +29,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 16.68375683821455) .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("IUIEilat~5") .# depth filter
+  
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Swedish part of the Baltic Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -39,5 +44,14 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
+  ?rank onto:fts ("family~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 76) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 76) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

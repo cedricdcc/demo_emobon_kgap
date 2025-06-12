@@ -17,7 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?lsuval
   ?ssuval
 WHERE {
@@ -32,10 +32,7 @@ WHERE {
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5207") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Norwegian Sea~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -43,15 +40,13 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Kocuria~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 55.02965765762317) . 
+    FILTER(?lsuval >= 10) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 55.02965765762317) .  
+    FILTER(?ssuval >= 10) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

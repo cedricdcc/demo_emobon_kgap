@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,27 +23,15 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("EMT21~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 918) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Gulf of Eilat~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-03-02T11:39:13Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-04-28T00:13:34Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Tatlockia~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 25.23970611986076) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 25.23970611986076) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

@@ -15,10 +15,16 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sea_subsurf_temp
+  ?result_sea_subsurf_temp
+  ?value_sea_subsurf_temp
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?rank
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,18 +35,32 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-10-09T07:51:58Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-06T04:57:00Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Sphaerotilus~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 92) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 92) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sea_subsurf_temp .
+  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
+  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_temp .
+  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
+  FILTER(?value_sea_subsurf_temp >= 82)
 }

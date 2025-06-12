@@ -15,11 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_silicate
-  ?result_silicate
-  ?value_silicate
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,21 +29,23 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 472) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Tyrrhenian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-12-13T20:56:07Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-01-20T19:52:49Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?silicate .
-  ?silicate rdfs:label ?label_silicate .
-  ?label_silicate onto:fts "silicate~5" .
-  ?observations sosa:hasResult ?result_silicate .
-  ?result_silicate qudt:numericValue ?value_silicate .
-  FILTER(?value_silicate >= 95.15031433425665)
+  FILTER(?datetime_begin >= "2024-06-01T07:11:17Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-11-21T17:00:10Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Trebouxiophyceae~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("kingdom~5") .
 }

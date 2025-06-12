@@ -20,9 +20,11 @@ SELECT
   ?label_density
   ?result_density
   ?value_density
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -33,18 +35,32 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5") .# depth filter
+  ?observatory_id onto:fts ("NRMCB~5 VB~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 763.4909526904257) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Naples Gulf~5") .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1904") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-02-01T17:06:37Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-12T03:58:17Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2022-08-12T12:25:20Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2022-08-26T13:29:49Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Mesodasys~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 73) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 73) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
@@ -53,11 +69,5 @@ WHERE {
   ?label_density onto:fts "density~5" .
   ?observations sosa:hasResult ?result_density .
   ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density <= 94.75225705983648)
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll >= 40.10370154672044)
+  FILTER(?value_density < 40)
 }

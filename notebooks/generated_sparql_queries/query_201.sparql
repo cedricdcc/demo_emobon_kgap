@@ -15,6 +15,15 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,4 +36,20 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("order~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential >= 42)
 }

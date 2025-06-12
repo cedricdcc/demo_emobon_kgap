@@ -27,7 +27,7 @@ WHERE {
   
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
+  ?mrgn onto:fts ("Atlantic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
 }

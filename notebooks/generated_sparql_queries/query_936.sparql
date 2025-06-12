@@ -17,15 +17,14 @@ SELECT
   
   ?observations
   
-  ?label_phosphate
-  ?result_phosphate
-  ?value_phosphate
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
+  ?label_sea_subsurf_temp
+  ?result_sea_subsurf_temp
+  ?value_sea_subsurf_temp
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,39 +35,34 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5") .# depth filter
+  ?observatory_id onto:fts ("AAOT~5 NRMCB~5") .# depth filter
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Villefranche Bay - Point B~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2401") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-01-04T13:23:57Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-09T18:41:30Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Labrenzia_alexandrii~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 74) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 74) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?phosphate .
-  ?phosphate rdfs:label ?label_phosphate .
-  ?label_phosphate onto:fts "phosphate~5" .
-  ?observations sosa:hasResult ?result_phosphate .
-  ?result_phosphate qudt:numericValue ?value_phosphate .
-  FILTER(?value_phosphate < 37.299451429570816)
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite < 8.837776346349724)
+  ?observations sosa:observedProperty ?sea_subsurf_temp .
+  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
+  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_temp .
+  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
+  FILTER(?value_sea_subsurf_temp < 55)
 }

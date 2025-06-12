@@ -15,10 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,25 +25,11 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5 LMO~5 IUIEilat~5") .# depth filter
+  ?observatory_id onto:fts ("PiEGetxo~5 VB~5 OSD74~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 587.1375667041098) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-01-16T01:07:49Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-11-27T19:18:27Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Leegaardiella_sp._LS803~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  FILTER(?datetime_begin >= "2023-10-17T04:50:16Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-05-25T21:03:57Z"^^xsd:date) .
 }

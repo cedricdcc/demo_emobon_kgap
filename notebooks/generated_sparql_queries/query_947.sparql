@@ -15,6 +15,12 @@ SELECT
   ?observatory
   ?event
   
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,4 +33,22 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Lecudina~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("species~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 27) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 27) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

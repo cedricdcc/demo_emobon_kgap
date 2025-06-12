@@ -15,6 +15,12 @@ SELECT
   ?observatory
   ?event
   
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,8 +29,31 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("IUIEilat~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1904") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Fungi~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("order~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 53) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 53) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

@@ -15,11 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,20 +26,23 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("EMT21~5 BPNS~5 HCMR-1~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3386") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Arctic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-05-23T07:54:32Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-08-06T05:10:56Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp >= 50.63634372655971)
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Pfiesteria~5") .
 }

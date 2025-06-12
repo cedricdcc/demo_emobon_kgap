@@ -15,10 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,20 +25,14 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5") .# depth filter
+  ?observatory_id onto:fts ("EMT21~5 AAOT~5 BPNS~5") .# depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1912") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("English Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Oikopleura_dioica~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-06-26T23:44:01Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-06-14T00:46:15Z"^^xsd:date) .
 }

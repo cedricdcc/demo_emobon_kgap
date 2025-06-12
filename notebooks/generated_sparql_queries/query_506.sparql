@@ -17,9 +17,18 @@ SELECT
   
   ?observations
   
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,21 +39,45 @@ WHERE {
   # name of observatory
   # depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 429) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("North Atlantic Ocean~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1904") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-03-20T14:07:32Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-01-31T22:09:50Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("family~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 45) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 45) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium < 48.3368804036791)
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc <= 40)
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments < 79)
 }

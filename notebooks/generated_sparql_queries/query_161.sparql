@@ -15,6 +15,20 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,9 +39,42 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Abra de Bilbao~5") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 772) .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-07-16T07:19:03Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-04-22T15:57:44Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("species~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 53) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 53) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc < 89)
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite < 16)
 }

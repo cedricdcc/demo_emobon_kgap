@@ -17,12 +17,9 @@ SELECT
   
   ?observations
   
-  ?label_down_par
-  ?result_down_par
-  ?value_down_par
-  ?label_diss_oxygen
-  ?result_diss_oxygen
-  ?value_diss_oxygen
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
   ?label_sea_surf_temp
   ?result_sea_surf_temp
   ?value_sea_surf_temp
@@ -40,41 +37,33 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 468.5767693839301) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-04-13T10:20:03Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2022-04-24T14:18:22Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Rubritalea~5") .
+  ?sname onto:fts ("Ctenostomatida~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
+  ?rank onto:fts ("class~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?down_par .
-  ?down_par rdfs:label ?label_down_par .
-  ?label_down_par onto:fts "down_par~5" .
-  ?observations sosa:hasResult ?result_down_par .
-  ?result_down_par qudt:numericValue ?value_down_par .
-  FILTER(?value_down_par >= 23.769957729641476)
-  ?observations sosa:observedProperty ?diss_oxygen .
-  ?diss_oxygen rdfs:label ?label_diss_oxygen .
-  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
-  ?observations sosa:hasResult ?result_diss_oxygen .
-  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
-  FILTER(?value_diss_oxygen <= 91.81237036861833)
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments >= 37)
   ?observations sosa:observedProperty ?sea_surf_temp .
   ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
   ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
   ?observations sosa:hasResult ?result_sea_surf_temp .
   ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
-  FILTER(?value_sea_surf_temp < 56.28116921500148)
+  FILTER(?value_sea_surf_temp >= 5)
 }

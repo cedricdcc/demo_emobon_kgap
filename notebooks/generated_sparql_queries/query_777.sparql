@@ -15,10 +15,17 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    
-  ?rank
+  ?observations
+  
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
+  ?label_turbidity
+  ?result_turbidity
+  ?value_turbidity
+  ?label_chlorophyll
+  ?result_chlorophyll
+  ?value_chlorophyll
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,20 +34,37 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("MBAL4~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 532) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/29473") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-09-06T17:25:40Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-10-04T14:17:22Z"^^xsd:date) .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count < 18)
+  ?observations sosa:observedProperty ?turbidity .
+  ?turbidity rdfs:label ?label_turbidity .
+  ?label_turbidity onto:fts "turbidity~5" .
+  ?observations sosa:hasResult ?result_turbidity .
+  ?result_turbidity qudt:numericValue ?value_turbidity .
+  FILTER(?value_turbidity > 13)
+  ?observations sosa:observedProperty ?chlorophyll .
+  ?chlorophyll rdfs:label ?label_chlorophyll .
+  ?label_chlorophyll onto:fts "chlorophyll~5" .
+  ?observations sosa:hasResult ?result_chlorophyll .
+  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
+  FILTER(?value_chlorophyll > 12)
 }

@@ -15,9 +15,19 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
+  ?label_sediment_temp
+  ?result_sediment_temp
+  ?value_sediment_temp
   ?taxonannotation
   ?taxonid
     ?sname
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,5 +46,29 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Smaragdicoccus_niigatensis~5") .
+  ?sname onto:fts ("Paralia_longispina~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 67) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 67) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc <= 83)
+  ?observations sosa:observedProperty ?sediment_temp .
+  ?sediment_temp rdfs:label ?label_sediment_temp .
+  ?label_sediment_temp onto:fts "sediment_temp~5" .
+  ?observations sosa:hasResult ?result_sediment_temp .
+  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
+  FILTER(?value_sediment_temp > 36)
 }

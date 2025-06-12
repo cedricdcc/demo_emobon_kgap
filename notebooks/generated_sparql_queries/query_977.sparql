@@ -15,20 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_phosphate
-  ?result_phosphate
-  ?value_phosphate
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
   ?taxonannotation
   ?taxonid
     
+  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -41,46 +31,25 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 949.0006909401467) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2023-03-28T07:13:16Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2023-07-10T13:24:46Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("species~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 0.515884755394802) . 
+    FILTER(?lsuval >= 69) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 0.515884755394802) .  
+    FILTER(?ssuval >= 69) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?phosphate .
-  ?phosphate rdfs:label ?label_phosphate .
-  ?label_phosphate onto:fts "phosphate~5" .
-  ?observations sosa:hasResult ?result_phosphate .
-  ?result_phosphate qudt:numericValue ?value_phosphate .
-  FILTER(?value_phosphate < 1.7322173402620433)
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll <= 46.847053948344296)
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate <= 62.40227309691178)
 }

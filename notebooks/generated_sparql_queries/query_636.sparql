@@ -15,10 +15,19 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sea_surf_temp
+  ?result_sea_surf_temp
+  ?value_sea_surf_temp
+  ?label_ph
+  ?result_ph
+  ?value_ph
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,24 +36,48 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("LMO~5 AAOT~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 445.27910739270004) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2359") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Villefranche Bay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-08-26T15:55:59Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-09-03T23:50:55Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Thecofilosea~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  ?sname onto:fts ("Methylobacter~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 66) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 66) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sea_surf_temp .
+  ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
+  ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_surf_temp .
+  ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
+  FILTER(?value_sea_surf_temp > 71)
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph <= 52)
 }

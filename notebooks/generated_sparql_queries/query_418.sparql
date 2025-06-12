@@ -15,14 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pigments
-  ?result_pigments
-  ?value_pigments
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -35,19 +31,11 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pigments .
-  ?pigments rdfs:label ?label_pigments .
-  ?label_pigments onto:fts "pigments~5" .
-  ?observations sosa:hasResult ?result_pigments .
-  ?result_pigments qudt:numericValue ?value_pigments .
-  FILTER(?value_pigments <= 71.5627837820671)
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc >= 89.37269544583192)
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("species~5") .
 }

@@ -17,18 +17,16 @@ SELECT
   
   ?observations
   
-  ?label_sediment_temp
-  ?result_sediment_temp
-  ?value_sediment_temp
-  ?label_density
-  ?result_density
-  ?value_density
+  ?label_nitrate
+  ?result_nitrate
+  ?value_nitrate
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -40,10 +38,7 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 587.3821521969644) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3386") .
+  FILTER(?depth_value < 183) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -51,32 +46,21 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Podocopida~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 17.451846813781568) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 17.451846813781568) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?rank onto:fts ("family~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sediment_temp .
-  ?sediment_temp rdfs:label ?label_sediment_temp .
-  ?label_sediment_temp onto:fts "sediment_temp~5" .
-  ?observations sosa:hasResult ?result_sediment_temp .
-  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
-  FILTER(?value_sediment_temp >= 38.85146078891635)
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density >= 62.45596508589881)
+  ?observations sosa:observedProperty ?nitrate .
+  ?nitrate rdfs:label ?label_nitrate .
+  ?label_nitrate onto:fts "nitrate~5" .
+  ?observations sosa:hasResult ?result_nitrate .
+  ?result_nitrate qudt:numericValue ?value_nitrate .
+  FILTER(?value_nitrate <= 73)
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure < 90)
 }

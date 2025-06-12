@@ -18,9 +18,6 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,10 +26,12 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("RFormosa~5 BPNS~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 825.0804626165545) .
+  FILTER(?depth_value < 675) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -41,16 +40,5 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Calanus_finmarchicus~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 76.22295706721094) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 76.22295706721094) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?sname onto:fts ("Candidatus_Sungbacteria_bacterium_RIFCSPLOWO2_01_FULL_54_21~5") .
 }

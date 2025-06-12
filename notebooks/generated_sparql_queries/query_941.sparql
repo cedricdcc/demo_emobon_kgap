@@ -17,9 +17,15 @@ SELECT
   
   ?observations
   
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
   ?label_turbidity
   ?result_turbidity
   ?value_turbidity
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,20 +34,40 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("ESC68N~5 NRMCB~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 245) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Gulf of Venice~5") .
+  ?mrgn onto:fts ("Swedish part of the Baltic Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-07-12T04:00:07Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-05-19T05:02:04Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Tepidiformia~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure >= 100)
   ?observations sosa:observedProperty ?turbidity .
   ?turbidity rdfs:label ?label_turbidity .
   ?label_turbidity onto:fts "turbidity~5" .
   ?observations sosa:hasResult ?result_turbidity .
   ?result_turbidity qudt:numericValue ?value_turbidity .
-  FILTER(?value_turbidity >= 28.74907685198693)
+  FILTER(?value_turbidity < 73)
 }

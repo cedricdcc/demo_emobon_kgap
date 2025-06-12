@@ -15,11 +15,18 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sediment_temp
+  ?result_sediment_temp
+  ?value_sediment_temp
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,37 +35,38 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5 IUIEilat~5") .# depth filter
+  # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 224.05655011140112) .
+  FILTER(?depth_value >= 354) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Gulf of Lion~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/26567") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-01-17T14:24:01Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-09-19T17:20:14Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-05-20T07:48:27Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-04-07T05:54:59Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Cenarchaeum~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 26.151885924151653) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 26.151885924151653) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("super kingdom~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sediment_temp .
+  ?sediment_temp rdfs:label ?label_sediment_temp .
+  ?label_sediment_temp onto:fts "sediment_temp~5" .
+  ?observations sosa:hasResult ?result_sediment_temp .
+  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
+  FILTER(?value_sediment_temp <= 94)
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite > 9)
 }

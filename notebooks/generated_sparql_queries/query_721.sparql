@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,35 +23,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("AAOT~5 PiEGetxo~5 HCMR-1~5") .# depth filter
+  # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 775.2642297764735) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4889") .
+  FILTER(?depth_value >= 756) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("North Atlantic Ocean~5") .
+  ?mrgn onto:fts ("French part of the English Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-12-19T05:52:53Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-29T06:05:58Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 29.394315477946108) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 29.394315477946108) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

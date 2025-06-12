@@ -15,14 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_density
-  ?result_density
-  ?value_density
-  ?label_down_par
-  ?result_down_par
-  ?value_down_par
   ?taxonannotation
   ?taxonid
     ?sname
@@ -36,46 +28,30 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("IUIEilat~5 HCMR-1~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 334.16839354970097) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/26567") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Indian Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-12-12T02:30:22Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-17T22:38:56Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Streptococcus~5") .
+  ?sname onto:fts ("Levilinea~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 85.50671240539708) . 
+    FILTER(?lsuval >= 41) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 85.50671240539708) .  
+    FILTER(?ssuval >= 41) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density > 79.7757202772345)
-  ?observations sosa:observedProperty ?down_par .
-  ?down_par rdfs:label ?label_down_par .
-  ?label_down_par onto:fts "down_par~5" .
-  ?observations sosa:hasResult ?result_down_par .
-  ?result_down_par qudt:numericValue ?value_down_par .
-  FILTER(?value_down_par > 44.78994369710912)
 }

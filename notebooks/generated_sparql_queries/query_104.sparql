@@ -15,6 +15,21 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
+  ?label_diss_oxygen
+  ?result_diss_oxygen
+  ?value_diss_oxygen
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,11 +40,42 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 202.90463437497687) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25214") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-02-14T08:08:23Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-06-08T07:43:38Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Acidimicrobiales~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("kingdom~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure > 28)
+  ?observations sosa:observedProperty ?diss_oxygen .
+  ?diss_oxygen rdfs:label ?label_diss_oxygen .
+  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
+  ?observations sosa:hasResult ?result_diss_oxygen .
+  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
+  FILTER(?value_diss_oxygen >= 76)
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite > 22)
 }

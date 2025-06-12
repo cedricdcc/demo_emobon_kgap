@@ -17,12 +17,18 @@ SELECT
   
   ?observations
   
+  ?label_sea_subsurf_salinity
+  ?result_sea_subsurf_salinity
+  ?value_sea_subsurf_salinity
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
   ?label_sea_surf_salinity
   ?result_sea_surf_salinity
   ?value_sea_surf_salinity
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,28 +37,45 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("IUIEilat~5 VB~5") .# depth filter
+  # depth filter
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3314") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Norwegian part of the Norwegian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-12-29T16:24:07Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-30T22:34:15Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Leucothrix_mucor~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
+  ?observations sosa:observedProperty ?sea_subsurf_salinity .
+  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
+  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
+  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
+  FILTER(?value_sea_subsurf_salinity < 8)
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments > 35)
   ?observations sosa:observedProperty ?sea_surf_salinity .
   ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
   ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
   ?observations sosa:hasResult ?result_sea_surf_salinity .
   ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity > 87.53003795857389)
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure < 71.04589993718075)
+  FILTER(?value_sea_surf_salinity > 36)
 }

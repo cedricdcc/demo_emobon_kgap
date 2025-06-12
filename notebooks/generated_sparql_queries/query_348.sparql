@@ -15,11 +15,14 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
   ?taxonannotation
   ?taxonid
-    
-  ?lsuval
-  ?ssuval
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,23 +33,30 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 503) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Belgian part of the North Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-01-20T06:08:55Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-01-22T19:10:18Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 25.53484890642902) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 25.53484890642902) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Candidatus_Microthrix_parvicella~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments < 46)
 }

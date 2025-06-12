@@ -15,9 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -26,26 +23,11 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ROSKOGO~5 OSD74~5 RFormosa~5") .# depth filter
-  
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1912") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Indian Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-09-22T21:32:23Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-05T17:42:23Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Haplozoon~5") .
+  FILTER(?datetime_begin >= "2022-04-16T06:28:58Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2022-06-20T16:51:46Z"^^xsd:date) .
 }

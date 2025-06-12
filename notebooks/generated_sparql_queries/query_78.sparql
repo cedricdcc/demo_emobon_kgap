@@ -15,18 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
   ?taxonannotation
   ?taxonid
     
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -39,11 +30,8 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5") .# depth filter
+  ?observatory_id onto:fts ("OOB~5") .# depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Indian Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -51,30 +39,13 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 48.96928298441471) . 
+    FILTER(?lsuval >= 22) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 48.96928298441471) .  
+    FILTER(?ssuval >= 22) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure >= 11.818425258186505)
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll <= 19.226226616630992)
 }

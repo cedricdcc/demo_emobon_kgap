@@ -17,12 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_organism_count
-  ?result_organism_count
-  ?value_organism_count
-  ?label_silicate
-  ?result_silicate
-  ?value_silicate
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
+  ?label_sea_subsurf_salinity
+  ?result_sea_subsurf_salinity
+  ?value_sea_subsurf_salinity
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
   ?taxonannotation
   ?taxonid
     
@@ -36,21 +39,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5 LMO~5 VB~5") .# depth filter
-  
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4888") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Porto Valley~5") .
+  ?mrgn onto:fts ("Bay of Biscay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-06-17T23:19:26Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-11T14:34:59Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
@@ -58,26 +53,32 @@ WHERE {
       
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 39.68153330224733) . 
+    FILTER(?lsuval >= 61) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 39.68153330224733) .  
+    FILTER(?ssuval >= 61) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?organism_count .
-  ?organism_count rdfs:label ?label_organism_count .
-  ?label_organism_count onto:fts "organism_count~5" .
-  ?observations sosa:hasResult ?result_organism_count .
-  ?result_organism_count qudt:numericValue ?value_organism_count .
-  FILTER(?value_organism_count < 66.30616509292199)
-  ?observations sosa:observedProperty ?silicate .
-  ?silicate rdfs:label ?label_silicate .
-  ?label_silicate onto:fts "silicate~5" .
-  ?observations sosa:hasResult ?result_silicate .
-  ?result_silicate qudt:numericValue ?value_silicate .
-  FILTER(?value_silicate < 92.11519612617765)
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential <= 42)
+  ?observations sosa:observedProperty ?sea_subsurf_salinity .
+  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
+  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
+  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
+  FILTER(?value_sea_subsurf_salinity >= 5)
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments < 26)
 }

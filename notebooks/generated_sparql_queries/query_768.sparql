@@ -15,12 +15,14 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
-  ?lsuval
-  ?ssuval
+  ?observations
+  
+  ?label_sea_surf_salinity
+  ?result_sea_surf_salinity
+  ?value_sea_surf_salinity
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -32,28 +34,31 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 270.98945736083743) .
+  FILTER(?depth_value > 114) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2401") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4888") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Cochlodinium~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 13.410037639196714) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 13.410037639196714) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-03-01T14:54:50Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-09-17T13:47:58Z"^^xsd:date) .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sea_surf_salinity .
+  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
+  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_surf_salinity .
+  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
+  FILTER(?value_sea_surf_salinity < 39)
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure >= 51)
 }

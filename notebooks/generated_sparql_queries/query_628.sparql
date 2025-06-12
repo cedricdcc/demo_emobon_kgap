@@ -17,18 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?label_silicate
-  ?result_silicate
-  ?value_silicate
-  ?label_phaeopigments
-  ?result_phaeopigments
-  ?value_phaeopigments
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
+  ?label_sea_subsurf_salinity
+  ?result_sea_subsurf_salinity
+  ?value_sea_subsurf_salinity
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
 WHERE {
   ?sample a sosa:Sample .
@@ -38,38 +35,38 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("BPNS~5 MBAL4~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/29473") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-12-17T13:02:40Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-10-03T14:51:28Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Chalinidae~5") .
   ?taxonid dct:taxonRank ?rank .
   ?rank onto:fts ("order~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph <= 62.96464675369261)
-  ?observations sosa:observedProperty ?silicate .
-  ?silicate rdfs:label ?label_silicate .
-  ?label_silicate onto:fts "silicate~5" .
-  ?observations sosa:hasResult ?result_silicate .
-  ?result_silicate qudt:numericValue ?value_silicate .
-  FILTER(?value_silicate >= 16.625425288645303)
-  ?observations sosa:observedProperty ?phaeopigments .
-  ?phaeopigments rdfs:label ?label_phaeopigments .
-  ?label_phaeopigments onto:fts "phaeopigments~5" .
-  ?observations sosa:hasResult ?result_phaeopigments .
-  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments > 47.88468684425019)
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential <= 21)
+  ?observations sosa:observedProperty ?sea_subsurf_salinity .
+  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
+  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
+  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
+  FILTER(?value_sea_subsurf_salinity < 38)
 }

@@ -15,14 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_redox_potential
-  ?result_redox_potential
-  ?value_redox_potential
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
   ?taxonannotation
   ?taxonid
     ?sname
@@ -34,36 +26,28 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("IUIEilat~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 607) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25678") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Crete Sea~5") .
+  ?mrgn onto:fts ("Abra de Bilbao~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-08-21T06:20:23Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-12-31T03:47:00Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Collodaria~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?redox_potential .
-  ?redox_potential rdfs:label ?label_redox_potential .
-  ?label_redox_potential onto:fts "redox_potential~5" .
-  ?observations sosa:hasResult ?result_redox_potential .
-  ?result_redox_potential qudt:numericValue ?value_redox_potential .
-  FILTER(?value_redox_potential >= 35.752469728347634)
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate < 16.259519315224214)
+  ?sname onto:fts ("Colponemidia~5") .
 }

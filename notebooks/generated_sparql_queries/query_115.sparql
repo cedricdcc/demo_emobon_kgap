@@ -17,17 +17,13 @@ SELECT
   
   ?observations
   
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
-  ?label_redox_potential
-  ?result_redox_potential
-  ?value_redox_potential
+  ?label_sea_subsurf_temp
+  ?result_sea_subsurf_temp
+  ?value_sea_subsurf_temp
   ?taxonannotation
   ?taxonid
     
-  ?lsuval
-  ?ssuval
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,48 +32,35 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OSD74~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 650) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4280") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Naples Gulf~5") .
+  ?mrgn onto:fts ("Villefranche Bay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-08-27T16:42:16Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-27T05:48:23Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-02-06T09:00:07Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-09-18T06:58:15Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 32.95025217343617) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 32.95025217343617) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("order~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure < 22.395258953929087)
-  ?observations sosa:observedProperty ?redox_potential .
-  ?redox_potential rdfs:label ?label_redox_potential .
-  ?label_redox_potential onto:fts "redox_potential~5" .
-  ?observations sosa:hasResult ?result_redox_potential .
-  ?result_redox_potential qudt:numericValue ?value_redox_potential .
-  FILTER(?value_redox_potential <= 1.32408993039127)
+  ?observations sosa:observedProperty ?sea_subsurf_temp .
+  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
+  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_temp .
+  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
+  FILTER(?value_sea_subsurf_temp <= 23)
 }

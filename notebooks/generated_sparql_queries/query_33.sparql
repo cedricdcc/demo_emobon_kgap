@@ -15,18 +15,12 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_redox_potential
-  ?result_redox_potential
-  ?value_redox_potential
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,38 +31,32 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5 EMT21~5") .# depth filter
+  ?observatory_id onto:fts ("HCMR-1~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 645) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Gulf of Venice~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2401") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-01-31T10:03:22Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-04-23T01:46:46Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Herminiimonas~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?redox_potential .
-  ?redox_potential rdfs:label ?label_redox_potential .
-  ?label_redox_potential onto:fts "redox_potential~5" .
-  ?observations sosa:hasResult ?result_redox_potential .
-  ?result_redox_potential qudt:numericValue ?value_redox_potential .
-  FILTER(?value_redox_potential > 17.991653009890772)
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp >= 67.23696752392014)
+  ?rank onto:fts ("phylum~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 52) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 52) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

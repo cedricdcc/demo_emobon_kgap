@@ -28,18 +28,26 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5 IUIEilat~5 LMO~5") .# depth filter
+  ?observatory_id onto:fts ("VB~5 MBAL4~5 EMT21~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 758) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3610") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
+  ?mrgn onto:fts ("Naples Gulf~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-08-09T00:29:56Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-05T16:46:40Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Ctenophora~5") .
+  ?sname onto:fts ("Niastella~5") .
 }

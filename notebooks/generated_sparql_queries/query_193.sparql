@@ -15,17 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_density
-  ?result_density
-  ?value_density
   ?taxonannotation
   ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,36 +28,23 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ESC68N~5") .# depth filter
+  ?observatory_id onto:fts ("RFormosa~5 AAOT~5") .# depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 17) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Aegean Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-10-09T08:38:05Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-07-05T02:22:09Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 81.15160477386156) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 81.15160477386156) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density <= 49.87571512945047)
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Nitrosopumilus_sp._Nsub~5") .
 }

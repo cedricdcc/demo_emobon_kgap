@@ -15,11 +15,17 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sea_subsurf_salinity
+  ?result_sea_subsurf_salinity
+  ?value_sea_subsurf_salinity
+  ?label_pigments
+  ?result_pigments
+  ?value_pigments
   ?taxonannotation
   ?taxonid
     ?sname
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,10 +34,15 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("MBAL4~5 OSD74~5 IUIEilat~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 797.2190095272816) .
+  FILTER(?depth_value > 505) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5367") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -40,14 +51,20 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Aeromonadales~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 93.17062409112583) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 93.17062409112583) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?sname onto:fts ("Rhizosolenia_setigera~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sea_subsurf_salinity .
+  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
+  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
+  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
+  FILTER(?value_sea_subsurf_salinity >= 93)
+  ?observations sosa:observedProperty ?pigments .
+  ?pigments rdfs:label ?label_pigments .
+  ?label_pigments onto:fts "pigments~5" .
+  ?observations sosa:hasResult ?result_pigments .
+  ?result_pigments qudt:numericValue ?value_pigments .
+  FILTER(?value_pigments <= 21)
 }

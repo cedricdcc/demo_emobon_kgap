@@ -15,6 +15,16 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
+  ?taxonannotation
+  ?taxonid
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,11 +33,39 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("EMT21~5") .# depth filter
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3314") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-08-26T21:35:02Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-09-05T08:32:39Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 20) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 20) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate < 22)
 }

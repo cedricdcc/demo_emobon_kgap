@@ -15,6 +15,11 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_turbidity
+  ?result_turbidity
+  ?value_turbidity
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,10 +28,20 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("MBAL4~5") .# depth filter
-  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3339") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?turbidity .
+  ?turbidity rdfs:label ?label_turbidity .
+  ?label_turbidity onto:fts "turbidity~5" .
+  ?observations sosa:hasResult ?result_turbidity .
+  ?result_turbidity qudt:numericValue ?value_turbidity .
+  FILTER(?value_turbidity < 35)
 }

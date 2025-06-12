@@ -15,6 +15,17 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_diss_oxygen
+  ?result_diss_oxygen
+  ?value_diss_oxygen
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,10 +34,40 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("OOB~5 ROSKOGO~5 HCMR-1~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 677.6027130080994) .
+  FILTER(?depth_value >= 574) .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-04-20T19:29:38Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-03-21T19:39:56Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("genus~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 100) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 100) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?diss_oxygen .
+  ?diss_oxygen rdfs:label ?label_diss_oxygen .
+  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
+  ?observations sosa:hasResult ?result_diss_oxygen .
+  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
+  FILTER(?value_diss_oxygen <= 4)
 }

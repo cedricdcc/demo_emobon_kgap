@@ -15,16 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -38,38 +32,14 @@ WHERE {
   ?observatory_id onto:fts ("EMT21~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 941.4866217840168) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
+  FILTER(?depth_value > 773) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-09-19T00:23:38Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-06-04T12:17:38Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Nitrososphaerales~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 37.05423405160585) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 37.05423405160585) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc >= 32.80813308023506)
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("family~5") .
 }

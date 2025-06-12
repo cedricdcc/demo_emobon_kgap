@@ -17,15 +17,16 @@ SELECT
   
   ?observations
   
-  ?label_density
-  ?result_density
-  ?value_density
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
+  ?label_ammonium
+  ?result_ammonium
+  ?value_ammonium
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,10 +35,15 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("HCMR-1~5 NRMCB~5 MBAL4~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 204.7591412001285) .
+  FILTER(?depth_value < 956) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Norwegian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -45,24 +51,23 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Emiliania_huxleyi~5") .
   ?taxonid dct:taxonRank ?rank .
   ?rank onto:fts ("phylum~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 27.69492751736209) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 27.69492751736209) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density < 66.69279985796928)
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count < 59)
+  ?observations sosa:observedProperty ?ammonium .
+  ?ammonium rdfs:label ?label_ammonium .
+  ?label_ammonium onto:fts "ammonium~5" .
+  ?observations sosa:hasResult ?result_ammonium .
+  ?result_ammonium qudt:numericValue ?value_ammonium .
+  FILTER(?value_ammonium >= 88)
 }

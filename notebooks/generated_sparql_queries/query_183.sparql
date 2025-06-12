@@ -23,13 +23,8 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5 BPNS~5") .# depth filter
+  # depth filter
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-01-05T00:16:47Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-21T17:37:31Z"^^xsd:date) .
 }

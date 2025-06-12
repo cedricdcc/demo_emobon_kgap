@@ -17,13 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_down_par
-  ?result_down_par
-  ?value_down_par
+  ?label_sediment_temp
+  ?result_sediment_temp
+  ?value_sediment_temp
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?rank
+    
   ?lsuval
   ?ssuval
 WHERE {
@@ -34,8 +36,15 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("HCMR-1~5 OOB~5 IUIEilat~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 989) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25214") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -43,26 +52,28 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Rickettsiaceae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 45.39290906007817) . 
+    FILTER(?lsuval >= 19) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 45.39290906007817) .  
+    FILTER(?ssuval >= 19) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?down_par .
-  ?down_par rdfs:label ?label_down_par .
-  ?label_down_par onto:fts "down_par~5" .
-  ?observations sosa:hasResult ?result_down_par .
-  ?result_down_par qudt:numericValue ?value_down_par .
-  FILTER(?value_down_par <= 38.521454826555626)
+  ?observations sosa:observedProperty ?sediment_temp .
+  ?sediment_temp rdfs:label ?label_sediment_temp .
+  ?label_sediment_temp onto:fts "sediment_temp~5" .
+  ?observations sosa:hasResult ?result_sediment_temp .
+  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
+  FILTER(?value_sediment_temp <= 22)
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate <= 8)
 }

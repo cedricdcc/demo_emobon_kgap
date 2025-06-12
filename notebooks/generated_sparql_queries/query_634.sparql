@@ -15,6 +15,19 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
+  ?label_down_par
+  ?result_down_par
+  ?value_down_par
+  ?taxonannotation
+  ?taxonid
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,16 +38,45 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5 AAOT~5") .# depth filter
+  ?observatory_id onto:fts ("PiEGetxo~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 975.3200413967346) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1912") .
+  FILTER(?depth_value < 485) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("English Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-12-11T16:17:20Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-18T22:24:08Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-08-20T22:45:08Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-20T20:39:17Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 15) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 15) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc < 42)
+  ?observations sosa:observedProperty ?down_par .
+  ?down_par rdfs:label ?label_down_par .
+  ?label_down_par onto:fts "down_par~5" .
+  ?observations sosa:hasResult ?result_down_par .
+  ?result_down_par qudt:numericValue ?value_down_par .
+  FILTER(?value_down_par < 65)
 }

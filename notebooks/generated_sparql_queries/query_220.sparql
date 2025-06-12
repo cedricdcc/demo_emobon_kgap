@@ -17,15 +17,9 @@ SELECT
   
   ?observations
   
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
-  ?label_sea_surf_salinity
-  ?result_sea_surf_salinity
-  ?value_sea_surf_salinity
-  ?label_phosphate
-  ?result_phosphate
-  ?value_phosphate
+  ?label_sea_subsurf_salinity
+  ?result_sea_subsurf_salinity
+  ?value_sea_subsurf_salinity
   ?taxonannotation
   ?taxonid
     ?sname
@@ -38,11 +32,15 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/29473") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("AAOT~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 322) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Mediterranean Sea - Western Basin~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -51,28 +49,16 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Candidatus_Bathyarchaeota~5") .
+  ?sname onto:fts ("Naviculales~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  ?rank onto:fts ("order~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp <= 47.289257317589986)
-  ?observations sosa:observedProperty ?sea_surf_salinity .
-  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
-  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_surf_salinity .
-  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity >= 62.802608747635645)
-  ?observations sosa:observedProperty ?phosphate .
-  ?phosphate rdfs:label ?label_phosphate .
-  ?label_phosphate onto:fts "phosphate~5" .
-  ?observations sosa:hasResult ?result_phosphate .
-  ?result_phosphate qudt:numericValue ?value_phosphate .
-  FILTER(?value_phosphate >= 28.056340776060505)
+  ?observations sosa:observedProperty ?sea_subsurf_salinity .
+  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
+  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
+  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
+  FILTER(?value_sea_subsurf_salinity > 24)
 }

@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
   ?taxonannotation
   ?taxonid
     ?sname
@@ -31,13 +26,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 580) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Baltic Sea~5") .
+  ?mrgn onto:fts ("Vigo Seamount~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -46,14 +41,5 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Marinimicrobium~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp > 21.11601191898679)
+  ?sname onto:fts ("Parougia_diapason~5") .
 }

@@ -15,17 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,42 +23,11 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5 EMT21~5 LMO~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 43.83649850916904) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Desulfotomaculum~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 1.3928860210875582) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 1.3928860210875582) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc >= 4.294481990899457)
 }

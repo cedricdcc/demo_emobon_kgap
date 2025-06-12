@@ -17,13 +17,17 @@ SELECT
   
   ?observations
   
-  ?label_diss_oxygen
-  ?result_diss_oxygen
-  ?value_diss_oxygen
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
+  ?label_nitrate
+  ?result_nitrate
+  ?value_nitrate
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,29 +38,40 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 955.0641999916684) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-02-27T05:06:02Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-11T12:03:25Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-04-13T09:04:48Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-09-24T18:28:53Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Fibrobacteraceae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
+  ?sname onto:fts ("actinobacterium_SCGC_AAA041-L13~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 1) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 1) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?diss_oxygen .
-  ?diss_oxygen rdfs:label ?label_diss_oxygen .
-  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
-  ?observations sosa:hasResult ?result_diss_oxygen .
-  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
-  FILTER(?value_diss_oxygen >= 91.7204518414124)
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential < 17)
+  ?observations sosa:observedProperty ?nitrate .
+  ?nitrate rdfs:label ?label_nitrate .
+  ?label_nitrate onto:fts "nitrate~5" .
+  ?observations sosa:hasResult ?result_nitrate .
+  ?result_nitrate qudt:numericValue ?value_nitrate .
+  FILTER(?value_nitrate <= 67)
 }

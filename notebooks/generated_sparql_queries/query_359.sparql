@@ -15,11 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,22 +29,25 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("EMT21~5") .# depth filter
+  ?observatory_id onto:fts ("HCMR-1~5 VB~5 AAOT~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 593.3749754399347) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
+  FILTER(?depth_value < 951) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2350") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll <= 24.006533164940603)
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-09-19T20:15:22Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-11-20T13:22:29Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Enoploides~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("phylum~5") .
 }

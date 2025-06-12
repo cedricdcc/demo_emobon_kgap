@@ -15,20 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
   ?taxonannotation
   ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -40,41 +29,23 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 792.7117603079698) .
+  FILTER(?depth_value > 884) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Villefranche Bay - Point B~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-04-27T21:53:13Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-06-14T18:24:16Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-01-06T14:20:48Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-03-28T06:39:18Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 39.38691570290318) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 39.38691570290318) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll >= 45.501809451829885)
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium >= 97.38873211214238)
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Fusobacteriaceae~5") .
 }

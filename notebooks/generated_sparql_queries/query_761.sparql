@@ -15,9 +15,20 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_nitrate
+  ?result_nitrate
+  ?value_nitrate
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?lsuval
   ?ssuval
 WHERE {
@@ -31,24 +42,50 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 349.4486400648367) .
+  FILTER(?depth_value > 107) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Villefranche Bay - Point B~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-07-08T20:14:42Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-26T22:51:49Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-10-10T16:36:50Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-08-29T00:07:04Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Naviculales~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 26.137695349364243) . 
+    FILTER(?lsuval >= 6) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 26.137695349364243) .  
+    FILTER(?ssuval >= 6) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?nitrate .
+  ?nitrate rdfs:label ?label_nitrate .
+  ?label_nitrate onto:fts "nitrate~5" .
+  ?observations sosa:hasResult ?result_nitrate .
+  ?result_nitrate qudt:numericValue ?value_nitrate .
+  FILTER(?value_nitrate > 17)
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate > 9)
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count >= 3)
 }

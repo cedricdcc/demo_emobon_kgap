@@ -17,14 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
+  ?label_silicate
+  ?result_silicate
+  ?value_silicate
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -33,40 +34,35 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5 HCMR-1~5 OOB~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 498.59409687069376) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1902") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3452") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Norwegian part of the Norwegian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Candidatus_Peregrinibacteria~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 35.14142459112779) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 35.14142459112779) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph >= 54.72439153047396)
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments >= 70)
+  ?observations sosa:observedProperty ?silicate .
+  ?silicate rdfs:label ?label_silicate .
+  ?label_silicate onto:fts "silicate~5" .
+  ?observations sosa:hasResult ?result_silicate .
+  ?result_silicate qudt:numericValue ?value_silicate .
+  FILTER(?value_silicate <= 68)
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential <= 90)
 }

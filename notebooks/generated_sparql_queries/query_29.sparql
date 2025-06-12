@@ -15,9 +15,14 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?lsuval
   ?ssuval
 WHERE {
@@ -30,8 +35,16 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5 OOB~5 IUIEilat~5") .# depth filter
+  ?observatory_id onto:fts ("OOB~5 HCMR-1~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 626) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Naples Gulf~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -39,15 +52,22 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Clostridiales_Family_XII._Incertae_Sedis~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 1.6777266040108318) . 
+    FILTER(?lsuval >= 13) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 1.6777266040108318) .  
+    FILTER(?ssuval >= 13) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc < 85)
 }

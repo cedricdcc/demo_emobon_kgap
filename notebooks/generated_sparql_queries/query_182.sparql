@@ -17,17 +17,16 @@ SELECT
   
   ?observations
   
-  ?label_sediment_temp
-  ?result_sediment_temp
-  ?value_sediment_temp
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
   ?taxonannotation
   ?taxonid
     ?sname
-  ?lsuval
-  ?ssuval
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -38,13 +37,11 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OSD74~5 PiEGetxo~5 AAOT~5") .# depth filter
+  ?observatory_id onto:fts ("RFormosa~5 OOB~5 MBAL4~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 582.5394881073696) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2401") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -53,29 +50,22 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Coriobacteriaceae~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 32.010844131486614) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 32.010844131486614) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?sname onto:fts ("Dehalococcoidia_bacterium_DscP2~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("kingdom~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sediment_temp .
-  ?sediment_temp rdfs:label ?label_sediment_temp .
-  ?label_sediment_temp onto:fts "sediment_temp~5" .
-  ?observations sosa:hasResult ?result_sediment_temp .
-  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
-  FILTER(?value_sediment_temp < 29.301538256300162)
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite < 11.584453034299758)
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count > 21)
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate < 79)
 }

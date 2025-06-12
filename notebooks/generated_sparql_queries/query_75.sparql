@@ -31,13 +31,13 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("MBAL4~5 BPNS~5 IUIEilat~5") .# depth filter
+  ?observatory_id onto:fts ("ESC68N~5 PiEGetxo~5 ROSKOGO~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 404.2212097998262) .
+  FILTER(?depth_value > 595) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Western Basin~5") .
+  ?mrgn onto:fts ("Naples Gulf~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -46,16 +46,16 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Candidatus_Pelagibacter_sp._IMCC9063~5") .
+  ?sname onto:fts ("Glycera~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
+  ?rank onto:fts ("phylum~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 26.266530750644577) . 
+    FILTER(?lsuval >= 24) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 26.266530750644577) .  
+    FILTER(?ssuval >= 24) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

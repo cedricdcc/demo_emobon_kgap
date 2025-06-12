@@ -15,14 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pigments
-  ?result_pigments
-  ?value_pigments
-  ?taxonannotation
-  ?taxonid
-    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,24 +23,10 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("OSD74~5 HCMR-1~5 MBAL4~5") .# depth filter
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Opitutus_sp._WS3(2011)~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pigments .
-  ?pigments rdfs:label ?label_pigments .
-  ?label_pigments onto:fts "pigments~5" .
-  ?observations sosa:hasResult ?result_pigments .
-  ?result_pigments qudt:numericValue ?value_pigments .
-  FILTER(?value_pigments <= 71.1499610169858)
 }

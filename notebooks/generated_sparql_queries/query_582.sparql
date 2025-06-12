@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pigments
-  ?result_pigments
-  ?value_pigments
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,25 +23,11 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5 RFormosa~5 OOB~5") .# depth filter
-  
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1912") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-05-16T20:15:10Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-06-28T05:40:43Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pigments .
-  ?pigments rdfs:label ?label_pigments .
-  ?label_pigments onto:fts "pigments~5" .
-  ?observations sosa:hasResult ?result_pigments .
-  ?result_pigments qudt:numericValue ?value_pigments .
-  FILTER(?value_pigments > 99.14989492941034)
+  FILTER(?datetime_begin >= "2023-06-15T05:51:33Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-08T07:22:23Z"^^xsd:date) .
 }

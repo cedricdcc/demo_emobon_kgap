@@ -15,11 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,17 +26,23 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("VB~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3610") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium > 12.126345407276363)
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-01-03T13:09:23Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-07-29T02:00:55Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Paulinella_chromatophora~5") .
 }

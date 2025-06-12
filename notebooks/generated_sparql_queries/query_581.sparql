@@ -15,6 +15,17 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_turbidity
+  ?result_turbidity
+  ?value_turbidity
+  ?label_diss_oxygen
+  ?result_diss_oxygen
+  ?value_diss_oxygen
+  ?label_silicate
+  ?result_silicate
+  ?value_silicate
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,13 +34,37 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 952.4308359967149) .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("EMT21~5 VB~5 AAOT~5") .# depth filter
+  
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4889") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Norwegian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?turbidity .
+  ?turbidity rdfs:label ?label_turbidity .
+  ?label_turbidity onto:fts "turbidity~5" .
+  ?observations sosa:hasResult ?result_turbidity .
+  ?result_turbidity qudt:numericValue ?value_turbidity .
+  FILTER(?value_turbidity > 38)
+  ?observations sosa:observedProperty ?diss_oxygen .
+  ?diss_oxygen rdfs:label ?label_diss_oxygen .
+  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
+  ?observations sosa:hasResult ?result_diss_oxygen .
+  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
+  FILTER(?value_diss_oxygen < 87)
+  ?observations sosa:observedProperty ?silicate .
+  ?silicate rdfs:label ?label_silicate .
+  ?label_silicate onto:fts "silicate~5" .
+  ?observations sosa:hasResult ?result_silicate .
+  ?result_silicate qudt:numericValue ?value_silicate .
+  FILTER(?value_silicate > 19)
 }

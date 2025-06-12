@@ -18,6 +18,7 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,15 +29,21 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 802.9854479749449) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Villefranche Bay - Point B~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-12-16T17:58:54Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-01-30T10:07:51Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Thraustochytrida~5") .
+  ?sname onto:fts ("Nolandella~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("phylum~5") .
 }

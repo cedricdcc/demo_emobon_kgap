@@ -17,7 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
 WHERE {
   ?sample a sosa:Sample .
@@ -27,21 +27,19 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5207") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("OSD74~5 ROSKOGO~5") .# depth filter
+  
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2023-08-02T16:16:51Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-06-24T15:27:23Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Muricauda_ruestringensis~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  ?rank onto:fts ("genus~5") .
 }

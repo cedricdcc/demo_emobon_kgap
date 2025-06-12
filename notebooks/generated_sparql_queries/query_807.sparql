@@ -31,10 +31,16 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("EMT21~5 VB~5") .# depth filter
+  ?observatory_id onto:fts ("ROSKOGO~5 OSD74~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 428.4432558864788) .
+  FILTER(?depth_value > 18) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2389") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("English Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -43,16 +49,16 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Salicaceae~5") .
+  ?sname onto:fts ("Desulfatibacillum~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  ?rank onto:fts ("class~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 45.54432195234013) . 
+    FILTER(?lsuval >= 58) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 45.54432195234013) .  
+    FILTER(?ssuval >= 58) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

@@ -17,8 +17,10 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,19 +29,29 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ESC68N~5 BPNS~5 ROSKOGO~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 523) .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-07-26T17:36:27Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-03-18T16:13:04Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Junceella_aquamata~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
+  ?rank onto:fts ("species~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 5) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 5) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

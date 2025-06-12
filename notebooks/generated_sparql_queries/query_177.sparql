@@ -17,14 +17,12 @@ SELECT
   
   ?observations
   
-  ?label_sea_surf_temp
-  ?result_sea_surf_temp
-  ?value_sea_surf_temp
+  ?label_density
+  ?result_density
+  ?value_density
   ?taxonannotation
   ?taxonid
     ?sname
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -35,10 +33,14 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("IUIEilat~5 BPNS~5 HCMR-1~5") .# depth filter
+  ?observatory_id onto:fts ("HCMR-1~5 VB~5 PiEGetxo~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 750.0678653407728) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1904") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Porto Valley~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -47,23 +49,14 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("alpha_proteobacterium_endosymbiont_2_of_Inanidrilus_makropetalos~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 0.5293157585580022) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 0.5293157585580022) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?sname onto:fts ("Methylocapsa~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sea_surf_temp .
-  ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
-  ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_surf_temp .
-  ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
-  FILTER(?value_sea_surf_temp >= 85.7252964044127)
+  ?observations sosa:observedProperty ?density .
+  ?density rdfs:label ?label_density .
+  ?label_density onto:fts "density~5" .
+  ?observations sosa:hasResult ?result_density .
+  ?result_density qudt:numericValue ?value_density .
+  FILTER(?value_density >= 27)
 }

@@ -15,9 +15,14 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_turbidity
+  ?result_turbidity
+  ?value_turbidity
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
 WHERE {
   ?sample a sosa:Sample .
@@ -27,22 +32,32 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 668.212781927708) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-04-10T18:12:28Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-06-23T05:40:32Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Bacteroidetes_bacterium_T4-KAD-str1~5") .
   ?taxonid dct:taxonRank ?rank .
   ?rank onto:fts ("kingdom~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?turbidity .
+  ?turbidity rdfs:label ?label_turbidity .
+  ?label_turbidity onto:fts "turbidity~5" .
+  ?observations sosa:hasResult ?result_turbidity .
+  ?result_turbidity qudt:numericValue ?value_turbidity .
+  FILTER(?value_turbidity > 99)
 }

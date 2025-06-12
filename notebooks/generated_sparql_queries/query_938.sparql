@@ -17,19 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_down_par
-  ?result_down_par
-  ?value_down_par
-  ?label_phosphate
-  ?result_phosphate
-  ?value_phosphate
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
+  ?label_sea_subsurf_temp
+  ?result_sea_subsurf_temp
+  ?value_sea_subsurf_temp
   ?taxonannotation
   ?taxonid
     
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -40,39 +36,34 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 740.1419778818604) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17527") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-08-09T23:13:35Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-05-04T18:07:09Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
+  ?rank onto:fts ("phylum~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 22) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 22) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?down_par .
-  ?down_par rdfs:label ?label_down_par .
-  ?label_down_par onto:fts "down_par~5" .
-  ?observations sosa:hasResult ?result_down_par .
-  ?result_down_par qudt:numericValue ?value_down_par .
-  FILTER(?value_down_par > 75.48851220062194)
-  ?observations sosa:observedProperty ?phosphate .
-  ?phosphate rdfs:label ?label_phosphate .
-  ?label_phosphate onto:fts "phosphate~5" .
-  ?observations sosa:hasResult ?result_phosphate .
-  ?result_phosphate qudt:numericValue ?value_phosphate .
-  FILTER(?value_phosphate < 69.57371832124346)
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite < 12.601290832523816)
+  ?observations sosa:observedProperty ?sea_subsurf_temp .
+  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
+  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_temp .
+  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
+  FILTER(?value_sea_subsurf_temp >= 73)
 }

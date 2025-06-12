@@ -15,11 +15,12 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sea_surf_salinity
-  ?result_sea_surf_salinity
-  ?value_sea_surf_salinity
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,20 +29,26 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("AAOT~5 ROSKOGO~5 BPNS~5") .# depth filter
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-08-19T00:25:12Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-10-23T06:00:14Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sea_surf_salinity .
-  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
-  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_surf_salinity .
-  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity > 10.801634434653916)
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("class~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 89) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 89) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

@@ -15,17 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,35 +25,12 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 607.077218493974) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("English Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Mogibacterium~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 26.95105786186239) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 26.95105786186239) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc <= 65.42764888775378)
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-01-08T04:20:24Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-04-26T21:55:31Z"^^xsd:date) .
 }

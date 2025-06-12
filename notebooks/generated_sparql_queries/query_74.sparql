@@ -17,19 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_sea_surf_salinity
-  ?result_sea_surf_salinity
-  ?value_sea_surf_salinity
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
   ?label_diss_oxygen
   ?result_diss_oxygen
   ?value_diss_oxygen
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
+  ?label_sediment_temp
+  ?result_sediment_temp
+  ?value_sediment_temp
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -40,44 +36,40 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("EMT21~5") .# depth filter
+  ?observatory_id onto:fts ("BPNS~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 852) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2359") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Villefranche Bay - Point B~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-07-13T08:06:31Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-07-02T13:03:36Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Synergistetes_bacterium_ADurb.Bin155~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  FILTER(?datetime_begin >= "2023-10-08T16:28:59Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-07-26T13:45:28Z"^^xsd:date) .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sea_surf_salinity .
-  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
-  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_surf_salinity .
-  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity < 1.7761346951244539)
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate < 65.90132207287512)
   ?observations sosa:observedProperty ?diss_oxygen .
   ?diss_oxygen rdfs:label ?label_diss_oxygen .
   ?label_diss_oxygen onto:fts "diss_oxygen~5" .
   ?observations sosa:hasResult ?result_diss_oxygen .
   ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
-  FILTER(?value_diss_oxygen >= 32.159184951937945)
+  FILTER(?value_diss_oxygen >= 31)
+  ?observations sosa:observedProperty ?sediment_temp .
+  ?sediment_temp rdfs:label ?label_sediment_temp .
+  ?label_sediment_temp onto:fts "sediment_temp~5" .
+  ?observations sosa:hasResult ?result_sediment_temp .
+  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
+  FILTER(?value_sediment_temp <= 60)
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc < 19)
 }

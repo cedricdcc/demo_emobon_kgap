@@ -15,17 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
   ?taxonannotation
   ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,38 +28,18 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("RFormosa~5 OSD74~5") .# depth filter
+  ?observatory_id onto:fts ("NRMCB~5 PiEGetxo~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 627.8785703362361) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-06-07T03:28:21Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-06-17T05:52:35Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 91.59766380309996) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 91.59766380309996) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate <= 4.010941597117212)
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Portibacter~5") .
 }

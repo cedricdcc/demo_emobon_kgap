@@ -15,20 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
-  ?taxonannotation
-  ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -39,39 +25,9 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 206.07413949861208) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Naples Gulf~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 0.2743124733040059) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 0.2743124733040059) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure < 3.631026053411468)
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium < 85.74576327089004)
 }

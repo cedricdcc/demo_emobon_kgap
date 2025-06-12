@@ -15,10 +15,23 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_conduc
+  ?result_conduc
+  ?value_conduc
+  ?label_down_par
+  ?result_down_par
+  ?value_down_par
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,16 +40,8 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("IUIEilat~5") .# depth filter
-  
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("North Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -44,8 +49,36 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Acidothermus~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  ?rank onto:fts ("order~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 88) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 88) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?conduc .
+  ?conduc rdfs:label ?label_conduc .
+  ?label_conduc onto:fts "conduc~5" .
+  ?observations sosa:hasResult ?result_conduc .
+  ?result_conduc qudt:numericValue ?value_conduc .
+  FILTER(?value_conduc < 23)
+  ?observations sosa:observedProperty ?down_par .
+  ?down_par rdfs:label ?label_down_par .
+  ?label_down_par onto:fts "down_par~5" .
+  ?observations sosa:hasResult ?result_down_par .
+  ?result_down_par qudt:numericValue ?value_down_par .
+  FILTER(?value_down_par < 43)
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite < 48)
 }

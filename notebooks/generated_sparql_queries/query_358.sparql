@@ -17,8 +17,10 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,23 +31,24 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5") .# depth filter
+  ?observatory_id onto:fts ("RFormosa~5") .# depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3339") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-02-12T18:40:17Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-08-11T18:41:25Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Trichinella~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  ?rank onto:fts ("kingdom~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 81) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 81) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

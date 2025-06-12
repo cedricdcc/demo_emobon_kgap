@@ -18,7 +18,6 @@ SELECT
   ?taxonannotation
   ?taxonid
     
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -31,11 +30,6 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 876.8387577515059) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Crete Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -43,15 +37,13 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 23.620084185725442) . 
+    FILTER(?lsuval >= 1) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 23.620084185725442) .  
+    FILTER(?ssuval >= 1) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

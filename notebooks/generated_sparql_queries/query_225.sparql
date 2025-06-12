@@ -15,6 +15,20 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_turbidity
+  ?result_turbidity
+  ?value_turbidity
+  ?label_density
+  ?result_density
+  ?value_density
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,10 +41,44 @@ WHERE {
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4889") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4280") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Vigo Seamount~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-09-04T05:38:23Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-11-07T03:56:07Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-05-30T17:59:20Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-23T20:31:20Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("order~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 61) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 61) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?turbidity .
+  ?turbidity rdfs:label ?label_turbidity .
+  ?label_turbidity onto:fts "turbidity~5" .
+  ?observations sosa:hasResult ?result_turbidity .
+  ?result_turbidity qudt:numericValue ?value_turbidity .
+  FILTER(?value_turbidity < 35)
+  ?observations sosa:observedProperty ?density .
+  ?density rdfs:label ?label_density .
+  ?label_density onto:fts "density~5" .
+  ?observations sosa:hasResult ?result_density .
+  ?result_density qudt:numericValue ?value_density .
+  FILTER(?value_density <= 50)
 }

@@ -15,6 +15,21 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,16 +38,40 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 412.3436632585511) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2389") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("AAOT~5 EMT21~5 MBAL4~5") .# depth filter
+  
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-09-21T12:08:00Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-06T01:10:34Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Pelagodinium~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("kingdom~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite < 15)
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate >= 58)
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph < 54)
 }

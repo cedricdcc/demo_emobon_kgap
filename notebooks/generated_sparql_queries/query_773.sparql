@@ -15,6 +15,16 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sea_surf_temp
+  ?result_sea_surf_temp
+  ?value_sea_surf_temp
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,8 +35,34 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 147.64610551674807) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Vigo Seamount~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("SAR86_cluster_bacterium_BACL1_MAG-121128-bin56~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 33) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 33) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sea_surf_temp .
+  ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
+  ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_surf_temp .
+  ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
+  FILTER(?value_sea_surf_temp > 31)
 }

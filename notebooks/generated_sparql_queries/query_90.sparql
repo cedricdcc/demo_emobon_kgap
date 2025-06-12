@@ -25,9 +25,6 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Vigo Seamount~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
 }

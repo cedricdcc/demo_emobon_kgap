@@ -17,19 +17,20 @@ SELECT
   
   ?observations
   
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
-  ?label_phaeopigments
-  ?result_phaeopigments
-  ?value_phaeopigments
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
+  ?label_sea_subsurf_salinity
+  ?result_sea_subsurf_salinity
+  ?value_sea_subsurf_salinity
+  ?label_silicate
+  ?result_silicate
+  ?value_silicate
   ?taxonannotation
   ?taxonid
     
-  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -40,10 +41,16 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("PiEGetxo~5") .# depth filter
+  ?observatory_id onto:fts ("OOB~5 NRMCB~5 ESC68N~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 668.8010472437969) .
+  FILTER(?depth_value > 882) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3610") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Mediterranean Sea - Eastern Basin~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -51,27 +58,34 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 23) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 23) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate > 5.7761576226423745)
-  ?observations sosa:observedProperty ?phaeopigments .
-  ?phaeopigments rdfs:label ?label_phaeopigments .
-  ?label_phaeopigments onto:fts "phaeopigments~5" .
-  ?observations sosa:hasResult ?result_phaeopigments .
-  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments < 42.912108319228814)
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium >= 15.510471490328525)
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure >= 23)
+  ?observations sosa:observedProperty ?sea_subsurf_salinity .
+  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
+  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
+  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
+  FILTER(?value_sea_subsurf_salinity < 87)
+  ?observations sosa:observedProperty ?silicate .
+  ?silicate rdfs:label ?label_silicate .
+  ?label_silicate onto:fts "silicate~5" .
+  ?observations sosa:hasResult ?result_silicate .
+  ?result_silicate qudt:numericValue ?value_silicate .
+  FILTER(?value_silicate >= 36)
 }

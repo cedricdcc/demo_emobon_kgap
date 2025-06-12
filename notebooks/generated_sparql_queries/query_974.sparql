@@ -15,6 +15,12 @@ SELECT
   ?observatory
   ?event
   
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -23,16 +29,34 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("RFormosa~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 667) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3452") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-04-27T12:12:09Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-10-17T13:09:05Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-07-17T04:20:01Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-06-15T01:46:08Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Tintinnida~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("class~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 28) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 28) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

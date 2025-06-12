@@ -15,20 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
-  ?taxonannotation
-  ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -39,45 +25,6 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 748.744633920489) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3314") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-10-06T15:17:31Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-22T13:01:13Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 15.20866663948286) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 15.20866663948286) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph < 95.61143484551032)
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite >= 62.77877559359993)
 }

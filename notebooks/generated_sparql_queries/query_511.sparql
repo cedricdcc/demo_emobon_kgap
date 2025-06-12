@@ -17,19 +17,18 @@ SELECT
   
   ?observations
   
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
-  ?label_diss_oxygen
-  ?result_diss_oxygen
-  ?value_diss_oxygen
+  ?label_density
+  ?result_density
+  ?value_density
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?label_nitrate
+  ?result_nitrate
+  ?value_nitrate
   ?taxonannotation
   ?taxonid
     
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -43,50 +42,48 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 361.79430394639024) .
+  FILTER(?depth_value > 842) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1912") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Abra de Bilbao~5") .
+  ?mrgn onto:fts ("Crete Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-09-26T14:59:20Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-06-28T09:50:13Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 37.514652534215486) . 
+    FILTER(?lsuval >= 62) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 37.514652534215486) .  
+    FILTER(?ssuval >= 62) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite <= 46.414382448578515)
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc < 35.79770879494421)
-  ?observations sosa:observedProperty ?diss_oxygen .
-  ?diss_oxygen rdfs:label ?label_diss_oxygen .
-  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
-  ?observations sosa:hasResult ?result_diss_oxygen .
-  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
-  FILTER(?value_diss_oxygen <= 16.203338304663838)
+  ?observations sosa:observedProperty ?density .
+  ?density rdfs:label ?label_density .
+  ?label_density onto:fts "density~5" .
+  ?observations sosa:hasResult ?result_density .
+  ?result_density qudt:numericValue ?value_density .
+  FILTER(?value_density <= 27)
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph >= 49)
+  ?observations sosa:observedProperty ?nitrate .
+  ?nitrate rdfs:label ?label_nitrate .
+  ?label_nitrate onto:fts "nitrate~5" .
+  ?observations sosa:hasResult ?result_nitrate .
+  ?result_nitrate qudt:numericValue ?value_nitrate .
+  FILTER(?value_nitrate < 97)
 }

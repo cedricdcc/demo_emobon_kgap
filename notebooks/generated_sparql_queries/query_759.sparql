@@ -15,20 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
-  ?label_sea_subsurf_salinity
-  ?result_sea_subsurf_salinity
-  ?value_sea_subsurf_salinity
   ?taxonannotation
   ?taxonid
     
+  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -39,51 +29,32 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5 BPNS~5 AAOT~5") .# depth filter
-  
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Swedish part of the Baltic Sea~5") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 517) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5367") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-11-08T01:47:56Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-05-26T10:12:07Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-08-19T19:46:26Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-05-20T07:24:42Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("order~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 79.87170111338494) . 
+    FILTER(?lsuval >= 13) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 79.87170111338494) .  
+    FILTER(?ssuval >= 13) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph <= 1.3499487252801479)
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite >= 94.97006451772917)
-  ?observations sosa:observedProperty ?sea_subsurf_salinity .
-  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
-  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
-  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
-  FILTER(?value_sea_subsurf_salinity > 15.563663879956612)
 }

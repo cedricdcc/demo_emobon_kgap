@@ -15,6 +15,22 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sediment_temp
+  ?result_sediment_temp
+  ?value_sediment_temp
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
+  ?label_chlorophyll
+  ?result_chlorophyll
+  ?value_chlorophyll
+  ?taxonannotation
+  ?taxonid
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,9 +41,47 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/29473") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
   ?mrgn onto:fts ("Norwegian part of the Norwegian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 57) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 57) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sediment_temp .
+  ?sediment_temp rdfs:label ?label_sediment_temp .
+  ?label_sediment_temp onto:fts "sediment_temp~5" .
+  ?observations sosa:hasResult ?result_sediment_temp .
+  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
+  FILTER(?value_sediment_temp < 65)
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate > 23)
+  ?observations sosa:observedProperty ?chlorophyll .
+  ?chlorophyll rdfs:label ?label_chlorophyll .
+  ?label_chlorophyll onto:fts "chlorophyll~5" .
+  ?observations sosa:hasResult ?result_chlorophyll .
+  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
+  FILTER(?value_chlorophyll <= 46)
 }

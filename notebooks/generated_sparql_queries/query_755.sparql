@@ -17,8 +17,10 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,28 +29,34 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5") .# depth filter
+  # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 82.3966495672046) .
+  FILTER(?depth_value > 15) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3315") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Western Basin~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/26567") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-03-10T15:30:45Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-26T22:24:57Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-12-19T15:57:14Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-05-28T13:30:18Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Solemya_velesiana_gill_symbiont~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  ?rank onto:fts ("order~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 57) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 57) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

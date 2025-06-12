@@ -15,6 +15,11 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,9 +30,20 @@ WHERE {
   # name of observatory
   # depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 892) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-08-13T23:43:03Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-10-01T06:29:40Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-07-30T05:20:02Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-03-28T02:13:19Z"^^xsd:date) .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite >= 96)
 }

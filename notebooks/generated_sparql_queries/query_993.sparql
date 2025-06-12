@@ -17,15 +17,12 @@ SELECT
   
   ?observations
   
-  ?label_sea_subsurf_salinity
-  ?result_sea_subsurf_salinity
-  ?value_sea_subsurf_salinity
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
-  ?taxonannotation
-  ?taxonid
-    ?sname
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
+  ?label_diss_oxygen
+  ?result_diss_oxygen
+  ?value_diss_oxygen
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,32 +33,23 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5 LMO~5") .# depth filter
+  ?observatory_id onto:fts ("BPNS~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 913.0344608070634) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Phycicoccus~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sea_subsurf_salinity .
-  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
-  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
-  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
-  FILTER(?value_sea_subsurf_salinity <= 31.13464110217894)
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll <= 48.48639476986207)
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count <= 22)
+  ?observations sosa:observedProperty ?diss_oxygen .
+  ?diss_oxygen rdfs:label ?label_diss_oxygen .
+  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
+  ?observations sosa:hasResult ?result_diss_oxygen .
+  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
+  FILTER(?value_diss_oxygen < 64)
 }

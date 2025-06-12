@@ -15,6 +15,21 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?label_sea_surf_salinity
+  ?result_sea_surf_salinity
+  ?value_sea_surf_salinity
+  ?label_nitrate
+  ?result_nitrate
+  ?value_nitrate
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,11 +40,45 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("HCMR-1~5") .# depth filter
+  ?observatory_id onto:fts ("OSD74~5") .# depth filter
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3452") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Tyrrhenian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-09-17T02:22:54Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-02-15T16:29:50Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("phylum~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph > 88)
+  ?observations sosa:observedProperty ?sea_surf_salinity .
+  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
+  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_surf_salinity .
+  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
+  FILTER(?value_sea_surf_salinity >= 79)
+  ?observations sosa:observedProperty ?nitrate .
+  ?nitrate rdfs:label ?label_nitrate .
+  ?label_nitrate onto:fts "nitrate~5" .
+  ?observations sosa:hasResult ?result_nitrate .
+  ?result_nitrate qudt:numericValue ?value_nitrate .
+  FILTER(?value_nitrate <= 82)
 }

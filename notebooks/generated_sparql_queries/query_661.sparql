@@ -15,6 +15,11 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sea_subsurf_temp
+  ?result_sea_subsurf_temp
+  ?value_sea_subsurf_temp
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,4 +32,13 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sea_subsurf_temp .
+  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
+  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_temp .
+  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
+  FILTER(?value_sea_subsurf_temp >= 61)
 }

@@ -15,20 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sediment_temp
-  ?result_sediment_temp
-  ?value_sediment_temp
-  ?label_sea_subsurf_salinity
-  ?result_sea_subsurf_salinity
-  ?value_sea_subsurf_salinity
-  ?label_diss_oxygen
-  ?result_diss_oxygen
-  ?value_diss_oxygen
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,39 +27,17 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("LMO~5 ROSKOGO~5 HCMR-1~5") .# depth filter
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-03-01T19:01:51Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-04-30T18:57:31Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Lautropia~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sediment_temp .
-  ?sediment_temp rdfs:label ?label_sediment_temp .
-  ?label_sediment_temp onto:fts "sediment_temp~5" .
-  ?observations sosa:hasResult ?result_sediment_temp .
-  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
-  FILTER(?value_sediment_temp <= 7.11764425285436)
-  ?observations sosa:observedProperty ?sea_subsurf_salinity .
-  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
-  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
-  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
-  FILTER(?value_sea_subsurf_salinity > 66.17658304755851)
-  ?observations sosa:observedProperty ?diss_oxygen .
-  ?diss_oxygen rdfs:label ?label_diss_oxygen .
-  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
-  ?observations sosa:hasResult ?result_diss_oxygen .
-  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
-  FILTER(?value_diss_oxygen > 75.13310391371488)
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("super kingdom~5") .
 }

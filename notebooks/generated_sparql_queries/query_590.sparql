@@ -19,8 +19,6 @@ SELECT
   ?taxonid
     ?sname
   ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,31 +27,27 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("RFormosa~5 NRMCB~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 676.6704632275065) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25678") .
+  FILTER(?depth_value > 389) .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Aegean Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-12-15T20:36:31Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-08-10T11:03:38Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Fulvivirga_imtechensis~5") .
+  ?sname onto:fts ("Nitrososphaeria~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 85.4662414648334) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 85.4662414648334) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?rank onto:fts ("kingdom~5") .
 }

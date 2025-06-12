@@ -15,11 +15,12 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_organism_count
-  ?result_organism_count
-  ?value_organism_count
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,15 +31,30 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2401") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?organism_count .
-  ?organism_count rdfs:label ?label_organism_count .
-  ?label_organism_count onto:fts "organism_count~5" .
-  ?observations sosa:hasResult ?result_organism_count .
-  ?result_organism_count qudt:numericValue ?value_organism_count .
-  FILTER(?value_organism_count > 61.73617644874901)
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-03-12T07:48:19Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-05-09T09:08:23Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Myxococcus~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("phylum~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 43) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 43) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

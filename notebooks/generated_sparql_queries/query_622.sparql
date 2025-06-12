@@ -26,13 +26,13 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 412.0952732750808) .
+  FILTER(?depth_value < 938) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Adriatic Sea~5") .
+  ?mrgn onto:fts ("Bay of Biscay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-09-13T20:47:58Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-04-18T04:18:52Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-10-30T18:03:08Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-12-21T12:27:18Z"^^xsd:date) .
 }

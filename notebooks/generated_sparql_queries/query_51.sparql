@@ -15,17 +15,11 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_silicate
-  ?result_silicate
-  ?value_silicate
-  ?label_diss_oxygen
-  ?result_diss_oxygen
-  ?value_diss_oxygen
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
+  ?taxonannotation
+  ?taxonid
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,32 +30,20 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 255.5227654297818) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-01-23T14:28:27Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-04T03:36:11Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?silicate .
-  ?silicate rdfs:label ?label_silicate .
-  ?label_silicate onto:fts "silicate~5" .
-  ?observations sosa:hasResult ?result_silicate .
-  ?result_silicate qudt:numericValue ?value_silicate .
-  FILTER(?value_silicate < 90.80591260828004)
-  ?observations sosa:observedProperty ?diss_oxygen .
-  ?diss_oxygen rdfs:label ?label_diss_oxygen .
-  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
-  ?observations sosa:hasResult ?result_diss_oxygen .
-  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
-  FILTER(?value_diss_oxygen >= 60.539548970712346)
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate <= 16.849043582542357)
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 23) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 23) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

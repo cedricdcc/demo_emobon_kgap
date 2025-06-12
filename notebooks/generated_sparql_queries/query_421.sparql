@@ -15,12 +15,18 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_sea_subsurf_salinity
+  ?result_sea_subsurf_salinity
+  ?value_sea_subsurf_salinity
+  ?label_silicate
+  ?result_silicate
+  ?value_silicate
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,27 +37,33 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 973.4605430790051) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-03-14T02:23:44Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-05T20:04:47Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-09-05T08:07:57Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-09-22T13:02:07Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Sulfurimonas_autotrophica~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 8.720581067306089) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 8.720581067306089) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?rank onto:fts ("species~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?sea_subsurf_salinity .
+  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
+  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
+  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
+  FILTER(?value_sea_subsurf_salinity > 45)
+  ?observations sosa:observedProperty ?silicate .
+  ?silicate rdfs:label ?label_silicate .
+  ?label_silicate onto:fts "silicate~5" .
+  ?observations sosa:hasResult ?result_silicate .
+  ?result_silicate qudt:numericValue ?value_silicate .
+  FILTER(?value_silicate > 60)
 }

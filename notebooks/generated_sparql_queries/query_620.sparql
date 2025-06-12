@@ -15,10 +15,17 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,23 +36,35 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("HCMR-1~5 EMT21~5") .# depth filter
+  ?observatory_id onto:fts ("OSD74~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 208.29711562123398) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Crete Sea~5") .
+  FILTER(?depth_value <= 187) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-09-30T00:15:55Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-19T10:01:57Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2022-03-08T04:29:43Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-01-02T19:52:31Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Prymnesium~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph > 7)
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count > 7)
 }

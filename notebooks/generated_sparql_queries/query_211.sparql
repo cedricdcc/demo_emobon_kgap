@@ -15,19 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pigments
-  ?result_pigments
-  ?value_pigments
-  ?label_phaeopigments
-  ?result_phaeopigments
-  ?value_phaeopigments
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,44 +23,10 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5 AAOT~5 OOB~5") .# depth filter
-  
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5207") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 253) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Candidatus_Midichloriaceae~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 0.7426308088141931) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 0.7426308088141931) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pigments .
-  ?pigments rdfs:label ?label_pigments .
-  ?label_pigments onto:fts "pigments~5" .
-  ?observations sosa:hasResult ?result_pigments .
-  ?result_pigments qudt:numericValue ?value_pigments .
-  FILTER(?value_pigments > 41.408189478370694)
-  ?observations sosa:observedProperty ?phaeopigments .
-  ?phaeopigments rdfs:label ?label_phaeopigments .
-  ?label_phaeopigments onto:fts "phaeopigments~5" .
-  ?observations sosa:hasResult ?result_phaeopigments .
-  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments > 73.42324276089074)
 }

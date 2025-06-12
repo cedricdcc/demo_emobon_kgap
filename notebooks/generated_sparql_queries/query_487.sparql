@@ -15,12 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,34 +23,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 910.9782336443262) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/29473") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("RFormosa~5") .# depth filter
+  
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-05-12T12:12:06Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-07-21T13:08:54Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Xanthobacteraceae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 57.1691635133296) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 57.1691635133296) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  FILTER(?datetime_begin >= "2022-01-17T16:35:37Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-11-23T12:21:05Z"^^xsd:date) .
 }

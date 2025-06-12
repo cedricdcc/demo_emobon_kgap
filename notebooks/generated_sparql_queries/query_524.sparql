@@ -15,15 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sea_surf_salinity
-  ?result_sea_surf_salinity
-  ?value_sea_surf_salinity
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -36,8 +30,9 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 506.003229278454) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -46,25 +41,14 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Nemertea~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  ?sname onto:fts ("Actinoposthiidae~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 39.511399633976986) . 
+    FILTER(?lsuval >= 86) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 39.511399633976986) .  
+    FILTER(?ssuval >= 86) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sea_surf_salinity .
-  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
-  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_surf_salinity .
-  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity < 94.74322250800286)
 }

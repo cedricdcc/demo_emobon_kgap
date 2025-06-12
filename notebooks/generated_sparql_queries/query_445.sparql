@@ -17,9 +17,13 @@ SELECT
   
   ?observations
   
-  ?label_sediment_temp
-  ?result_sediment_temp
-  ?value_sediment_temp
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,20 +32,30 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("MBAL4~5 ESC68N~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 444) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-08-14T03:27:57Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-05-20T20:54:44Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Rimostrombidium~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("family~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sediment_temp .
-  ?sediment_temp rdfs:label ?label_sediment_temp .
-  ?label_sediment_temp onto:fts "sediment_temp~5" .
-  ?observations sosa:hasResult ?result_sediment_temp .
-  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
-  FILTER(?value_sediment_temp < 85.27547426741845)
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph >= 87)
 }

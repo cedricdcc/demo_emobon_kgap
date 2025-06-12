@@ -17,10 +17,8 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,30 +29,21 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5207") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 717) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Indian Ocean~5") .
+  ?mrgn onto:fts ("Gulf of Lion~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-08-20T19:16:31Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-10-06T22:12:32Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Urospora~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 56.263181520639705) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 56.263181520639705) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?rank onto:fts ("order~5") .
 }

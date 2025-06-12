@@ -17,13 +17,12 @@ SELECT
   
   ?observations
   
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
+  ?label_density
+  ?result_density
+  ?value_density
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
   ?lsuval
   ?ssuval
 WHERE {
@@ -36,39 +35,36 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5 ROSKOGO~5 LMO~5") .# depth filter
+  ?observatory_id onto:fts ("EMT21~5 RFormosa~5 ESC68N~5") .# depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Norwegian Sea~5") .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1902") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-02-08T06:31:03Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-19T13:22:00Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Sediminimonas~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 15.89819487499583) . 
+    FILTER(?lsuval >= 97) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 15.89819487499583) .  
+    FILTER(?ssuval >= 97) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium <= 27.721818195011238)
+  ?observations sosa:observedProperty ?density .
+  ?density rdfs:label ?label_density .
+  ?label_density onto:fts "density~5" .
+  ?observations sosa:hasResult ?result_density .
+  ?result_density qudt:numericValue ?value_density .
+  FILTER(?value_density >= 62)
 }

@@ -19,8 +19,6 @@ SELECT
   ?taxonid
     ?sname
   ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,13 +29,13 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("RFormosa~5") .# depth filter
+  ?observatory_id onto:fts ("HCMR-1~5 NRMCB~5 EMT21~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 264.7761796143395) .
+  FILTER(?depth_value < 621) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("North Atlantic Ocean~5") .
+  ?mrgn onto:fts ("Western Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -46,16 +44,7 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Thiohalomonas_denitrificans~5") .
+  ?sname onto:fts ("Blastopirellula~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 24.333001369079497) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 24.333001369079497) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?rank onto:fts ("class~5") .
 }

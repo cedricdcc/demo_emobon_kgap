@@ -17,16 +17,20 @@ SELECT
   
   ?observations
   
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
-  ?label_organism_count
-  ?result_organism_count
-  ?value_organism_count
+  ?label_sea_surf_salinity
+  ?result_sea_surf_salinity
+  ?value_sea_surf_salinity
+  ?label_pigments
+  ?result_pigments
+  ?value_pigments
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
   ?taxonannotation
   ?taxonid
     
-  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -35,41 +39,48 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ROSKOGO~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 164) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25214") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Eastern Basin~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4889") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2023-08-10T04:14:58Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-09-13T21:33:44Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 47) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 47) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp >= 32.99487004392433)
-  ?observations sosa:observedProperty ?organism_count .
-  ?organism_count rdfs:label ?label_organism_count .
-  ?label_organism_count onto:fts "organism_count~5" .
-  ?observations sosa:hasResult ?result_organism_count .
-  ?result_organism_count qudt:numericValue ?value_organism_count .
-  FILTER(?value_organism_count <= 0.01735823736186415)
+  ?observations sosa:observedProperty ?sea_surf_salinity .
+  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
+  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_surf_salinity .
+  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
+  FILTER(?value_sea_surf_salinity >= 71)
+  ?observations sosa:observedProperty ?pigments .
+  ?pigments rdfs:label ?label_pigments .
+  ?label_pigments onto:fts "pigments~5" .
+  ?observations sosa:hasResult ?result_pigments .
+  ?result_pigments qudt:numericValue ?value_pigments .
+  FILTER(?value_pigments < 40)
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments < 54)
 }

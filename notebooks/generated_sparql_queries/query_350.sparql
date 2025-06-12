@@ -15,6 +15,14 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
+  ?label_chlorophyll
+  ?result_chlorophyll
+  ?value_chlorophyll
   ?taxonannotation
   ?taxonid
     ?sname
@@ -30,27 +38,48 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("LMO~5 ESC68N~5") .# depth filter
+  ?observatory_id onto:fts ("LMO~5 EMT21~5") .# depth filter
   
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3386") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Atlantic Ocean~5") .
+  ?mrgn onto:fts ("Swedish part of the Baltic Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-04-18T22:40:16Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-05-01T09:48:02Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Cryptomonadaceae~5") .
+  ?sname onto:fts ("Solirubrobacterales~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 59.45515324398579) . 
+    FILTER(?lsuval >= 37) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 59.45515324398579) .  
+    FILTER(?ssuval >= 37) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure >= 73)
+  ?observations sosa:observedProperty ?chlorophyll .
+  ?chlorophyll rdfs:label ?label_chlorophyll .
+  ?label_chlorophyll onto:fts "chlorophyll~5" .
+  ?observations sosa:hasResult ?result_chlorophyll .
+  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
+  FILTER(?value_chlorophyll >= 32)
 }

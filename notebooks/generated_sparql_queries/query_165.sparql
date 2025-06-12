@@ -19,6 +19,8 @@ SELECT
   ?taxonid
     ?sname
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,20 +29,34 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("OSD74~5 LMO~5 EMT21~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5367") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-11-10T03:58:16Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-08-02T19:13:32Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-02-23T16:03:29Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-11-10T19:20:36Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Alcaligenaceae~5") .
+  ?sname onto:fts ("Clostridium_sp._ND2~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  ?rank onto:fts ("genus~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 29) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 29) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

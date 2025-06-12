@@ -15,14 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
-  ?label_sea_surf_salinity
-  ?result_sea_surf_salinity
-  ?value_sea_surf_salinity
   ?taxonannotation
   ?taxonid
     
@@ -38,11 +30,6 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 32.678778758764906) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25678") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -52,26 +39,11 @@ WHERE {
       
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 45.817818873727624) . 
+    FILTER(?lsuval >= 82) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 45.817818873727624) .  
+    FILTER(?ssuval >= 82) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite < 66.94663869804629)
-  ?observations sosa:observedProperty ?sea_surf_salinity .
-  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
-  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_surf_salinity .
-  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity > 41.77330177518541)
 }

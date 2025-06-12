@@ -15,6 +15,17 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
+  ?label_ph
+  ?result_ph
+  ?value_ph
+  ?label_sediment_temp
+  ?result_sediment_temp
+  ?value_sediment_temp
   ?taxonannotation
   ?taxonid
     
@@ -30,16 +41,18 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("LMO~5 ROSKOGO~5") .# depth filter
+  ?observatory_id onto:fts ("LMO~5 VB~5 BPNS~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value <= 808) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1902") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3386") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-09-24T06:29:29Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-24T06:49:07Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-01-22T13:45:03Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-21T10:19:09Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
@@ -47,11 +60,32 @@ WHERE {
       
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 90.43535572967886) . 
+    FILTER(?lsuval >= 54) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 90.43535572967886) .  
+    FILTER(?ssuval >= 54) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count <= 61)
+  ?observations sosa:observedProperty ?ph .
+  ?ph rdfs:label ?label_ph .
+  ?label_ph onto:fts "ph~5" .
+  ?observations sosa:hasResult ?result_ph .
+  ?result_ph qudt:numericValue ?value_ph .
+  FILTER(?value_ph > 76)
+  ?observations sosa:observedProperty ?sediment_temp .
+  ?sediment_temp rdfs:label ?label_sediment_temp .
+  ?label_sediment_temp onto:fts "sediment_temp~5" .
+  ?observations sosa:hasResult ?result_sediment_temp .
+  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
+  FILTER(?value_sediment_temp >= 22)
 }

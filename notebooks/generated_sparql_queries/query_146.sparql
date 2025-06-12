@@ -15,17 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_phaeopigments
-  ?result_phaeopigments
-  ?value_phaeopigments
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,37 +29,17 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 640.6787964820475) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("French part of the English Channel~5") .
+  FILTER(?depth_value > 403) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-07-07T10:17:46Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-07-20T20:11:58Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?phaeopigments .
-  ?phaeopigments rdfs:label ?label_phaeopigments .
-  ?label_phaeopigments onto:fts "phaeopigments~5" .
-  ?observations sosa:hasResult ?result_phaeopigments .
-  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments > 74.95644317520892)
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph > 23.87341234215001)
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure < 5.305636643677392)
+  FILTER(?datetime_begin >= "2023-09-18T11:42:02Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-12-20T12:11:51Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Acetitomaculum~5") .
 }

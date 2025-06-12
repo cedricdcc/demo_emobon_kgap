@@ -15,15 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -32,31 +26,18 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 674.8431000992828) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3315") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2023-06-02T08:08:30Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-11-02T06:50:19Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc <= 25.955122533112352)
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Anaerocella~5") .
 }

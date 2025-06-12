@@ -17,16 +17,9 @@ SELECT
   
   ?observations
   
-  ?label_sea_surf_salinity
-  ?result_sea_surf_salinity
-  ?value_sea_surf_salinity
-  ?label_turbidity
-  ?result_turbidity
-  ?value_turbidity
-  ?taxonannotation
-  ?taxonid
-    
-  ?rank
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -35,40 +28,17 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 125.68030881009219) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Villefranche Bay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-08-11T08:12:00Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-02-09T16:11:25Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("order~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?sea_surf_salinity .
-  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
-  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_surf_salinity .
-  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity >= 22.16281852542952)
-  ?observations sosa:observedProperty ?turbidity .
-  ?turbidity rdfs:label ?label_turbidity .
-  ?label_turbidity onto:fts "turbidity~5" .
-  ?observations sosa:hasResult ?result_turbidity .
-  ?result_turbidity qudt:numericValue ?value_turbidity .
-  FILTER(?value_turbidity < 31.009462711446933)
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure >= 60)
 }

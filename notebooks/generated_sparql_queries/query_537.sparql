@@ -15,17 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
-  ?label_sediment_temp
-  ?result_sediment_temp
-  ?value_sediment_temp
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
   ?taxonannotation
   ?taxonid
     ?sname
@@ -42,52 +31,35 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("AAOT~5 ESC68N~5 OSD74~5") .# depth filter
+  ?observatory_id onto:fts ("IUIEilat~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 167.72374662033684) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4888") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Western Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-06-24T13:23:30Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-01-13T04:13:32Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-10-18T13:06:22Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-07-18T14:40:30Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Alcanivoracaceae~5") .
+  ?sname onto:fts ("Lagenoeca~5") .
   ?taxonid dct:taxonRank ?rank .
   ?rank onto:fts ("class~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 72.42993855791596) . 
+    FILTER(?lsuval >= 77) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 72.42993855791596) .  
+    FILTER(?ssuval >= 77) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp <= 31.197629109741833)
-  ?observations sosa:observedProperty ?sediment_temp .
-  ?sediment_temp rdfs:label ?label_sediment_temp .
-  ?label_sediment_temp onto:fts "sediment_temp~5" .
-  ?observations sosa:hasResult ?result_sediment_temp .
-  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
-  FILTER(?value_sediment_temp >= 56.49045056588782)
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate >= 46.44299778863351)
 }

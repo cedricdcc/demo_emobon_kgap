@@ -17,8 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,9 +28,6 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Eastern Basin~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -39,6 +35,6 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Protoperidinium_punctulatum~5") .
 }

@@ -15,17 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sea_surf_temp
-  ?result_sea_surf_temp
-  ?value_sea_surf_temp
-  ?label_sea_subsurf_salinity
-  ?result_sea_subsurf_salinity
-  ?value_sea_subsurf_salinity
-  ?taxonannotation
-  ?taxonid
-    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,35 +23,10 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 296.7161991585384) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1902") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("BPNS~5 OOB~5") .# depth filter
+  
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Sulfurivirga~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sea_surf_temp .
-  ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
-  ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_surf_temp .
-  ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
-  FILTER(?value_sea_surf_temp <= 13.430283757294548)
-  ?observations sosa:observedProperty ?sea_subsurf_salinity .
-  ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
-  ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_salinity .
-  ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
-  FILTER(?value_sea_subsurf_salinity > 4.52791724253675)
 }

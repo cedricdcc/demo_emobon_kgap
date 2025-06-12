@@ -17,12 +17,16 @@ SELECT
   
   ?observations
   
+  ?label_organism_count
+  ?result_organism_count
+  ?value_organism_count
   ?label_pigments
   ?result_pigments
   ?value_pigments
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -33,28 +37,37 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("LMO~5") .# depth filter
+  ?observatory_id onto:fts ("ROSKOGO~5 MBAL4~5 OOB~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 638.8937930195002) .
+  FILTER(?depth_value < 26) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5367") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Lutibaculum~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("super kingdom~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
+  ?observations sosa:observedProperty ?organism_count .
+  ?organism_count rdfs:label ?label_organism_count .
+  ?label_organism_count onto:fts "organism_count~5" .
+  ?observations sosa:hasResult ?result_organism_count .
+  ?result_organism_count qudt:numericValue ?value_organism_count .
+  FILTER(?value_organism_count > 69)
   ?observations sosa:observedProperty ?pigments .
   ?pigments rdfs:label ?label_pigments .
   ?label_pigments onto:fts "pigments~5" .
   ?observations sosa:hasResult ?result_pigments .
   ?result_pigments qudt:numericValue ?value_pigments .
-  FILTER(?value_pigments >= 54.925578528103024)
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate >= 26.357356205141713)
+  FILTER(?value_pigments < 79)
 }

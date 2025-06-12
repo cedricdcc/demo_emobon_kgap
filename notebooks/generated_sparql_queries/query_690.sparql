@@ -23,14 +23,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Belgian part of the North Sea~5") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("BPNS~5 IUIEilat~5 ROSKOGO~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4280") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-09-18T01:51:44Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-22T15:48:28Z"^^xsd:date) .
 }

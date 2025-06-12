@@ -15,10 +15,19 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
+  ?label_ammonium
+  ?result_ammonium
+  ?value_ammonium
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?rank
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,22 +36,47 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("VB~5 MBAL4~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 215.17641034207446) .
+  FILTER(?depth_value < 7) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Ria Formosa~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-12-04T02:27:37Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-01-17T15:23:26Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Solibacillus_silvestris~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 30) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 30) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure > 53)
+  ?observations sosa:observedProperty ?ammonium .
+  ?ammonium rdfs:label ?label_ammonium .
+  ?label_ammonium onto:fts "ammonium~5" .
+  ?observations sosa:hasResult ?result_ammonium .
+  ?result_ammonium qudt:numericValue ?value_ammonium .
+  FILTER(?value_ammonium < 6)
 }

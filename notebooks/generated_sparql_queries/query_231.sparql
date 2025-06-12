@@ -15,17 +15,11 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_phosphate
-  ?result_phosphate
-  ?value_phosphate
-  ?label_turbidity
-  ?result_turbidity
-  ?value_turbidity
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -38,25 +32,20 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?phosphate .
-  ?phosphate rdfs:label ?label_phosphate .
-  ?label_phosphate onto:fts "phosphate~5" .
-  ?observations sosa:hasResult ?result_phosphate .
-  ?result_phosphate qudt:numericValue ?value_phosphate .
-  FILTER(?value_phosphate >= 76.57203914952343)
-  ?observations sosa:observedProperty ?turbidity .
-  ?turbidity rdfs:label ?label_turbidity .
-  ?label_turbidity onto:fts "turbidity~5" .
-  ?observations sosa:hasResult ?result_turbidity .
-  ?result_turbidity qudt:numericValue ?value_turbidity .
-  FILTER(?value_turbidity > 51.38633924654109)
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc >= 23.73638513689027)
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Halieaceae~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 74) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 74) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

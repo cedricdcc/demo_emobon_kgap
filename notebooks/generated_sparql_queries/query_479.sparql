@@ -15,6 +15,17 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,10 +38,37 @@ WHERE {
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5207") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17527") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-06-01T04:49:20Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2023-09-19T07:45:51Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-12-14T01:50:37Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-02-10T11:12:38Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Fimbriimonadales~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("family~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 87) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 87) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite <= 30)
 }

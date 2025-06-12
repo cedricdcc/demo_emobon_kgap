@@ -23,9 +23,9 @@ SELECT
   ?label_pigments
   ?result_pigments
   ?value_pigments
-  ?label_sea_surf_temp
-  ?result_sea_surf_temp
-  ?value_sea_surf_temp
+  ?label_sea_subsurf_temp
+  ?result_sea_subsurf_temp
+  ?value_sea_subsurf_temp
   ?taxonannotation
   ?taxonid
     ?sname
@@ -39,25 +39,23 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ESC68N~5") .# depth filter
+  ?observatory_id onto:fts ("VB~5 OOB~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 653.9013207478612) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Atlantic Ocean~5") .
+  ?mrgn onto:fts ("English Channel~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-05-11T09:45:06Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-08-10T22:55:10Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Fictibacillus~5") .
+  ?sname onto:fts ("Calanus_finmarchicus~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
@@ -66,17 +64,17 @@ WHERE {
   ?label_phaeopigments onto:fts "phaeopigments~5" .
   ?observations sosa:hasResult ?result_phaeopigments .
   ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments <= 57.679654610587285)
+  FILTER(?value_phaeopigments <= 6)
   ?observations sosa:observedProperty ?pigments .
   ?pigments rdfs:label ?label_pigments .
   ?label_pigments onto:fts "pigments~5" .
   ?observations sosa:hasResult ?result_pigments .
   ?result_pigments qudt:numericValue ?value_pigments .
-  FILTER(?value_pigments < 55.91475071009996)
-  ?observations sosa:observedProperty ?sea_surf_temp .
-  ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
-  ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_surf_temp .
-  ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
-  FILTER(?value_sea_surf_temp > 42.43986967356904)
+  FILTER(?value_pigments < 27)
+  ?observations sosa:observedProperty ?sea_subsurf_temp .
+  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
+  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_subsurf_temp .
+  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
+  FILTER(?value_sea_subsurf_temp >= 47)
 }

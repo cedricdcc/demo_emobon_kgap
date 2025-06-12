@@ -15,14 +15,12 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_phaeopigments
-  ?result_phaeopigments
-  ?value_phaeopigments
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -33,35 +31,30 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OSD74~5 EMT21~5 VB~5") .# depth filter
+  ?observatory_id onto:fts ("HCMR-1~5 EMT21~5 OSD74~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 786.9845360643848) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Swedish part of the Baltic Sea~5") .
+  ?mrgn onto:fts ("Mediterranean Sea - Eastern Basin~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2022-04-15T03:11:58Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2022-09-01T14:33:54Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Peritromus~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?phaeopigments .
-  ?phaeopigments rdfs:label ?label_phaeopigments .
-  ?label_phaeopigments onto:fts "phaeopigments~5" .
-  ?observations sosa:hasResult ?result_phaeopigments .
-  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments <= 68.72792068791905)
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("phylum~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 31) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 31) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

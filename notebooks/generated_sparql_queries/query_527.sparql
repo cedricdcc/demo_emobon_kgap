@@ -15,20 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_redox_potential
-  ?result_redox_potential
-  ?value_redox_potential
-  ?label_silicate
-  ?result_silicate
-  ?value_silicate
   ?taxonannotation
   ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,12 +26,14 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5 VB~5 BPNS~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 335.9578166999664) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17527") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Norwegian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -50,30 +41,6 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 80.2143796505509) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 80.2143796505509) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?redox_potential .
-  ?redox_potential rdfs:label ?label_redox_potential .
-  ?label_redox_potential onto:fts "redox_potential~5" .
-  ?observations sosa:hasResult ?result_redox_potential .
-  ?result_redox_potential qudt:numericValue ?value_redox_potential .
-  FILTER(?value_redox_potential < 53.08986268541936)
-  ?observations sosa:observedProperty ?silicate .
-  ?silicate rdfs:label ?label_silicate .
-  ?label_silicate onto:fts "silicate~5" .
-  ?observations sosa:hasResult ?result_silicate .
-  ?result_silicate qudt:numericValue ?value_silicate .
-  FILTER(?value_silicate >= 22.301542963841126)
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Rubritalea~5") .
 }

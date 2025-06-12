@@ -15,10 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,20 +23,15 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("EMT21~5 LMO~5 NRMCB~5") .# depth filter
+  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value < 186) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-03-22T20:28:55Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-03-10T14:39:07Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Oleiphilaceae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
+  FILTER(?datetime_begin >= "2024-10-18T10:05:25Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-06-10T13:15:57Z"^^xsd:date) .
 }

@@ -17,15 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
   ?label_chlorophyll
   ?result_chlorophyll
   ?value_chlorophyll
+  ?label_sediment_temp
+  ?result_sediment_temp
+  ?value_sediment_temp
   ?taxonannotation
   ?taxonid
     ?sname
@@ -39,50 +39,53 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 256.95274634647404) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17527") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("OOB~5 PiEGetxo~5") .# depth filter
+  
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Naples Gulf~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-05-01T18:49:06Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-30T14:30:43Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Lokiarchaeum~5") .
+  ?sname onto:fts ("Xystonella~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 23.012586977010773) . 
+    FILTER(?lsuval >= 99) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 23.012586977010773) .  
+    FILTER(?ssuval >= 99) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure < 73.30128819042831)
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate > 15.210366733573666)
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite >= 94)
   ?observations sosa:observedProperty ?chlorophyll .
   ?chlorophyll rdfs:label ?label_chlorophyll .
   ?label_chlorophyll onto:fts "chlorophyll~5" .
   ?observations sosa:hasResult ?result_chlorophyll .
   ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll < 19.91385380025318)
+  FILTER(?value_chlorophyll <= 10)
+  ?observations sosa:observedProperty ?sediment_temp .
+  ?sediment_temp rdfs:label ?label_sediment_temp .
+  ?label_sediment_temp onto:fts "sediment_temp~5" .
+  ?observations sosa:hasResult ?result_sediment_temp .
+  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
+  FILTER(?value_sediment_temp > 24)
 }

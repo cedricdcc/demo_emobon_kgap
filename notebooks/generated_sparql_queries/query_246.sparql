@@ -18,7 +18,8 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,7 +32,7 @@ WHERE {
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1912") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -40,7 +41,14 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Candidatus_Babeliae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
+  ?sname onto:fts ("Alkalispirochaeta~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 56) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 56) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

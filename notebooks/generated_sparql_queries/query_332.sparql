@@ -15,10 +15,16 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?rank
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,24 +33,34 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("MBAL4~5 AAOT~5 BPNS~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 767.7786645901613) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-01-16T11:48:38Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-04-12T21:14:40Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-11-28T00:01:15Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-29T09:27:04Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Planctomycetales~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 69) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 69) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential <= 100)
 }

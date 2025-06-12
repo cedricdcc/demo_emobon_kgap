@@ -18,6 +18,7 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -26,16 +27,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 420.53181870302905) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1906") .
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("AAOT~5 LMO~5 NRMCB~5") .# depth filter
+  
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Bay of Biscay~5") .
+  ?mrgn onto:fts ("Indian Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -44,5 +42,7 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Cenarchaeum~5") .
+  ?sname onto:fts ("Pseudoalteromonas_sp._JW3~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("order~5") .
 }

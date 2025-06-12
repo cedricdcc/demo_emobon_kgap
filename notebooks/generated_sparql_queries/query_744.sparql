@@ -15,15 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
-  ?taxonannotation
-  ?taxonid
-    
-  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,25 +25,9 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Swedish part of the Baltic Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("kingdom~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc <= 69.29851839103232)
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-03-17T04:26:18Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-04-27T23:21:08Z"^^xsd:date) .
 }

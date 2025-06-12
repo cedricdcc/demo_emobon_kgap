@@ -17,15 +17,14 @@ SELECT
   
   ?observations
   
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
+  ?label_sea_surf_salinity
+  ?result_sea_surf_salinity
+  ?value_sea_surf_salinity
   ?taxonannotation
   ?taxonid
     ?sname
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,13 +33,10 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("AAOT~5") .# depth filter
-  
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Gulf of Venice~5") .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 248) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -49,20 +45,23 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Mycobacterium_sp._Root135~5") .
+  ?sname onto:fts ("Leptocylindrus_danicus~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 17) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 17) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite > 3.289686051491214)
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc < 78.86943900223244)
+  ?observations sosa:observedProperty ?sea_surf_salinity .
+  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
+  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
+  ?observations sosa:hasResult ?result_sea_surf_salinity .
+  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
+  FILTER(?value_sea_surf_salinity >= 65)
 }

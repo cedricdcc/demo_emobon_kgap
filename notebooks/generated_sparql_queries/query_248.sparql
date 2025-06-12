@@ -15,20 +15,10 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
-  ?label_sea_surf_salinity
-  ?result_sea_surf_salinity
-  ?value_sea_surf_salinity
-  ?label_sea_surf_temp
-  ?result_sea_surf_temp
-  ?value_sea_surf_temp
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -39,15 +29,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OSD74~5 AAOT~5 BPNS~5") .# depth filter
+  # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 118.47338058962242) .
+  FILTER(?depth_value <= 911) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1912") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17527") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -55,36 +43,15 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Desulfofustis~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("genus~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 13.060305332311383) . 
+    FILTER(?lsuval >= 26) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 13.060305332311383) .  
+    FILTER(?ssuval >= 26) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc >= 76.03864806084425)
-  ?observations sosa:observedProperty ?sea_surf_salinity .
-  ?sea_surf_salinity rdfs:label ?label_sea_surf_salinity .
-  ?label_sea_surf_salinity onto:fts "sea_surf_salinity~5" .
-  ?observations sosa:hasResult ?result_sea_surf_salinity .
-  ?result_sea_surf_salinity qudt:numericValue ?value_sea_surf_salinity .
-  FILTER(?value_sea_surf_salinity >= 17.609081030464502)
-  ?observations sosa:observedProperty ?sea_surf_temp .
-  ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
-  ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_surf_temp .
-  ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
-  FILTER(?value_sea_surf_temp > 91.35030325310333)
 }

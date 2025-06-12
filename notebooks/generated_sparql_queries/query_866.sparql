@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,18 +25,12 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Gulf of Venice~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-06-06T06:38:32Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-03-22T21:06:09Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure <= 74.49428481813146)
+  FILTER(?datetime_begin >= "2025-03-20T13:09:21Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-02T00:36:03Z"^^xsd:date) .
 }

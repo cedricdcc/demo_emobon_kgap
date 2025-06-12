@@ -15,9 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?taxonannotation
-  ?taxonid
-    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,16 +25,9 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Bay of Biscay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-12-12T20:29:49Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-25T02:15:59Z"^^xsd:date) .
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Mitosporidium~5") .
 }

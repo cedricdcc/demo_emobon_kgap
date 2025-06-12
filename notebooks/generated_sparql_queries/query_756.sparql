@@ -15,6 +15,20 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_pigments
+  ?result_pigments
+  ?value_pigments
+  ?label_phaeopigments
+  ?result_phaeopigments
+  ?value_phaeopigments
+  ?label_ammonium
+  ?result_ammonium
+  ?value_ammonium
+  ?taxonannotation
+  ?taxonid
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -25,10 +39,45 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ROSKOGO~5 ESC68N~5") .# depth filter
+  ?observatory_id onto:fts ("MBAL4~5 AAOT~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 462.7280259750759) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2359") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Villefranche Bay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-07-28T04:49:45Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-03T09:21:02Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Metacypris~5") .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?pigments .
+  ?pigments rdfs:label ?label_pigments .
+  ?label_pigments onto:fts "pigments~5" .
+  ?observations sosa:hasResult ?result_pigments .
+  ?result_pigments qudt:numericValue ?value_pigments .
+  FILTER(?value_pigments < 77)
+  ?observations sosa:observedProperty ?phaeopigments .
+  ?phaeopigments rdfs:label ?label_phaeopigments .
+  ?label_phaeopigments onto:fts "phaeopigments~5" .
+  ?observations sosa:hasResult ?result_phaeopigments .
+  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
+  FILTER(?value_phaeopigments <= 4)
+  ?observations sosa:observedProperty ?ammonium .
+  ?ammonium rdfs:label ?label_ammonium .
+  ?label_ammonium onto:fts "ammonium~5" .
+  ?observations sosa:hasResult ?result_ammonium .
+  ?result_ammonium qudt:numericValue ?value_ammonium .
+  FILTER(?value_ammonium <= 77)
 }

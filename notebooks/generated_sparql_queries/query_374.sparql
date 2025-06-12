@@ -15,15 +15,12 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
   ?taxonannotation
   ?taxonid
     ?sname
   ?rank
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,13 +31,11 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("LMO~5 OSD74~5") .# depth filter
+  ?observatory_id onto:fts ("OSD74~5 PiEGetxo~5 NRMCB~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 18.705285324325473) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3452") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3315") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -49,16 +44,16 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Erythrobacter_longus~5") .
+  ?sname onto:fts ("Eubacterium_sp._68-3-10~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite <= 48.80049641898236)
+  ?rank onto:fts ("genus~5") .
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 27) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 27) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

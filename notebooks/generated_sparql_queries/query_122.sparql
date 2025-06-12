@@ -15,19 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
-  ?label_organism_count
-  ?result_organism_count
-  ?value_organism_count
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,43 +23,11 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ESC68N~5 HCMR-1~5 IUIEilat~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 792.7039629441124) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Calditrichae~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 51.05303504723958) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 51.05303504723958) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure > 63.56123977991792)
-  ?observations sosa:observedProperty ?organism_count .
-  ?organism_count rdfs:label ?label_organism_count .
-  ?label_organism_count onto:fts "organism_count~5" .
-  ?observations sosa:hasResult ?result_organism_count .
-  ?result_organism_count qudt:numericValue ?value_organism_count .
-  FILTER(?value_organism_count < 63.81497016327857)
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-09-19T21:12:44Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-06T13:53:35Z"^^xsd:date) .
 }

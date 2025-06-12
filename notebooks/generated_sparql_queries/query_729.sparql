@@ -15,14 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_silicate
-  ?result_silicate
-  ?value_silicate
-  ?label_ammonium
-  ?result_ammonium
-  ?value_ammonium
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,22 +26,7 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 442.2271501582127) .
+  FILTER(?depth_value >= 916) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?silicate .
-  ?silicate rdfs:label ?label_silicate .
-  ?label_silicate onto:fts "silicate~5" .
-  ?observations sosa:hasResult ?result_silicate .
-  ?result_silicate qudt:numericValue ?value_silicate .
-  FILTER(?value_silicate >= 61.99863604887701)
-  ?observations sosa:observedProperty ?ammonium .
-  ?ammonium rdfs:label ?label_ammonium .
-  ?label_ammonium onto:fts "ammonium~5" .
-  ?observations sosa:hasResult ?result_ammonium .
-  ?result_ammonium qudt:numericValue ?value_ammonium .
-  FILTER(?value_ammonium > 87.19571081470289)
 }

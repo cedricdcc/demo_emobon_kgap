@@ -15,17 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sediment_temp
-  ?result_sediment_temp
-  ?value_sediment_temp
-  ?label_turbidity
-  ?result_turbidity
-  ?value_turbidity
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,29 +23,16 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
   
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("RFormosa~5 MBAL4~5 PiEGetxo~5") .# depth filter
+  
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2401") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sediment_temp .
-  ?sediment_temp rdfs:label ?label_sediment_temp .
-  ?label_sediment_temp onto:fts "sediment_temp~5" .
-  ?observations sosa:hasResult ?result_sediment_temp .
-  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
-  FILTER(?value_sediment_temp < 30.950016979916285)
-  ?observations sosa:observedProperty ?turbidity .
-  ?turbidity rdfs:label ?label_turbidity .
-  ?label_turbidity onto:fts "turbidity~5" .
-  ?observations sosa:hasResult ?result_turbidity .
-  ?result_turbidity qudt:numericValue ?value_turbidity .
-  FILTER(?value_turbidity < 97.1509607482576)
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp >= 36.41917228635716)
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-09-19T10:59:45Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-07-17T00:57:00Z"^^xsd:date) .
 }

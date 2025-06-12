@@ -17,7 +17,8 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,22 +29,19 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("French part of the English Channel~5") .
+  ?mrgn onto:fts ("Gulf of Eilat~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-07-01T17:09:20Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-30T03:02:57Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-03-15T14:00:27Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-07-21T06:43:53Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Desulfobacter~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("phylum~5") .
 }

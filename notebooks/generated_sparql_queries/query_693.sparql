@@ -15,20 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_turbidity
-  ?result_turbidity
-  ?value_turbidity
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
   ?taxonannotation
   ?taxonid
-    
-  ?rank
-  ?lsuval
-  ?ssuval
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,49 +26,15 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ROSKOGO~5 LMO~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 567.0368289146162) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Vigo Seamount~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-06-10T17:50:05Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-11-07T19:43:38Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("genus~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 44.54691429032768) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 44.54691429032768) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?turbidity .
-  ?turbidity rdfs:label ?label_turbidity .
-  ?label_turbidity onto:fts "turbidity~5" .
-  ?observations sosa:hasResult ?result_turbidity .
-  ?result_turbidity qudt:numericValue ?value_turbidity .
-  FILTER(?value_turbidity >= 3.9284692470885396)
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure > 46.85250353786111)
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Insecta~5") .
 }

@@ -17,18 +17,12 @@ SELECT
   
   ?observations
   
-  ?label_nitrate
-  ?result_nitrate
-  ?value_nitrate
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
-  ?label_conduc
-  ?result_conduc
-  ?value_conduc
-  ?taxonannotation
-  ?taxonid
-    ?sname
+  ?label_ammonium
+  ?result_ammonium
+  ?value_ammonium
+  ?label_nitrite
+  ?result_nitrite
+  ?value_nitrite
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,38 +31,28 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("LMO~5 PiEGetxo~5 NRMCB~5") .# depth filter
-  
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 502) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Acinetobacter~5") .
+  # dateTime event
+  FILTER(?datetime_begin >= "2024-01-07T19:57:01Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-04-15T12:28:29Z"^^xsd:date) .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?nitrate .
-  ?nitrate rdfs:label ?label_nitrate .
-  ?label_nitrate onto:fts "nitrate~5" .
-  ?observations sosa:hasResult ?result_nitrate .
-  ?result_nitrate qudt:numericValue ?value_nitrate .
-  FILTER(?value_nitrate >= 4.172613487503318)
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll >= 5.5049869842623504)
-  ?observations sosa:observedProperty ?conduc .
-  ?conduc rdfs:label ?label_conduc .
-  ?label_conduc onto:fts "conduc~5" .
-  ?observations sosa:hasResult ?result_conduc .
-  ?result_conduc qudt:numericValue ?value_conduc .
-  FILTER(?value_conduc > 57.82326641771643)
+  ?observations sosa:observedProperty ?ammonium .
+  ?ammonium rdfs:label ?label_ammonium .
+  ?label_ammonium onto:fts "ammonium~5" .
+  ?observations sosa:hasResult ?result_ammonium .
+  ?result_ammonium qudt:numericValue ?value_ammonium .
+  FILTER(?value_ammonium < 87)
+  ?observations sosa:observedProperty ?nitrite .
+  ?nitrite rdfs:label ?label_nitrite .
+  ?label_nitrite onto:fts "nitrite~5" .
+  ?observations sosa:hasResult ?result_nitrite .
+  ?result_nitrite qudt:numericValue ?value_nitrite .
+  FILTER(?value_nitrite > 76)
 }

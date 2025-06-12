@@ -20,13 +20,9 @@ SELECT
   ?label_chlorophyll
   ?result_chlorophyll
   ?value_chlorophyll
-  ?label_silicate
-  ?result_silicate
-  ?value_silicate
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -37,26 +33,29 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("RFormosa~5 LMO~5") .# depth filter
   
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-01-19T02:16:50Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-07-13T14:45:46Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Bacteroides_luti~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
+  ?sname onto:fts ("Iamia~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 97.77971704120705) . 
+    FILTER(?lsuval >= 49) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 97.77971704120705) .  
+    FILTER(?ssuval >= 49) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
@@ -67,11 +66,5 @@ WHERE {
   ?label_chlorophyll onto:fts "chlorophyll~5" .
   ?observations sosa:hasResult ?result_chlorophyll .
   ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll >= 30.810269384123867)
-  ?observations sosa:observedProperty ?silicate .
-  ?silicate rdfs:label ?label_silicate .
-  ?label_silicate onto:fts "silicate~5" .
-  ?observations sosa:hasResult ?result_silicate .
-  ?result_silicate qudt:numericValue ?value_silicate .
-  FILTER(?value_silicate <= 17.274791086047113)
+  FILTER(?value_chlorophyll > 13)
 }

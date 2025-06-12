@@ -17,7 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
   ?lsuval
   ?ssuval
@@ -33,7 +33,7 @@ WHERE {
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5207") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3339") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -41,17 +41,15 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Cephaloticoccus~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  ?rank onto:fts ("species~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 75.43789943733451) . 
+    FILTER(?lsuval >= 50) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 75.43789943733451) .  
+    FILTER(?ssuval >= 50) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

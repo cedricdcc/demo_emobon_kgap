@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_density
-  ?result_density
-  ?value_density
   ?taxonannotation
   ?taxonid
     ?sname
@@ -33,32 +28,21 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("MBAL4~5 PiEGetxo~5 OOB~5") .# depth filter
+  ?observatory_id onto:fts ("HCMR-1~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 786.330445745363) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3386") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-10-09T04:41:18Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-27T16:10:25Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-05-28T04:30:05Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-12-07T09:38:15Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Pelagodinium~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?density .
-  ?density rdfs:label ?label_density .
-  ?label_density onto:fts "density~5" .
-  ?observations sosa:hasResult ?result_density .
-  ?result_density qudt:numericValue ?value_density .
-  FILTER(?value_density <= 33.223103953119434)
+  ?sname onto:fts ("Zoopagomycota~5") .
 }

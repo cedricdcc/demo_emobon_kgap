@@ -17,16 +17,15 @@ SELECT
   
   ?observations
   
+  ?label_pressure
+  ?result_pressure
+  ?value_pressure
   ?label_ph
   ?result_ph
   ?value_ph
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
-  ?taxonannotation
-  ?taxonid
-    ?sname
-  ?rank
+  ?label_sea_surf_temp
+  ?result_sea_surf_temp
+  ?value_sea_surf_temp
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,35 +36,33 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 492.02203951538195) .
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/26567") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Gulf of Eilat~5") .
+  ?mrgn onto:fts ("Villefranche Bay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # linking between taxon annotations and sample
-  ?taxonannotation a prod:TaxonomicAnnotation .
-  ?taxonannotation prod:ofSample ?sample .
-  ?taxonannotation dct:identifier ?taxonid .
-      
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Anaeromyxobacter~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
+  ?observations sosa:observedProperty ?pressure .
+  ?pressure rdfs:label ?label_pressure .
+  ?label_pressure onto:fts "pressure~5" .
+  ?observations sosa:hasResult ?result_pressure .
+  ?result_pressure qudt:numericValue ?value_pressure .
+  FILTER(?value_pressure >= 59)
   ?observations sosa:observedProperty ?ph .
   ?ph rdfs:label ?label_ph .
   ?label_ph onto:fts "ph~5" .
   ?observations sosa:hasResult ?result_ph .
   ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph >= 93.79363723664275)
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll > 26.885342390747567)
+  FILTER(?value_ph > 68)
+  ?observations sosa:observedProperty ?sea_surf_temp .
+  ?sea_surf_temp rdfs:label ?label_sea_surf_temp .
+  ?label_sea_surf_temp onto:fts "sea_surf_temp~5" .
+  ?observations sosa:hasResult ?result_sea_surf_temp .
+  ?result_sea_surf_temp qudt:numericValue ?value_sea_surf_temp .
+  FILTER(?value_sea_surf_temp <= 28)
 }

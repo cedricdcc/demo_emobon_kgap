@@ -17,12 +17,15 @@ SELECT
   
   ?observations
   
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
-  ?label_sea_subsurf_temp
-  ?result_sea_subsurf_temp
-  ?value_sea_subsurf_temp
+  ?label_pigments
+  ?result_pigments
+  ?value_pigments
+  ?label_density
+  ?result_density
+  ?value_density
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -33,34 +36,40 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("NRMCB~5") .# depth filter
+  ?observatory_id onto:fts ("RFormosa~5 OSD74~5 ROSKOGO~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 300.5506810548443) .
+  FILTER(?depth_value < 404) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4279") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Belgian part of the North Sea~5") .
+  ?mrgn onto:fts ("Mediterranean Sea - Eastern Basin~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-04-17T10:50:30Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-05-11T22:34:08Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-09-21T21:18:35Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-08-16T15:10:05Z"^^xsd:date) .
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure < 21.63500753119948)
-  ?observations sosa:observedProperty ?sea_subsurf_temp .
-  ?sea_subsurf_temp rdfs:label ?label_sea_subsurf_temp .
-  ?label_sea_subsurf_temp onto:fts "sea_subsurf_temp~5" .
-  ?observations sosa:hasResult ?result_sea_subsurf_temp .
-  ?result_sea_subsurf_temp qudt:numericValue ?value_sea_subsurf_temp .
-  FILTER(?value_sea_subsurf_temp >= 49.69654923330103)
+  ?observations sosa:observedProperty ?pigments .
+  ?pigments rdfs:label ?label_pigments .
+  ?label_pigments onto:fts "pigments~5" .
+  ?observations sosa:hasResult ?result_pigments .
+  ?result_pigments qudt:numericValue ?value_pigments .
+  FILTER(?value_pigments < 18)
+  ?observations sosa:observedProperty ?density .
+  ?density rdfs:label ?label_density .
+  ?label_density onto:fts "density~5" .
+  ?observations sosa:hasResult ?result_density .
+  ?result_density qudt:numericValue ?value_density .
+  FILTER(?value_density > 37)
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential <= 34)
 }

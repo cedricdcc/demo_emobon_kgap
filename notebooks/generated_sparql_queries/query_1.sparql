@@ -17,19 +17,12 @@ SELECT
   
   ?observations
   
-  ?label_chlorophyll
-  ?result_chlorophyll
-  ?value_chlorophyll
-  ?label_turbidity
-  ?result_turbidity
-  ?value_turbidity
   ?label_sea_subsurf_salinity
   ?result_sea_subsurf_salinity
   ?value_sea_subsurf_salinity
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
   ?lsuval
   ?ssuval
 WHERE {
@@ -42,11 +35,13 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5 BPNS~5") .# depth filter
+  ?observatory_id onto:fts ("NRMCB~5 RFormosa~5 VB~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 134) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2359") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3314") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -54,36 +49,24 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Lepidopleuridae~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 87.8811434499092) . 
+    FILTER(?lsuval >= 0) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 87.8811434499092) .  
+    FILTER(?ssuval >= 0) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
   ?observations sosa:hasFeatureOfInterest ?sample .
     
-  ?observations sosa:observedProperty ?chlorophyll .
-  ?chlorophyll rdfs:label ?label_chlorophyll .
-  ?label_chlorophyll onto:fts "chlorophyll~5" .
-  ?observations sosa:hasResult ?result_chlorophyll .
-  ?result_chlorophyll qudt:numericValue ?value_chlorophyll .
-  FILTER(?value_chlorophyll > 97.72313383828853)
-  ?observations sosa:observedProperty ?turbidity .
-  ?turbidity rdfs:label ?label_turbidity .
-  ?label_turbidity onto:fts "turbidity~5" .
-  ?observations sosa:hasResult ?result_turbidity .
-  ?result_turbidity qudt:numericValue ?value_turbidity .
-  FILTER(?value_turbidity > 48.616518388938466)
   ?observations sosa:observedProperty ?sea_subsurf_salinity .
   ?sea_subsurf_salinity rdfs:label ?label_sea_subsurf_salinity .
   ?label_sea_subsurf_salinity onto:fts "sea_subsurf_salinity~5" .
   ?observations sosa:hasResult ?result_sea_subsurf_salinity .
   ?result_sea_subsurf_salinity qudt:numericValue ?value_sea_subsurf_salinity .
-  FILTER(?value_sea_subsurf_salinity < 49.12130548829408)
+  FILTER(?value_sea_subsurf_salinity > 75)
 }

@@ -15,15 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_phaeopigments
-  ?result_phaeopigments
-  ?value_phaeopigments
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -34,11 +28,13 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("RFormosa~5 BPNS~5 ROSKOGO~5") .# depth filter
+  ?observatory_id onto:fts ("IUIEilat~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value >= 617) .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("North Atlantic Ocean~5") .
+  ?mrgn onto:fts ("Bay of Biscay~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -47,16 +43,5 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Apiales~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("phylum~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?phaeopigments .
-  ?phaeopigments rdfs:label ?label_phaeopigments .
-  ?label_phaeopigments onto:fts "phaeopigments~5" .
-  ?observations sosa:hasResult ?result_phaeopigments .
-  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments <= 91.00680801581787)
+  ?sname onto:fts ("Rhabditophora~5") .
 }

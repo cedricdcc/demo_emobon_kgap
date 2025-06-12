@@ -15,18 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?label_phaeopigments
-  ?result_phaeopigments
-  ?value_phaeopigments
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -37,39 +28,24 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OOB~5 ESC68N~5 MBAL4~5") .# depth filter
+  ?observatory_id onto:fts ("ROSKOGO~5 MBAL4~5 OOB~5") .# depth filter
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25678") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5367") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Norwegian part of the Norwegian Sea~5") .
+  ?mrgn onto:fts ("Indian Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2023-01-09T00:24:19Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-10-04T11:58:02Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-11-03T16:42:05Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-03-29T02:44:23Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph > 52.64306037814565)
-  ?observations sosa:observedProperty ?phaeopigments .
-  ?phaeopigments rdfs:label ?label_phaeopigments .
-  ?label_phaeopigments onto:fts "phaeopigments~5" .
-  ?observations sosa:hasResult ?result_phaeopigments .
-  ?result_phaeopigments qudt:numericValue ?value_phaeopigments .
-  FILTER(?value_phaeopigments <= 40.781850805911944)
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Francisella~5") .
 }

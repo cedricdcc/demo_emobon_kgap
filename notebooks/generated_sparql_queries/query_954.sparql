@@ -15,17 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ph
-  ?result_ph
-  ?value_ph
-  ?label_down_par
-  ?result_down_par
-  ?value_down_par
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -38,25 +27,7 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph >= 19.055312764235378)
-  ?observations sosa:observedProperty ?down_par .
-  ?down_par rdfs:label ?label_down_par .
-  ?label_down_par onto:fts "down_par~5" .
-  ?observations sosa:hasResult ?result_down_par .
-  ?result_down_par qudt:numericValue ?value_down_par .
-  FILTER(?value_down_par >= 66.9066659836291)
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure > 72.44766352545675)
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-03-22T02:02:05Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-07T22:52:24Z"^^xsd:date) .
 }

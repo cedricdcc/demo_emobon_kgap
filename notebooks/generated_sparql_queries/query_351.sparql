@@ -18,6 +18,7 @@ SELECT
   ?taxonannotation
   ?taxonid
     
+  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -32,18 +33,23 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-10-07T19:22:36Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2024-08-07T03:03:49Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("family~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 36.588721779662926) . 
+    FILTER(?lsuval >= 41) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 36.588721779662926) .  
+    FILTER(?ssuval >= 41) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

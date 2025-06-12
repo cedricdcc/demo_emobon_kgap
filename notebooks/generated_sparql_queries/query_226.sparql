@@ -15,6 +15,11 @@ SELECT
   ?observatory
   ?event
   
+  ?observations
+  
+  ?label_redox_potential
+  ?result_redox_potential
+  ?value_redox_potential
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,7 +32,19 @@ WHERE {
   
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Adriatic Sea~5") .
+  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-04-30T05:49:28Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-09-10T01:05:58Z"^^xsd:date) .
+  ?observations a sosa:Observation .
+  ?observations sosa:hasFeatureOfInterest ?sample .
+    
+  ?observations sosa:observedProperty ?redox_potential .
+  ?redox_potential rdfs:label ?label_redox_potential .
+  ?label_redox_potential onto:fts "redox_potential~5" .
+  ?observations sosa:hasResult ?result_redox_potential .
+  ?result_redox_potential qudt:numericValue ?value_redox_potential .
+  FILTER(?value_redox_potential < 43)
 }

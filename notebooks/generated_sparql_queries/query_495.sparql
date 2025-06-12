@@ -15,6 +15,10 @@ SELECT
   ?observatory
   ?event
   
+  ?taxonannotation
+  ?taxonid
+    ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -27,7 +31,13 @@ WHERE {
   
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-12-16T02:36:58Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-05T04:20:07Z"^^xsd:date) .
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Pleurocapsales~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("species~5") .
 }

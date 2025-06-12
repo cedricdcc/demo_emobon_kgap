@@ -28,6 +28,6 @@ WHERE {
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-01-05T03:18:32Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-09-27T19:12:52Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-07-24T04:46:40Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-10-20T00:01:06Z"^^xsd:date) .
 }

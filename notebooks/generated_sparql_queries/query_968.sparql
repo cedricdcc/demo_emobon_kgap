@@ -15,15 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_diss_oxygen
-  ?result_diss_oxygen
-  ?value_diss_oxygen
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -36,41 +30,30 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("PiEGetxo~5 BPNS~5 AAOT~5") .# depth filter
+  ?observatory_id onto:fts ("EMT21~5 OOB~5") .# depth filter
   
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("North Atlantic Ocean~5") .
+  ?mrgn onto:fts ("Tyrrhenian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-02-18T02:39:11Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2022-03-19T07:10:25Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2022-03-15T21:09:32Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2022-07-12T04:09:08Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Granulosicoccaceae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  ?sname onto:fts ("Cirratulidae~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 75.77022086572907) . 
+    FILTER(?lsuval >= 29) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 75.77022086572907) .  
+    FILTER(?ssuval >= 29) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?diss_oxygen .
-  ?diss_oxygen rdfs:label ?label_diss_oxygen .
-  ?label_diss_oxygen onto:fts "diss_oxygen~5" .
-  ?observations sosa:hasResult ?result_diss_oxygen .
-  ?result_diss_oxygen qudt:numericValue ?value_diss_oxygen .
-  FILTER(?value_diss_oxygen >= 1.8655988732865114)
 }

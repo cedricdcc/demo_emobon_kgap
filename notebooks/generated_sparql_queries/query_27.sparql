@@ -18,6 +18,7 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
+  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -28,16 +29,21 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("North Atlantic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-02-05T13:47:38Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-02-20T03:12:58Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-03-28T04:27:17Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-11T16:39:54Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Rubellimicrobium~5") .
+  ?sname onto:fts ("Botryochloridaceae~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("genus~5") .
 }

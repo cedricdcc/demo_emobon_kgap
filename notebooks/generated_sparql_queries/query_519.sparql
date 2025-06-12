@@ -17,7 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
 WHERE {
   ?sample a sosa:Sample .
@@ -29,18 +29,15 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 226.93359921142508) .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2023-07-30T14:01:00Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-08T21:38:31Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Nanomonadea~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
+  ?rank onto:fts ("order~5") .
 }

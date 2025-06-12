@@ -25,14 +25,9 @@ WHERE {
   # name of observatory
   # depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 767.2342864917912) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/1904") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-12-13T11:27:23Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-06-03T13:52:29Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2025-07-20T18:09:43Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-10-22T07:45:38Z"^^xsd:date) .
 }

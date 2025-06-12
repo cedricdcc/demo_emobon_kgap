@@ -20,6 +20,9 @@ SELECT
   ?label_down_par
   ?result_down_par
   ?value_down_par
+  ?label_phosphate
+  ?result_phosphate
+  ?value_phosphate
   ?taxonannotation
   ?taxonid
     
@@ -33,13 +36,12 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("HCMR-1~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 566.647965485334) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Vigo Seamount~5") .
+  FILTER(?depth_value <= 132) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -49,11 +51,11 @@ WHERE {
       
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 56.6228593876303) . 
+    FILTER(?lsuval >= 9) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 56.6228593876303) .  
+    FILTER(?ssuval >= 9) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
   ?observations a sosa:Observation .
@@ -64,5 +66,11 @@ WHERE {
   ?label_down_par onto:fts "down_par~5" .
   ?observations sosa:hasResult ?result_down_par .
   ?result_down_par qudt:numericValue ?value_down_par .
-  FILTER(?value_down_par > 18.212269051103547)
+  FILTER(?value_down_par > 91)
+  ?observations sosa:observedProperty ?phosphate .
+  ?phosphate rdfs:label ?label_phosphate .
+  ?label_phosphate onto:fts "phosphate~5" .
+  ?observations sosa:hasResult ?result_phosphate .
+  ?result_phosphate qudt:numericValue ?value_phosphate .
+  FILTER(?value_phosphate >= 27)
 }

@@ -18,9 +18,6 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
-  ?lsuval
-  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -29,37 +26,25 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("HCMR-1~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 779.6763043625712) .
+  FILTER(?depth_value < 172) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Baltic Sea~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2022-10-30T09:47:49Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-08-10T20:39:43Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-10-29T08:44:40Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-14T02:26:30Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Persicobacteraceae~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
-  OPTIONAL {
-    ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 90.517873700313) . 
-  }
-  OPTIONAL {
-    ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 90.517873700313) .  
-  }
-  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
+  ?sname onto:fts ("Methyloceanibacter_caenitepidi~5") .
 }

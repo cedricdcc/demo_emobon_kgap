@@ -201,7 +201,7 @@ def generate_random_parameters():
         elif parameter == "species_name":
             parameters[parameter] = random.choice(df_species_names["sname"].tolist())
         elif parameter == "abundance_threshold":
-            parameters[parameter] = str(random.uniform(0, 100))
+            parameters[parameter] = str(random.randint(0, 100))
         elif parameter == "sampling_type":
             parameters[parameter] = random.choice(
                 ["metagenomic", "molecular", "biological", "chemical", "physical"]
@@ -212,7 +212,7 @@ def generate_random_parameters():
             )
         elif parameter == "depth":
             parameters[parameter] = generate_depth_filter(
-                str(random.uniform(0, 1000)), random.choice(["<", "<=", ">", ">="])
+                str(random.randint(0, 1000)), random.choice(["<", "<=", ">", ">="])
             )
         elif parameter == "property_filters":
             num_filters = random.randint(1, 3)
@@ -222,7 +222,7 @@ def generate_random_parameters():
             )
             filters = []
             for property_name in chosen_properties:
-                value = str(random.uniform(0, 100))  # Assuming the value is a float
+                value = str(random.randint(0, 100))  # Now value is an integer
                 operator = random.choice(["<", "<=", ">", ">="])
                 filters.append(generate_property_filter(property_name, value, operator))
             parameters[parameter] = filters

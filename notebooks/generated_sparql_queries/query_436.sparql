@@ -23,14 +23,13 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("ESC68N~5 LMO~5 AAOT~5") .# depth filter
   
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Porto Valley~5") .
+  ?mrgn onto:fts ("North Atlantic Ocean~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2025-05-08T22:23:25Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-24T05:57:26Z"^^xsd:date) .
 }

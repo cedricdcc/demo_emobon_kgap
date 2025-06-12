@@ -17,8 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
-  ?rank
+    ?sname
   ?lsuval
   ?ssuval
 WHERE {
@@ -29,37 +28,24 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("LMO~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 738.9228874537371) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4263") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Baltic Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-02-08T04:48:40Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-12-10T18:17:21Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("class~5") .
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Paracyclopina~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 32.02474940577783) . 
+    FILTER(?lsuval >= 73) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 32.02474940577783) .  
+    FILTER(?ssuval >= 73) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

@@ -30,25 +30,25 @@ WHERE {
   # name of observatory
   # depth filter
   
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Gulf of Lion~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-11-22T06:27:37Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-06-16T19:29:58Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Rhodobiaceae~5") .
+  ?sname onto:fts ("Paragymnodinium_shiwhaense~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 19.169591406774533) . 
+    FILTER(?lsuval >= 5) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 19.169591406774533) .  
+    FILTER(?ssuval >= 5) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

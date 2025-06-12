@@ -31,12 +31,12 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 232.1763173600595) .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("North Sea~5") .
+  FILTER(?depth_value <= 622) .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2023-09-07T15:41:37Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-22T19:16:09Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
@@ -44,11 +44,11 @@ WHERE {
       
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 79.97295450758585) . 
+    FILTER(?lsuval >= 95) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 79.97295450758585) .  
+    FILTER(?ssuval >= 95) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

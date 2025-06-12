@@ -29,34 +29,27 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
+  # depth filter
   
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ROSKOGO~5 NRMCB~5") .# depth filter
-  
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 789.6545683280619) .
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2353") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-08-13T20:22:50Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-10-26T11:05:44Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2022-06-16T00:36:50Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2023-03-25T01:58:15Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("super kingdom~5") .
+  ?rank onto:fts ("kingdom~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 39.09219679621234) . 
+    FILTER(?lsuval >= 2) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 39.09219679621234) .  
+    FILTER(?ssuval >= 2) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

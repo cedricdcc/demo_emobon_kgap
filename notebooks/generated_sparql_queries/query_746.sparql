@@ -15,15 +15,11 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_sediment_temp
-  ?result_sediment_temp
-  ?value_sediment_temp
   ?taxonannotation
   ?taxonid
-    ?sname
-  ?rank
+    
+  ?lsuval
+  ?ssuval
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -36,28 +32,24 @@ WHERE {
   
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Mediterranean Sea - Western Basin~5") .
+  ?mrgn onto:fts ("Gulf of Lion~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2025-12-25T19:07:17Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-12-28T14:28:33Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2023-01-03T09:29:39Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-08-01T04:54:37Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Vibrio_coralliilyticus~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?sediment_temp .
-  ?sediment_temp rdfs:label ?label_sediment_temp .
-  ?label_sediment_temp onto:fts "sediment_temp~5" .
-  ?observations sosa:hasResult ?result_sediment_temp .
-  ?result_sediment_temp qudt:numericValue ?value_sediment_temp .
-  FILTER(?value_sediment_temp < 8.064462132853423)
+  OPTIONAL {
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= 83) . 
+  }
+  OPTIONAL {
+    ?taxonannotation prod:ssuRNA ?ssuval .
+    FILTER(?ssuval >= 83) .  
+  }
+  FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

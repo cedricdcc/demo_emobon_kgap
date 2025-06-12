@@ -15,11 +15,6 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_ph
-  ?result_ph
-  ?value_ph
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -30,18 +25,12 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3558") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-08-28T11:25:31Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-01-22T06:57:41Z"^^xsd:date) .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?ph .
-  ?ph rdfs:label ?label_ph .
-  ?label_ph onto:fts "ph~5" .
-  ?observations sosa:hasResult ?result_ph .
-  ?result_ph qudt:numericValue ?value_ph .
-  FILTER(?value_ph < 98.43112117958577)
+  FILTER(?datetime_begin >= "2025-12-26T16:14:13Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-12-27T13:20:36Z"^^xsd:date) .
 }

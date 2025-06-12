@@ -33,11 +33,11 @@ prompt = ChatPromptTemplate.from_messages(
             "Also generate questions asking for different aspects of the query, for instance,"
             "if sample, observatory, and event are in the query, you can ask about the sample,"
             "the observatory, or the event, or a combination of them."
-            "Make sure to always include all the main entities and all relationships in all the questions."
+            "Make sure to always include all the main entities and all relationships in the question."
             "These will be in the lines where there is onto:fts , FILTER regex and FILTER"
             "focus on including all the values that the sparql query filters on,"
             "give the reponse in format of a dictionary with keys sparql_query and question, like this: "
-            "'sparql_query': your_sparql_query, 'questions': ['your_question1', 'your_question2']"
+            "'sparql_query': your_sparql_query, 'question': 'your_question'"
             "do not include any other text in the response.",
         ),
         ("user", "Generate a question for the following SPARQL query: {sparql_query}"),

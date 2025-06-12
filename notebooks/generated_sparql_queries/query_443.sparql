@@ -17,7 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?lsuval
   ?ssuval
 WHERE {
@@ -30,20 +30,31 @@ WHERE {
   # name of observatory
   # depth filter
   
+  # Marine Region (ID)
+  ?observatory emobon:marineRegion ?mrgid . 
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/17355") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Norwegian Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2022-02-07T18:01:56Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-08-29T21:35:43Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Synechococcus_sp._RCC307~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 92.18639383174916) . 
+    FILTER(?lsuval >= 91) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 92.18639383174916) .  
+    FILTER(?ssuval >= 91) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

@@ -25,11 +25,8 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("AAOT~5 OOB~5") .# depth filter
+  ?observatory_id onto:fts ("OOB~5") .# depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/4889") .
   ?event prov:startedAtTime ?datetime_begin . 
   
 }

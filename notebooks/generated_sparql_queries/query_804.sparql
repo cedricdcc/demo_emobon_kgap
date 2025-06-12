@@ -31,32 +31,29 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("VB~5 EMT21~5 IUIEilat~5") .# depth filter
+  ?observatory_id onto:fts ("RFormosa~5") .# depth filter
   
-  # Marine Region (ID)
-  ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
+  # marineregion name
+  ?observatory emobon:marineRegionName ?mrgn . 
+  ?mrgn onto:fts ("Crete Sea~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2023-11-08T06:22:24Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-01-28T02:58:23Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Desulfobulbus_mediterraneus~5") .
+  ?sname onto:fts ("Phaeodactylaceae~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  ?rank onto:fts ("class~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 91.31354558804153) . 
+    FILTER(?lsuval >= 71) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 91.31354558804153) .  
+    FILTER(?ssuval >= 71) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

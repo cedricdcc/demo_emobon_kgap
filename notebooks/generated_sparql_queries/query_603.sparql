@@ -17,7 +17,7 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    
+    ?sname
   ?rank
   ?lsuval
   ?ssuval
@@ -29,18 +29,16 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  
-  ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("BPNS~5 AAOT~5") .# depth filter
+  # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value <= 440.6551513398407) .
+  FILTER(?depth_value < 239) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
   FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/5368") .
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Tyrrhenian Sea~5") .
+  ?mrgn onto:fts ("Bay of Banyuls-sur-Mer~5") .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -48,15 +46,17 @@ WHERE {
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
+  ?taxonid dct:scientificName ?sname .
+  ?sname onto:fts ("Vicinamibacter~5") .
   ?taxonid dct:taxonRank ?rank .
   ?rank onto:fts ("species~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 33.18373979427906) . 
+    FILTER(?lsuval >= 31) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 33.18373979427906) .  
+    FILTER(?ssuval >= 31) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

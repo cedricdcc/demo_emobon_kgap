@@ -17,7 +17,8 @@ SELECT
   
   ?taxonannotation
   ?taxonid
-    ?sname
+    
+  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -32,26 +33,23 @@ WHERE {
   
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/2350") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/3610") .
   ?event prov:startedAtTime ?datetime_begin . 
   
-  # dateTime event
-  FILTER(?datetime_begin >= "2024-12-08T13:24:47Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2024-12-24T13:50:09Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Candidatus_Planktoluna~5") .
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("family~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 82.75913039595903) . 
+    FILTER(?lsuval >= 98) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 82.75913039595903) .  
+    FILTER(?ssuval >= 98) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

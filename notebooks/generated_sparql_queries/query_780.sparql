@@ -18,7 +18,6 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
 WHERE {
   ?sample a sosa:Sample .
   # link event
@@ -31,21 +30,21 @@ WHERE {
   ?observatory emobon:observatoryId ?observatory_id .
   ?observatory_id onto:fts ("RFormosa~5") .# depth filter
   
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value > 542) .
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
-  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/25242") .
-  # marineregion name
-  ?observatory emobon:marineRegionName ?mrgn . 
-  ?mrgn onto:fts ("Tyrrhenian Sea~5") .
+  FILTER regex(str(?mrgid), "http://marineregions.org/mrgid/26567") .
   ?event prov:startedAtTime ?datetime_begin . 
   
+  # dateTime event
+  FILTER(?datetime_begin >= "2025-06-10T06:04:56Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-11-04T03:14:21Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Desulfobulbaceae_bacterium_BRH_c16a~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
+  ?sname onto:fts ("Anaerostipes~5") .
 }

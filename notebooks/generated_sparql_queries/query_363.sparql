@@ -26,7 +26,7 @@ WHERE {
   # depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value >= 579.8878325520773) .
+  FILTER(?depth_value > 70) .
   ?event prov:startedAtTime ?datetime_begin . 
   
 }

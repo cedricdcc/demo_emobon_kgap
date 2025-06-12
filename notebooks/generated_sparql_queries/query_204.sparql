@@ -18,7 +18,6 @@ SELECT
   ?taxonannotation
   ?taxonid
     ?sname
-  ?rank
   ?lsuval
   ?ssuval
 WHERE {
@@ -31,10 +30,10 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("ROSKOGO~5 RFormosa~5 NRMCB~5") .# depth filter
+  ?observatory_id onto:fts ("EMT21~5 VB~5") .# depth filter
   
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value > 244.89164403872587) .
+  FILTER(?depth_value >= 385) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # linking between taxon annotations and sample
@@ -43,16 +42,14 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Psychroglaciecola~5") .
-  ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("species~5") .
+  ?sname onto:fts ("Diptera~5") .
   OPTIONAL {
     ?taxonannotation prod:lsuRNA ?lsuval .
-    FILTER(?lsuval >= 4.0978652096024355) . 
+    FILTER(?lsuval >= 1) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
-    FILTER(?ssuval >= 4.0978652096024355) .  
+    FILTER(?ssuval >= 1) .  
   }
   FILTER(BOUND(?lsuval) || BOUND(?ssuval))
 }

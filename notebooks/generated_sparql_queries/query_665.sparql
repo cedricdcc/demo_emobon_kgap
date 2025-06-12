@@ -26,7 +26,9 @@ WHERE {
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
   # name of observatory
-  # depth filter
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("LMO~5 BPNS~5") .# depth filter
   
   ?event prov:startedAtTime ?datetime_begin . 
   
@@ -36,5 +38,5 @@ WHERE {
   ?taxonannotation dct:identifier ?taxonid .
       
   ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Hydrogenophilalia~5") .
+  ?sname onto:fts ("Halomonas_sulfidaeris~5") .
 }

@@ -15,17 +15,9 @@ SELECT
   ?observatory
   ?event
   
-  ?observations
-  
-  ?label_pressure
-  ?result_pressure
-  ?value_pressure
-  ?label_nitrite
-  ?result_nitrite
-  ?value_nitrite
   ?taxonannotation
   ?taxonid
-    ?sname
+    
   ?rank
 WHERE {
   ?sample a sosa:Sample .
@@ -37,37 +29,18 @@ WHERE {
   # name of observatory
   
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("OSD74~5 AAOT~5 RFormosa~5") .# depth filter
+  ?observatory_id onto:fts ("ESC68N~5") .# depth filter
   
-  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
-  FILTER(?depth_value < 822.0414672722542) .
   ?event prov:startedAtTime ?datetime_begin . 
   
   # dateTime event
-  FILTER(?datetime_begin >= "2024-11-11T19:41:58Z"^^xsd:date) .
-  FILTER(?datetime_begin <= "2025-01-22T17:56:30Z"^^xsd:date) .
+  FILTER(?datetime_begin >= "2024-10-23T20:25:02Z"^^xsd:date) .
+  FILTER(?datetime_begin <= "2025-10-22T21:17:37Z"^^xsd:date) .
   # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
       
-  ?taxonid dct:scientificName ?sname .
-  ?sname onto:fts ("Syndiniaceae~5") .
   ?taxonid dct:taxonRank ?rank .
-  ?rank onto:fts ("family~5") .
-  ?observations a sosa:Observation .
-  ?observations sosa:hasFeatureOfInterest ?sample .
-    
-  ?observations sosa:observedProperty ?pressure .
-  ?pressure rdfs:label ?label_pressure .
-  ?label_pressure onto:fts "pressure~5" .
-  ?observations sosa:hasResult ?result_pressure .
-  ?result_pressure qudt:numericValue ?value_pressure .
-  FILTER(?value_pressure <= 58.339713434652765)
-  ?observations sosa:observedProperty ?nitrite .
-  ?nitrite rdfs:label ?label_nitrite .
-  ?label_nitrite onto:fts "nitrite~5" .
-  ?observations sosa:hasResult ?result_nitrite .
-  ?result_nitrite qudt:numericValue ?value_nitrite .
-  FILTER(?value_nitrite > 48.31433146675208)
+  ?rank onto:fts ("phylum~5") .
 }
