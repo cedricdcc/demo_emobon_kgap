@@ -99,12 +99,12 @@ def generate_question(sparql_query):
     # Ensure the response is parsed as structured output
     try:
         response_data = eval(response)  # Convert string to dictionary
-        if not isinstance(response_data, dict) or "questions" not in response_data:
-            raise ValueError(
-                "Response does not contain the expected structured output."
-            )
+        if not isinstance(response_data, dict) or "question" not in response_data:
+            print("Warning: Response does not contain the expected structured output.")
+            response_data = {"sparql_query": sparql_query, "question": str(response)}
     except Exception as e:
-        raise ValueError(f"Failed to parse structured output: {e}")
+        print(f"Warning: Failed to parse structured output: {e}")
+        response_data = {"sparql_query": sparql_query, "question": str(response)}
 
     # Handle response as a string or list
     if isinstance(response, str):
