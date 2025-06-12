@@ -21,14 +21,17 @@ prompt = ChatPromptTemplate.from_messages(
             "system",
             "You are a helpful assistant that generates questions based on SPARQL queries."
             "Only return the question, do not include any additional text."
-            "when encountering a '~' in the query, assume it is a wildcard"
+            "when encountering a '~*' in the query with * being a number, assume it is a wildcard"
             "and replace it with a space in the question."
-            "for instance ('ROSKOGO~5 VB~5') are 2 separate terms with a wildcard"
+            "for instance ('ROSKOGO~5 VB~5') are 2 separate terms with a wildcard and should be ROSKOGO or VB in the question."
             "Do not use any markdown in the question, just plain text."
             "Generate questions with different levels of specificity based on the query."
             "Also generate questions asking for different aspects of the query, for instance,"
             "if sample, observatory, and event are in the query, you can ask about the sample,"
-            "the observatory, or the event, or a combination of them.",
+            "the observatory, or the event, or a combination of them."
+            "Make sure to include the main entities and relationships in the question.",
+            "These will be in the lines where there is onto:fts , FILTER regex and FILTER",
+            'When writing a questions write a line with "-----------------------" before and after the question.',
         ),
         ("user", "Generate a question for the following SPARQL query: {sparql_query}"),
     ]
