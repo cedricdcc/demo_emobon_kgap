@@ -1,8 +1,9 @@
 # this file is a testfile to see if the concept of taking in a sparql query and asking
 # a llm to generate a question that matches the query works
-
+import json
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
+
 
 MODEL = "qwen3:8b"  # Specify the model you want to use
 llm = OllamaLLM(
@@ -118,4 +119,7 @@ def generate_question(sparql_query):
 
 if __name__ == "__main__":
     question = generate_question(sparql_query)
-    print("Generated Question:", question)
+    " "
+    with open("generated_question.txt", "w") as f:
+        json.dump(question, f, indent=2)
+    print("Generated question:", question)
