@@ -7,3 +7,6 @@ __pycache__/
 *.pyo
 
 .ipynb_checkpoints/
+data/data
+notebooks/config
+notebooks/data
