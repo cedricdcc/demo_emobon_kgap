@@ -3,6 +3,9 @@
 # Parameters:
 # - marine_region_id: The ID of the marine region to filter by.
 # - marine_region: The name of the marine region to filter by.
+# - depth: The depth range to filter by (optional).
+#   depth is a dict with keys value and operator.
+# - contact: list of names of people or organizations to filter by (optional).
 # - datetime_begin: The start date for the sampling (inclusive).
 # - datetime_end: The end date for the sampling (inclusive).
 # - sampling_method: The method of sampling to filter by.
@@ -62,6 +65,14 @@ WHERE {
   # link observatory
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
+  # depth filter
+  {% if depth %}
+  ?sample emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  FILTER(?depth_value {{ depth.operator }} {{ depth.value }}{{ "^^xsd:" + depth.value_type if depth.value_type else "" }}) .
+  {%- endif -%}
+  {% if contact %}
+  # Contact filter
+
   {% if marine_region_id %}
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
