@@ -13,7 +13,9 @@ llm = OllamaLLM(
     repeat_penalty=1.3,
     repeat_last_n=256,
     num_ctx=8192,
+    format="json",  # Ensure the response is in JSON format
 )
+
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -91,9 +93,19 @@ def generate_question(sparql_query):
     messages = prompt.format_messages(sparql_query=sparql_query)
     response = llm.invoke(messages)
 
+    # Ensure the response is parsed as structured output
+    try:
+        response_data = eval(response)  # Convert string to dictionary
+        if not isinstance(response_data, dict) or "questions" not in response_data:
+            raise ValueError(
+                "Response does not contain the expected structured output."
+            )
+    except Exception as e:
+        raise ValueError(f"Failed to parse structured output: {e}")
+
     # Handle response as a string or list
     if isinstance(response, str):
-        return response
+        return response_data
     elif (
         isinstance(response, list)
         and len(response) > 0
