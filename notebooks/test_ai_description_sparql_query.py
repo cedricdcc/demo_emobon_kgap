@@ -135,8 +135,6 @@ if __name__ == "__main__":
         # Generate the question based on the SPARQL query
         print(f"Generating question for SPARQL query from {sparql_file_path}")
         question = generate_question(sparql_query)
-        with open(f"generated_question_{i}.txt", "w") as f:
-            json.dump(question, f, indent=2)
         print(f"Generated question for query_{i}.sparql:", question)
         # Write all generated questions to a single JSON file, appending each result
         output_json_path = "all_generated_questions.json"
