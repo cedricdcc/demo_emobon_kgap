@@ -70,9 +70,6 @@ WHERE {
   ?sample emobon:waterColumnDepth/qudt:numericValue ?depth_value .
   FILTER(?depth_value {{ depth.operator }} {{ depth.value }}{{ "^^xsd:" + depth.value_type if depth.value_type else "" }}) .
   {%- endif -%}
-  {% if contact %}
-  # Contact filter
-
   {% if marine_region_id %}
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
