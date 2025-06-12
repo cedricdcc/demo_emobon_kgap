@@ -33,7 +33,7 @@ prompt = ChatPromptTemplate.from_messages(
             "Also generate questions asking for different aspects of the query, for instance,"
             "if sample, observatory, and event are in the query, you can ask about the sample,"
             "the observatory, or the event, or a combination of them."
-            "Make sure to always include the main entities and relationships in all the questions."
+            "Make sure to always include all the main entities and all relationships in all the questions."
             "These will be in the lines where there is onto:fts , FILTER regex and FILTER"
             "give the reponse in format of a dictionary with keys sparql_query and question, like this: "
             "'sparql_query': your_sparql_query, 'questions': ['your_question1', 'your_question2']"
@@ -121,7 +121,7 @@ def generate_question(sparql_query):
 if __name__ == "__main__":
 
     # ammount of sparql query to generate question for
-    test = 3
+    test = 10
     folder_generated_sparql = "generated_sparql_queries"
     # use range to loop over files in the folder
     for i in range(test):
@@ -137,3 +137,16 @@ if __name__ == "__main__":
         with open(f"generated_question_{i}.txt", "w") as f:
             json.dump(question, f, indent=2)
         print(f"Generated question for query_{i}.sparql:", question)
+        # Write all generated questions to a single JSON file, appending each result
+        output_json_path = "all_generated_questions.json"
+        # Load existing data if file exists
+        if os.path.exists(output_json_path):
+            with open(output_json_path, "r") as f:
+                all_questions = json.load(f)
+        else:
+            all_questions = []
+
+        all_questions.append(question)
+
+        with open(output_json_path, "w") as f:
+            json.dump(all_questions, f, indent=2)
