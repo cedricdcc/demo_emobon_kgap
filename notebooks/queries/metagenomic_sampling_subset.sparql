@@ -3,6 +3,7 @@
 # Parameters:
 # - marine_region_id: The ID of the marine region to filter by.
 # - marine_region: The name of the marine region to filter by.
+# - observatories: The list of observatories to filter by (optional).
 # - depth: The depth range to filter by (optional).
 #   depth is a dict with keys value and operator.
 # - contact: list of names of people or organizations to filter by (optional).
@@ -65,9 +66,14 @@ WHERE {
   # link observatory
   ?event sampl:linkedToObservatory ?observatory .
   # Optional filters
+  # name of observatory
+  {% if observatories %}
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("{{ observatories | join(' ') }}~5") .
+  {%- endif -%}
   # depth filter
   {% if depth %}
-  ?sample emobon:waterColumnDepth/qudt:numericValue ?depth_value .
+  ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
   FILTER(?depth_value {{ depth.operator }} {{ depth.value }}{{ "^^xsd:" + depth.value_type if depth.value_type else "" }}) .
   {%- endif -%}
   {% if marine_region_id %}
@@ -104,7 +110,7 @@ WHERE {
       {%- endif -%}
       {% if taxon_rank %}
   ?taxonid dct:taxonRank ?rank .
-  FILTER regex(str(?rank), "{{ taxon_rank }}") .
+  ?rank onto:fts ("{{ taxon_rank }}~5") .
       {%- endif -%}
       {% if taxon_id %}
   FILTER regex(str(?taxonid), "{{ taxon_id }}") .
@@ -132,5 +138,5 @@ WHERE {
   ?result_{{ pf.property }} qudt:numericValue ?value_{{ pf.property }} .
   FILTER(?value_{{ pf.property }} {{ pf.operator }} {{ pf.value }}{{ "^^xsd:" + pf.value_type if pf.value_type else "" }})
     {%- endfor -%}
-  {%- endif -%}
+  {%- endif %}
 }
