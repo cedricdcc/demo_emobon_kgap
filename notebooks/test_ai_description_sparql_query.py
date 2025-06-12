@@ -122,30 +122,30 @@ def generate_question(sparql_query):
 if __name__ == "__main__":
 
     # ammount of sparql query to generate question for
-    test = 10
     folder_generated_sparql = "generated_sparql_queries"
-    # use range to loop over files in the folder
-    for i in range(test):
-        # Read the SPARQL query from a file
-        sparql_file_path = os.path.join(
-            os.path.dirname(__file__), folder_generated_sparql, f"query_{i}.sparql"
-        )
+    sparql_folder_path = os.path.join(
+        os.path.dirname(__file__), folder_generated_sparql
+    )
+    output_json_path = "all_generated_questions.json"
+
+    # Get all .sparql files in the folder
+    sparql_files = [f for f in os.listdir(sparql_folder_path) if f.endswith(".sparql")]
+
+    # Load existing data if file exists
+    if os.path.exists(output_json_path):
+        with open(output_json_path, "r") as f:
+            all_questions = json.load(f)
+    else:
+        all_questions = []
+
+    for sparql_file in sparql_files:
+        sparql_file_path = os.path.join(sparql_folder_path, sparql_file)
         with open(sparql_file_path, "r") as f:
             sparql_query = f.read().strip()
-        # Generate the question based on the SPARQL query
         print(f"Generating question for SPARQL query from {sparql_file_path}")
         question = generate_question(sparql_query)
-        print(f"Generated question for query_{i}.sparql:", question)
-        # Write all generated questions to a single JSON file, appending each result
-        output_json_path = "all_generated_questions.json"
-        # Load existing data if file exists
-        if os.path.exists(output_json_path):
-            with open(output_json_path, "r") as f:
-                all_questions = json.load(f)
-        else:
-            all_questions = []
-
+        print(f"Generated question for {sparql_file}:", question)
         all_questions.append(question)
 
-        with open(output_json_path, "w") as f:
-            json.dump(all_questions, f, indent=2)
+    with open(output_json_path, "w") as f:
+        json.dump(all_questions, f, indent=2)
