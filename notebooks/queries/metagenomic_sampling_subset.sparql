@@ -71,7 +71,7 @@ WHERE {
   # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
   ?mrgn onto:fts ("{{ marine_region }}~5") .
-  {%- endif -%}
+  {%- endif %}
   ?event prov:startedAtTime ?datetime_begin . 
   {% if datetime_begin %}
   # dateTime event
@@ -86,7 +86,7 @@ WHERE {
   FILTER(?samplemethod = "{{ sampling_method }}"^^xsd:string) .
   {%- endif -%}
     {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
-    # linking between taxon annotations and sample
+  # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .
@@ -103,8 +103,8 @@ WHERE {
       {%- endif -%}
       {% if abundance_threshold %}
   OPTIONAL {
-  ?taxonannotation prod:lsuRNA ?lsuval .
-  FILTER(?lsuval >= {{ abundance_threshold }}) . 
+    ?taxonannotation prod:lsuRNA ?lsuval .
+    FILTER(?lsuval >= {{ abundance_threshold }}) . 
   }
   OPTIONAL {
     ?taxonannotation prod:ssuRNA ?ssuval .
