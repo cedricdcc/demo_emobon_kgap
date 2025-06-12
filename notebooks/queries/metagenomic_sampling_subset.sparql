@@ -35,11 +35,11 @@ SELECT
   ?event
   {% if property_filters %}
   ?observations
-    {% for pf in property_filters -%}
+  {% for pf in property_filters %}
   ?label_{{ pf.property }}
   ?result_{{ pf.property }}
   ?value_{{ pf.property }}
-    {%- endfor -%}
+  {%- endfor %}
   {%- endif -%}
   {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
   ?taxonannotation
