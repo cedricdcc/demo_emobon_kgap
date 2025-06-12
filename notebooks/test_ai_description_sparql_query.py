@@ -126,7 +126,9 @@ if __name__ == "__main__":
     # use range to loop over files in the folder
     for i in range(test):
         # Read the SPARQL query from a file
-        sparql_file_path = os.path.join(folder_generated_sparql, f"query_{i}.sparql")
+        sparql_file_path = os.path.join(
+            os.path.dirname(__file__), folder_generated_sparql, f"query_{i}.sparql"
+        )
         with open(sparql_file_path, "r") as f:
             sparql_query = f.read().strip()
         # Generate the question based on the SPARQL query
