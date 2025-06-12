@@ -39,22 +39,22 @@ SELECT
       ?label_{{ pf.property }}
       ?result_{{ pf.property }}
       ?value_{{ pf.property }}
-    {% endfor %}
-  {% endif %}
+    {%- endfor -%}
+  {%- endif -%}
   {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
     ?taxonannotation
     ?taxonid
     {% if species_name %}
       ?sname
-    {% endif %}
+    {%- endif -%}
     {% if taxon_rank %}
       ?rank
-    {% endif %}
+    {%- endif -%}
     {% if abundance_threshold %}
       ?lsuval
       ?ssuval
-    {% endif %}
-  {% endif %}
+    {%- endif -%}
+  {%- endif -%}
 
 WHERE {
   ?sample a sosa:Sample .
@@ -68,30 +68,30 @@ WHERE {
   # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
   FILTER regex(str(?mrgid), "{{ marine_region_id }}") .
-  {% endif %}
+  {%- endif -%}
 
 
   {% if marine_region %}
 # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
   ?mrgn onto:fts ("{{ marine_region }}~5") .
-  {% endif %}
+  {%- endif -%}
 
   ?event prov:startedAtTime ?datetime_begin . 
   {% if datetime_begin %}
   # dateTime event
   FILTER(?datetime_begin >= "{{ datetime_begin }}"^^xsd:date) .
-  {% endif %}
+  {%- endif -%}
   
   {% if datetime_end %}
   FILTER(?datetime_begin <= "{{ datetime_end }}"^^xsd:date) .
-  {% endif %}
+  {%- endif -%}
 
   {% if sampling_method %}
   # Sampling Method
   ?event sosa:madeBySampler ?samplemethod .
   FILTER(?samplemethod = "{{ sampling_method }}"^^xsd:string) .
-  {% endif %}
+  {%- endif -%}
   
     {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
       # linking between taxon annotations and sample
@@ -101,14 +101,14 @@ WHERE {
       {% if species_name %}
         ?taxonid dct:scientificName ?sname .
         ?sname onto:fts ("{{ species_name }}~5") .
-      {% endif %}
+      {%- endif -%}
       {% if taxon_rank %}
         ?taxonid dct:taxonRank ?rank .
         FILTER regex(str(?rank), "{{ taxon_rank }}") .
-      {% endif %}
+      {%- endif -%}
       {% if taxon_id %}
         FILTER regex(str(?taxonid), "{{ taxon_id }}") .
-      {% endif %}
+      {%- endif -%}
       {% if abundance_threshold %}
         OPTIONAL {
            ?taxonannotation prod:lsuRNA ?lsuval .
@@ -119,8 +119,8 @@ WHERE {
            FILTER(?ssuval >= {{ abundance_threshold }}) .  
         }
         FILTER(BOUND(?lsuval) || BOUND(?ssuval))
-      {% endif %}
-    {% endif %}
+      {%- endif -%}
+    {%- endif -%}
 
   {% if property_filters %}
     ?observations a sosa:Observation .
@@ -132,6 +132,6 @@ WHERE {
       ?observations sosa:hasResult ?result_{{ pf.property }} .
       ?result_{{ pf.property }} qudt:numericValue ?value_{{ pf.property }} .
       FILTER(?value_{{ pf.property }} {{ pf.operator }} {{ pf.value }}{{ "^^xsd:" + pf.value_type if pf.value_type else "" }})
-    {% endfor %}
-  {% endif %}
+    {%- endfor -%}
+  {%- endif -%}
 }
