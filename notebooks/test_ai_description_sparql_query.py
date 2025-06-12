@@ -34,7 +34,7 @@ prompt = ChatPromptTemplate.from_messages(
             "Make sure to include the main entities and relationships in the question."
             "These will be in the lines where there is onto:fts , FILTER regex and FILTER"
             "give the reponse in format of a dictionary with keys sparql_query and question, like this: "
-            "{'sparql_query': your_sparql_query, 'questions': ['your_question1', 'your_question2']}"
+            "'sparql_query': your_sparql_query, 'questions': ['your_question1', 'your_question2']"
             "do not include any other text in the response.",
         ),
         ("user", "Generate a question for the following SPARQL query: {sparql_query}"),
