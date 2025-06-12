@@ -1,0 +1,84 @@
+# this file is a testfile to see if the concept of taking in a sparql query and asking
+# a llm to generate a question that matches the query works
+
+from langchain_ollama import OllamaLLM
+from langchain_core.prompts import ChatPromptTemplate
+
+MODEL = "qwen3:8b"  # Specify the model you want to use
+llm = OllamaLLM(
+    model=MODEL,
+    base_url="http://localhost:11434",  # Specify the URL of your Ollama instance
+    temperature=0.7,
+    num_predict=-1,
+    repeat_penalty=1.3,
+    repeat_last_n=256,
+    num_ctx=8192,
+)
+
+prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "You are a helpful assistant that generates questions based on SPARQL queries.",
+        ),
+        ("user", "Generate a question for the following SPARQL query: {sparql_query}"),
+    ]
+)
+
+# Example SPARQL query
+sparql_query = """
+PREFIX prod: <https://data.emobon.embrc.eu/ns/product#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX emobon: <https://data.emobon.embrc.eu/ns/core#>
+PREFIX sampl: <https://data.emobon.embrc.eu/ns/sampling#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX onto: <http://www.ontotext.com/>
+PREFIX qudt: <http://qudt.org/schema/qudt/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT
+  ?sample
+  ?observatory
+  ?event
+  
+  ?taxonannotation
+  ?taxonid
+    
+  ?rank
+WHERE {
+  ?sample a sosa:Sample .
+  # link event
+  ?sample sosa:isResultOf ?event .
+  # link observatory
+  ?event sampl:linkedToObservatory ?observatory .
+  # Optional filters
+  # name of observatory
+  
+  ?observatory emobon:observatoryId ?observatory_id .
+  ?observatory_id onto:fts ("ROSKOGO~5 VB~5") .# depth filter
+  
+  ?event prov:startedAtTime ?datetime_begin . 
+  
+  # linking between taxon annotations and sample
+  ?taxonannotation a prod:TaxonomicAnnotation .
+  ?taxonannotation prod:ofSample ?sample .
+  ?taxonannotation dct:identifier ?taxonid .
+      
+  ?taxonid dct:taxonRank ?rank .
+  ?rank onto:fts ("super kingdom~5") .
+}
+"""
+
+
+# Generate the question using the LLM
+def generate_question(sparql_query):
+    messages = prompt.format_messages(sparql_query=sparql_query)
+    response = llm.invoke(messages)
+    return response[0].content
+
+
+if __name__ == "__main__":
+    question = generate_question(sparql_query)
+    print("Generated Question:", question)
