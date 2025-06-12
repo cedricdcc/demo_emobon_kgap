@@ -76,7 +76,18 @@ WHERE {
 def generate_question(sparql_query):
     messages = prompt.format_messages(sparql_query=sparql_query)
     response = llm.invoke(messages)
-    return response[0].content
+
+    # Handle response as a string or list
+    if isinstance(response, str):
+        return response
+    elif (
+        isinstance(response, list)
+        and len(response) > 0
+        and hasattr(response[0], "content")
+    ):
+        return response[0].content
+    else:
+        raise ValueError("Unexpected response format from OllamaLLM.invoke")
 
 
 if __name__ == "__main__":
