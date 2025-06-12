@@ -33,28 +33,28 @@ SELECT
   ?sample
   ?observatory
   ?event
-  {% if property_filters %}
-    ?observations
+  {% if property_filters -%}
+  ?observations
     {% for pf in property_filters %}
-      ?label_{{ pf.property }}
-      ?result_{{ pf.property }}
-      ?value_{{ pf.property }}
+  ?label_{{ pf.property }}
+  ?result_{{ pf.property }}
+  ?value_{{ pf.property }}
     {%- endfor -%}
   {%- endif -%}
   {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
-    ?taxonannotation
-    ?taxonid
+  ?taxonannotation
+  ?taxonid
     {% if species_name %}
-      ?sname
+  ?sname
     {%- endif -%}
     {% if taxon_rank %}
-      ?rank
+  ?rank
     {%- endif -%}
     {% if abundance_threshold %}
-      ?lsuval
-      ?ssuval
+  ?lsuval
+  ?ssuval
     {%- endif -%}
-  {%- endif -%}
+  {%- endif %}
 
 WHERE {
   ?sample a sosa:Sample .
