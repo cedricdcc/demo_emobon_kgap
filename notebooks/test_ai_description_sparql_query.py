@@ -147,5 +147,6 @@ if __name__ == "__main__":
         print(f"Generated question for {sparql_file}:", question)
         all_questions.append(question)
 
-    with open(output_json_path, "w") as f:
-        json.dump(all_questions, f, indent=2)
+        # Write all questions to file after each SPARQL file
+        with open(output_json_path, "w") as f:
+            json.dump(all_questions, f, indent=2)
