@@ -119,7 +119,6 @@ def generate_question(sparql_query):
 
 if __name__ == "__main__":
     question = generate_question(sparql_query)
-    " "
     with open("generated_question.txt", "w") as f:
         json.dump(question, f, indent=2)
     print("Generated question:", question)
