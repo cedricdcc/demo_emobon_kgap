@@ -29,8 +29,8 @@ prompt = ChatPromptTemplate.from_messages(
             "Also generate questions asking for different aspects of the query, for instance,"
             "if sample, observatory, and event are in the query, you can ask about the sample,"
             "the observatory, or the event, or a combination of them."
-            "Make sure to include the main entities and relationships in the question.",
-            "These will be in the lines where there is onto:fts , FILTER regex and FILTER",
+            "Make sure to include the main entities and relationships in the question."
+            "These will be in the lines where there is onto:fts , FILTER regex and FILTER"
             'When writing a questions write a line with "-----------------------" before and after the question.',
         ),
         ("user", "Generate a question for the following SPARQL query: {sparql_query}"),
