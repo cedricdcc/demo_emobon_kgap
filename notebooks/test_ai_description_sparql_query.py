@@ -31,7 +31,9 @@ prompt = ChatPromptTemplate.from_messages(
             "the observatory, or the event, or a combination of them."
             "Make sure to include the main entities and relationships in the question."
             "These will be in the lines where there is onto:fts , FILTER regex and FILTER"
-            'When writing a questions write a line with "-----------------------" before and after the question.',
+            "give the reponse in format of a dictionary with keys sparql_query and question, like this: "
+            '{"sparql_query": "your_sparql_query", "questions": ["your_question1", "your_question2"]}'
+            "do not include any other text in the response.",
         ),
         ("user", "Generate a question for the following SPARQL query: {sparql_query}"),
     ]
