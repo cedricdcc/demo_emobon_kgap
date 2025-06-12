@@ -69,7 +69,7 @@ WHERE {
   # name of observatory
   {% if observatories %}
   ?observatory emobon:observatoryId ?observatory_id .
-  ?observatory_id onto:fts ("{{ observatories | join('~5 ') }}") .
+  ?observatory_id onto:fts ("{{ observatories | join('~5 ')~5}}") .
   {%- endif -%}
   # depth filter
   {% if depth %}
