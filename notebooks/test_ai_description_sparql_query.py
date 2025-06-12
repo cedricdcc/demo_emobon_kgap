@@ -35,6 +35,7 @@ prompt = ChatPromptTemplate.from_messages(
             "the observatory, or the event, or a combination of them."
             "Make sure to always include all the main entities and all relationships in all the questions."
             "These will be in the lines where there is onto:fts , FILTER regex and FILTER"
+            "focus on including all the values that the sparql query filters on,"
             "give the reponse in format of a dictionary with keys sparql_query and question, like this: "
             "'sparql_query': your_sparql_query, 'questions': ['your_question1', 'your_question2']"
             "do not include any other text in the response.",
