@@ -140,3 +140,6 @@ docker compose create && docker compose --profile cpu up
 
 
 [![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/b0580a05-66bd-4107-8531-0d8dd3152afb)
+
+
+[![ROHub Crate](https://img.shields.io/badge/ROHub-Crate-blue)](https://rohub.org/2cabc1ec-056a-413c-a874-001bd8566ff0)
