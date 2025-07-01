@@ -16,7 +16,10 @@ seaborn
 #scikit-learn 
 #scipy 
 #tensorflow 
-#torch
+peft 
+transformers 
+datasets
+torch
 
 
 # Include py-sema from GitHub

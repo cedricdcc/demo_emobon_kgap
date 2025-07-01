@@ -47,7 +47,7 @@ assert:
         WHERE {
             ?s ?p ?oo .
             FILTER regex(str(?oo), ".*\\.ttl$")
-            ?oo <https://w3id.org/ro/crate/1.2-DRAFT/contextdownloadUrl> ?o
+            ?oo schema:downloadUrl ?o
         }
     paths:
       - "*"

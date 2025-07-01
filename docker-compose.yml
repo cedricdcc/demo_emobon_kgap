@@ -40,37 +40,37 @@ x-init-ollama-rocm: &init-ollama-rocm
     - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull ${OLLAMA_MODEL:-llama3.1:8b};"
 
 services:
-  backend:
-    build:
-      context: ./app/backend
-    image: backend-service:latest
-    container_name: backend_service
-    networks: ['demo']
-    ports:
-      - "5000:5000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
-  frontend:
-    build:
-      context: ./app/frontend
-    image: frontend-service:latest
-    container_name: frontend_service
-    networks: ['demo']
-    ports:
-      - "3000:80"
-    volumes:
-      - ./app/frontend:/usr/share/nginx/html
-    command: nginx -g "daemon off;"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-  #yasgui:
-  #  image: redpencil/yasgui:latest
-  #  container_name: test_kgap_yasgui
-  #  environment:
-  #    DEFAULT_SPARQL_ENDPOINT: "http://localhost:7200/repositories/${GDB_REPO:-kgap}" # that should be in the setup script | same exposed port as graphdb
+  #backend:
+  #  build:
+  #    context: ./app/backend
+  #  image: backend-service:latest
+  #  container_name: backend_service
+  #  networks: ['demo']
   #  ports:
-  #    - "8080:80"
+  #    - "5000:5000"
+  #  extra_hosts:
+  #    - "host.docker.internal:host-gateway"
+
+  #frontend:
+  #  build:
+  #    context: ./app/frontend
+  #  image: frontend-service:latest
+  #  container_name: frontend_service
+  #  networks: ['demo']
+  #  ports:
+  #    - "3000:80"
+  #  volumes:
+  #    - ./app/frontend:/usr/share/nginx/html
+  #  command: nginx -g "daemon off;"
+  #  extra_hosts:
+  #    - "host.docker.internal:host-gateway"
+  yasgui:
+    image: redpencil/yasgui:latest
+    container_name: test_kgap_yasgui
+    environment:
+      DEFAULT_SPARQL_ENDPOINT: "http://localhost:7200/repositories/${GDB_REPO:-kgap}" # that should be in the setup script | same exposed port as graphdb
+    ports:
+      - "8080:80"
   graphdb:
     build:
       context: ./graphdb
