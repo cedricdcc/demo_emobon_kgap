@@ -1,5 +1,5 @@
 import torch
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import sys
 
 
@@ -31,19 +31,25 @@ def load_model(model_path):
         raise RuntimeError(f"Failed to load the model: {e}")
 
 
-def query_model(model, question):
+def query_model(model, question, tokenizer):
     """
     Query the model with a given question.
     Args:
         model (torch.nn.Module): The loaded PyTorch model.
         question (str): The input question.
+        tokenizer (transformers.PreTrainedTokenizer): Tokenizer for preprocessing the input.
     Returns:
         str: The model's response.
     """
-    # Assuming the model takes a string input and outputs a string response
-    # Modify this logic based on the actual model's input/output requirements
     try:
-        response = model(question)
+        # Tokenize the input question
+        inputs = tokenizer(question, return_tensors="pt")
+
+        # Perform inference
+        outputs = model.generate(**inputs)
+
+        # Decode the output tokens to a string
+        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
         return response
     except Exception as e:
         raise RuntimeError(f"Error during model inference: {e}")
@@ -56,6 +62,9 @@ def main():
     model_path = "saved_models/trained_model.pt"
 
     try:
+        # Load the tokenizer
+        tokenizer = AutoTokenizer.from_pretrained("bigscience/bloomz-560m")
+
         # Load the model
         model = load_model(model_path)
         print("Model loaded successfully.")
@@ -64,7 +73,7 @@ def main():
         question = input("Enter your question: ")
 
         # Query the model
-        response = query_model(model, question)
+        response = query_model(model, question, tokenizer)
         print(f"Model's response: {response}")
 
     except Exception as e:
