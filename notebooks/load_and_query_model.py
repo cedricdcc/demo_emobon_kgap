@@ -59,11 +59,11 @@ def main():
     """
     Main function to load the model, accept user input, and query the model.
     """
-    model_path = "saved_models/trained_model.pt"
+    model_path = "saved_models/best_model.pt"
 
     try:
         # Load the tokenizer
-        tokenizer = AutoTokenizer.from_pretrained("bigscience/bloomz-560m")
+        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-135M")
 
         # Load the model
         model = load_model(model_path)
