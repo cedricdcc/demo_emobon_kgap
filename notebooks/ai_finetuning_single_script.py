@@ -134,7 +134,7 @@ model.print_trainable_parameters()
 
 
 lr = 3e-2
-num_epochs = 50
+num_epochs = 3
 torch.cuda.empty_cache()
 torch.cuda.ipc_collect()
 optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
