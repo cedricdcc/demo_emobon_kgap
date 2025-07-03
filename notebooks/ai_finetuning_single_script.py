@@ -88,7 +88,7 @@ def preprocess_function(examples):
     with tokenizer.as_target_tokenizer():
         labels = tokenizer(
             targets,
-            max_length=max_target_length,
+            max_length=max_input_length,  # Align with input_ids max_length
             padding="max_length",
             truncation=True,
             return_tensors="pt",
