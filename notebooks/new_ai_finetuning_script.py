@@ -3,11 +3,14 @@ from datasets import load_dataset, DatasetDict
 from transformers import (
     T5ForConditionalGeneration,
     T5Tokenizer,
-    DataCollatorForSeq2Seq,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
+    DataCollatorForSeq2Seq
+from transformers.trainer_seq2seq import Seq2SeqTrainer
+from transformers.training_args_seq2seq import Seq2SeqTrainingArguments
 )
-from peft import PeftModel, PeftConfig, LoraConfig, get_peft_model
+try:
+    from peft import PeftModel, PeftConfig, LoraConfig, get_peft_model
+except ImportError:
+    raise ImportError("The 'peft' library is not installed. Install it using 'pip install peft'.")
 import numpy as np
 import os
 import json
@@ -125,6 +128,7 @@ def compute_metrics(eval_preds):
     # Normalize SPARQL for comparison
     def normalize_sparql(query):
         query = query.lower().strip()
+import re
         query = re.sub(r"\s+", " ", query)  # Remove extra whitespace
         query = re.sub(
             r"(?<=\W)\s+|\s+(?=\W)", "", query
@@ -183,7 +187,7 @@ if __name__ == "__main__":
     # Training arguments
     training_args = Seq2SeqTrainingArguments(
         output_dir=TARGET_MODEL_DIR,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         learning_rate=LEARNING_RATE,
         per_device_train_batch_size=BATCH_SIZE,
         per_device_eval_batch_size=BATCH_SIZE,
