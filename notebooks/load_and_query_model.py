@@ -14,7 +14,9 @@ def load_model(model_path):
         RuntimeError: If the model file is corrupted or incompatible.
     """
     try:
-        model = torch.load(model_path)
+        state_dict = torch.load(model_path)
+        model = torch.nn.Module()  # Replace with the specific model architecture
+        model.load_state_dict(state_dict)
         model.eval()  # Set the model to evaluation mode
         return model
     except FileNotFoundError:
