@@ -1,4 +1,5 @@
 import torch
+from transformers import AutoModelForCausalLM
 import sys
 
 
@@ -14,8 +15,15 @@ def load_model(model_path):
         RuntimeError: If the model file is corrupted or incompatible.
     """
     try:
-        model = torch.load(model_path)
-        model.eval()  # Set the model to evaluation mode
+        # Define the model architecture
+        model = AutoModelForCausalLM.from_pretrained("bigscience/bloomz-560m")
+
+        # Load the state dictionary
+        state_dict = torch.load(model_path)
+        model.load_state_dict(state_dict, strict=False)
+
+        # Set the model to evaluation mode
+        model.eval()
         return model
     except FileNotFoundError:
         raise FileNotFoundError(f"Model file not found at {model_path}.")
