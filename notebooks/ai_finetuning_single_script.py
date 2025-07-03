@@ -110,7 +110,7 @@ print(processed_ds)
 train_ds = processed_ds["train"]
 eval_ds = processed_ds["test"]
 
-batch_size = 16
+batch_size = 8  # Adjust batch size as needed
 
 train_dataloader = DataLoader(
     train_ds,
