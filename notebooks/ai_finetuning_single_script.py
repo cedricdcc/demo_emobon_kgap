@@ -52,7 +52,7 @@ data_file = "./all_generated_questions.json"
 dataset = load_and_filter_data(data_file)
 
 # preprocessing data
-tokenizer = AutoTokenizer.from_pretrained("bigscience/bloomz-560m")
+tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-135M")
 print(dataset["train"])
 
 if tokenizer.pad_token_id is None:

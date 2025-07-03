@@ -16,7 +16,7 @@ def load_model(model_path):
     """
     try:
         # Define the model architecture
-        model = AutoModelForCausalLM.from_pretrained("bigscience/bloomz-560m")
+        model = AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM2-135M")
 
         # Load the state dictionary
         state_dict = torch.load(model_path)
