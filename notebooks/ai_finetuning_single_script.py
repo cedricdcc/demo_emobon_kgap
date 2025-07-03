@@ -159,6 +159,14 @@ check_cuda()
 device = "cuda"
 model = model.to(device)
 
+# Ensure the 'saved_models/' directory exists
+save_dir = "saved_models"
+current_dir_file = os.path.dirname(os.path.abspath(__file__))
+os.makedirs(os.path.join(current_dir_file, save_dir), exist_ok=True)
+
+# Save the trained model after each epoch
+save_path = os.path.join(current_dir_file, save_dir, "trained_model.pt")
+
 for epoch in range(num_epochs):
     model.train()
     total_loss = 0
@@ -193,3 +201,7 @@ for epoch in range(num_epochs):
     train_epoch_loss = total_loss / len(train_dataloader)
     train_ppl = torch.exp(train_epoch_loss)
     print(f"{epoch=}: {train_ppl=} {train_epoch_loss=} {eval_ppl=} {eval_epoch_loss=}")
+
+    # Save the model at the end of training
+    torch.save(model.state_dict(), save_path)
+    print(f"Model saved to {save_path}")
