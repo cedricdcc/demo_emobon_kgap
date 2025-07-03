@@ -160,7 +160,7 @@ model.print_trainable_parameters()
 
 # Training setup with optimized parameters
 lr = 1e-3  # Lower learning rate for stability
-num_epochs = 5
+num_epochs = 100
 total_steps = len(train_dataloader) * num_epochs // grad_accum_steps
 
 optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
