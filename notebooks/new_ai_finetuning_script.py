@@ -1,14 +1,11 @@
 import torch
 from datasets import load_dataset, DatasetDict
-from transformers import (
-    T5ForConditionalGeneration,
-    T5Tokenizer,
-    DataCollatorForSeq2Seq
-)
+from transformers import T5ForConditionalGeneration, T5Tokenizer, DataCollatorForSeq2Seq
 from transformers.trainer_seq2seq import Seq2SeqTrainer
 from transformers.training_args_seq2seq import Seq2SeqTrainingArguments
 from peft import PeftModel, PeftConfig, LoraConfig, get_peft_model
 import numpy as np
+import re
 import os
 import json
 from tqdm import tqdm
@@ -125,7 +122,6 @@ def compute_metrics(eval_preds):
     # Normalize SPARQL for comparison
     def normalize_sparql(query):
         query = query.lower().strip()
-import re
         query = re.sub(r"\s+", " ", query)  # Remove extra whitespace
         query = re.sub(
             r"(?<=\W)\s+|\s+(?=\W)", "", query
