@@ -143,7 +143,7 @@ eval_dataloader = DataLoader(
 
 # Model initialization with cache optimization
 model = AutoModelForCausalLM.from_pretrained(
-    "bigscience/bloomz-560m",
+    "HuggingFaceTB/SmolLM2-135M",
     device_map="auto",  # Let HF handle device placement
     torch_dtype=torch.float16,  # Use mixed precision
 )
@@ -187,6 +187,26 @@ for epoch in range(num_epochs):
     model.train()
     total_loss = 0
     optimizer.zero_grad()
+
+    # Perform inference with the test question after each epoch
+    test_question = "At which events was the salinity higher than 50?"
+    model.eval()
+    with torch.no_grad():
+        inputs = tokenizer(
+            f"Question: {test_question} SPARQL:",
+            max_length=max_input_length,
+            padding="max_length",
+            truncation=True,
+            return_tensors="pt",
+        ).to(device)
+        outputs = model.generate(
+            inputs["input_ids"],
+            max_length=max_target_length,
+            num_beams=5,
+            early_stopping=True,
+        )
+        decoded_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        print(f"Epoch {epoch+1} Inference Output: {decoded_output}")
 
     for step, batch in enumerate(tqdm(train_dataloader, desc=f"Epoch {epoch+1}")):
         batch = {k: v.to(device) for k, v in batch.items()}
