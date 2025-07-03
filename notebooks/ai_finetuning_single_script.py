@@ -124,7 +124,7 @@ processed_ds = {
 }
 
 # Use larger batch size with gradient accumulation
-batch_size = 4
+batch_size = 12
 grad_accum_steps = 4
 
 train_dataloader = DataLoader(
