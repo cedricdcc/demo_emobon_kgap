@@ -53,41 +53,30 @@ dataset = load_and_filter_data(data_file)
 
 # preprocessing data
 tokenizer = AutoTokenizer.from_pretrained("bigscience/bloomz-560m")
-print(dataset["train"])
 
 if tokenizer.pad_token_id is None:
-    tokenizer.pad_token_id = tokenizer.eos_token_id
-    # does not quite work , hardcoded manx length
-target_max_length = len(tokenizer(dataset["train"]["sparql_query"]))
-print(target_max_length)
-max_length = 1024  # max token length of answer
+    tokenizer.pad_token = tokenizer.eos_token
+
+max_length = 512  # Reduce to avoid OOM
+target_max_length = 128  # Separate max length for targets
 
 
-def preprocess_function(examples, text_column="question", label_column="sparql_query"):
-    batch_size = len(examples[text_column])
-    inputs = [f"{text_column} : {x} Label : " for x in examples[text_column]]
-    targets = [str(x) for x in examples[label_column]]
-    model_inputs = tokenizer(inputs)
-    labels = tokenizer(targets)
-    for i in range(batch_size):
-        sample_input_ids = model_inputs["input_ids"][i]
-        label_input_ids = labels["input_ids"][i]
-        model_inputs["input_ids"][i] = [tokenizer.pad_token_id] * (
-            max_length - len(sample_input_ids)
-        ) + sample_input_ids
-        model_inputs["attention_mask"][i] = [0] * (
-            max_length - len(sample_input_ids)
-        ) + model_inputs["attention_mask"][i]
-        labels["input_ids"][i] = [-100] * (
-            max_length - len(label_input_ids)
-        ) + label_input_ids
-        model_inputs["input_ids"][i] = torch.tensor(
-            model_inputs["input_ids"][i][:max_length]
-        )
-        model_inputs["attention_mask"][i] = torch.tensor(
-            model_inputs["attention_mask"][i][:max_length]
-        )
-        labels["input_ids"][i] = torch.tensor(labels["input_ids"][i][:max_length])
+def preprocess_function(examples):
+    inputs = [f"question: {q} Label:" for q in examples["question"]]
+    targets = [str(s) for s in examples["sparql_query"]]
+
+    model_inputs = tokenizer(
+        inputs, max_length=max_length, truncation=True, padding="max_length"
+    )
+    labels = tokenizer(
+        targets, max_length=target_max_length, truncation=True, padding="max_length"
+    )
+
+    # Mask padding tokens in labels
+    labels["input_ids"] = [
+        [(token if token != tokenizer.pad_token_id else -100) for token in label]
+        for label in labels["input_ids"]
+    ]
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
 
@@ -99,7 +88,7 @@ ds = dataset
 processed_ds = ds.map(
     preprocess_function,
     batched=True,
-    num_proc=1,
+    num_proc=4,
     remove_columns=ds["train"].column_names,
     load_from_cache_file=False,
     desc="Running tokenizer on dataset",
@@ -123,7 +112,11 @@ eval_dataloader = DataLoader(
     eval_ds, collate_fn=default_data_collator, batch_size=batch_size, pin_memory=True
 )
 
-model = AutoModelForCausalLM.from_pretrained("bigscience/bloomz-560m")
+model = AutoModelForCausalLM.from_pretrained(
+    "bigscience/bloomz-560m",
+    torch_dtype=torch.float16,  # Use float16 to reduce memory
+    device_map="auto",  # Automatically allocate to available GPUs
+)
 
 
 peft_config = PromptEncoderConfig(
