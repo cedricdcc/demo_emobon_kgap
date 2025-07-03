@@ -4,13 +4,11 @@ from transformers import (
     T5ForConditionalGeneration,
     T5Tokenizer,
     DataCollatorForSeq2Seq
+)
 from transformers.trainer_seq2seq import Seq2SeqTrainer
 from transformers.training_args_seq2seq import Seq2SeqTrainingArguments
 )
-try:
-    from peft import PeftModel, PeftConfig, LoraConfig, get_peft_model
-except ImportError:
-    raise ImportError("The 'peft' library is not installed. Install it using 'pip install peft'.")
+from peft import PeftModel, PeftConfig, LoraConfig, get_peft_model
 import numpy as np
 import os
 import json
