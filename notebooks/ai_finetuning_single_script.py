@@ -49,7 +49,7 @@ print(f"\nTotal train rows: {len(dataset['train'])}")
 print(f"Total test rows: {len(dataset['test'])}")
 
 # Initialize tokenizer with padding
-tokenizer = AutoTokenizer.from_pretrained("bigscience/bloomz-560m")
+tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-135M")
 tokenizer.pad_token = tokenizer.eos_token  # Properly set padding token
 
 
@@ -179,6 +179,10 @@ save_dir = "saved_models"
 os.makedirs(save_dir, exist_ok=True)
 
 # Training loop with gradient accumulation
+# Dictionary to store metrics for each epoch
+epoch_metrics = {}
+best_eval_loss = float("inf")  # Initialize best evaluation loss
+
 for epoch in range(num_epochs):
     model.train()
     total_loss = 0
@@ -209,6 +213,19 @@ for epoch in range(num_epochs):
     avg_train_loss = total_loss / len(train_dataloader)
     avg_eval_loss = eval_loss / len(eval_dataloader)
 
+    # Update metrics dictionary
+    epoch_metrics[epoch + 1] = {
+        "train_loss": avg_train_loss,
+        "eval_loss": avg_eval_loss,
+    }
+
+    # Save only the best model checkpoint
+    if avg_eval_loss < best_eval_loss:
+        best_eval_loss = avg_eval_loss
+        checkpoint_path = os.path.join(save_dir, "best_model.pt")
+        torch.save(model.state_dict(), checkpoint_path)
+        print(f"Best model saved to {checkpoint_path}")
+
     print(
         f"Epoch {epoch+1}/{num_epochs} | "
         f"Train Loss: {avg_train_loss:.4f} | "
@@ -216,6 +233,7 @@ for epoch in range(num_epochs):
     )
 
     # Save model checkpoint
-    checkpoint_path = os.path.join(save_dir, f"model_epoch_{epoch+1}.pt")
-    torch.save(model.state_dict(), checkpoint_path)
-    print(f"Model saved to {checkpoint_path}")
+    # checkpoint_path = os.path.join(save_dir, f"model_epoch_{epoch+1}.pt")
+# Display all epoch metrics at the end of training
+print("\nEpoch Metrics Summary:")
+print(json.dumps(epoch_metrics, indent=4))
