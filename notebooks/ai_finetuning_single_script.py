@@ -14,6 +14,8 @@ from tqdm import tqdm
 import json
 import os
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 
 # Step 1: Load the dataset
 def load_and_filter_data(file_path):
@@ -133,7 +135,8 @@ model.print_trainable_parameters()
 
 lr = 3e-2
 num_epochs = 50
-
+torch.cuda.empty_cache()
+torch.cuda.ipc_collect()
 optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
 lr_scheduler = get_linear_schedule_with_warmup(
     optimizer=optimizer,
