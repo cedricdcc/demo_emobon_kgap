@@ -9,6 +9,15 @@ import jsonschema
 from jsonschema import validate
 import pandas as pd
 from conneg_functions import generate_sparql
+from sema.query import DefaultSparqlBuilder, GraphSource as KGSource, QueryResult
+
+GDB_BASE: str = os.getenv("GDB_BASE", "http://localhost:7200/")
+# print(f"{os.getenv('GDB_BASE')=}")
+# print(f"{GDB_BASE=}")
+GDB_REPO: str = os.getenv("GDB_REPO", "kgap")
+GDB_ENDPOINT: str = f"{GDB_BASE}repositories/{GDB_REPO}"
+# print(f"{GDB_ENDPOINT=}")
+GDB: KGSource = KGSource.build(GDB_ENDPOINT)
 
 MODEL = "qwen3:8b"  # Specify the model you want to use
 llm = OllamaLLM(
@@ -121,6 +130,7 @@ def clean_answer(answer) -> dict | None:
     return json_answer if is_valid else None
 
 
+"""
 # Load and filter data
 def load_and_filter_data(file_path):
     # Load the JSON data
@@ -148,7 +158,7 @@ data_file = "./all_generated_questions.json"
 dataset = load_and_filter_data(data_file)
 print(f"Loaded {len(dataset)} rows from {data_file}")
 
-"""
+
 for index, row in dataset.iterrows():
     question = row["question"]
     print(question)
@@ -174,10 +184,14 @@ response = llm.invoke(messages)
 print(f"Response: {response}")
 if cleaned := clean_answer(response):
     print(f"Cleaned Response: {cleaned}")
-    question_variables = {
-        "question": user_question,
-        "variables": cleaned,
-    }
+
+    # there should be a qc on the values of the cleaned response
+    # to make sure that the inserted values are valid for the sparql query
+    sparql = generate_sparql("disctinct_properties")
+    result: QueryResult = GDB.query(sparql=sparql)
+    result.to_dataframe()
+    print(f"Distinct properties: {result.to_dataframe()}")
+
     # Generate SPARQL query using the cleaned variables
     sparql_query: str = generate_sparql("metagenomic_sampling_subset.sparql", **cleaned)
     print(f"Generated SPARQL query: {sparql_query}")
