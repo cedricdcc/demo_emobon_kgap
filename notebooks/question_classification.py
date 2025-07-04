@@ -5,6 +5,7 @@ import json
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 import os
+import pandas as pd
 
 MODEL = "qwen3:8b"  # Specify the model you want to use
 llm = OllamaLLM(
