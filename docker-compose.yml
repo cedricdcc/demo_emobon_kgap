@@ -132,6 +132,13 @@ services:
     depends_on:
       graphdb:
         condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
   
   ollama-cpu:
     profiles: ["cpu"]
