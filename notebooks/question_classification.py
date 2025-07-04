@@ -64,6 +64,22 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+prompt_check_properties = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "You are a helpful assistant corrects a given dictionary and checks if values are filled in correctly."
+            "the dictionary wil be in the following format: {schema}"
+            "first check if any property filters should have been other values in the dictionary,"
+            "then check if any of the property_fitlers are not in the list of properties: {properties}"
+            "if not correct them to the closest related value in the list of properties,"
+            "if there are no properties in the list that match the property filter, remove the property filter from the dictionary."
+            "Only return the corrected dictionary with key-value pairs, nothing else.",
+        ),
+        ("user", "correct the following dictionary: {dictionary}"),
+    ]
+)
+
 schema = {
     "type": "object",
     "properties": {
@@ -206,6 +222,45 @@ if cleaned := clean_answer(response):
     """
     result: QueryResult = GDB.query(sparql=sparql)
     print(f"Distinct properties: {result.to_dict()}")
+    # for the sake of timesaving lets already get the properties.
+    properties: dict[str, list[str]] = {
+        "labelproperty": [
+            "redox_potential",
+            "sediment_temp",
+            "sea_surf_salinity",
+            "ph",
+            "sea_surf_temp",
+            "sea_subsurf_temp",
+            "sea_subsurf_salinity",
+            "chlorophyll",
+            "nitrate",
+            "diss_oxygen",
+            "organism_count",
+            "density",
+            "phaeopigments",
+            "ammonium",
+            "conduc",
+            "pigments",
+            "turbidity",
+            "silicate",
+            "nitrite",
+            "phosphate",
+            "down_par",
+            "pressure",
+        ]
+    }
+
+    # Check if the property filters are valid
+    messages = prompt_check_properties.format_messages(
+        schema=schema, dictionary=cleaned, properties=properties["labelproperty"]
+    )
+    response = llm.invoke(messages)
+    print(f"Response from property check: {response}")
+    cleaned = clean_answer(response)
+    if cleaned is None:
+        print("The response from the property check is not valid.")
+        exit(1)
+    print(f"Cleaned Response after property check: {cleaned}")
 
     # Generate SPARQL query using the cleaned variables
     sparql_query: str = generate_sparql("metagenomic_sampling_subset.sparql", **cleaned)
