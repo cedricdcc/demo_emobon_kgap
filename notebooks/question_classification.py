@@ -166,7 +166,7 @@ schema = {
                     "operator": {"type": "string"},
                     "value_type": {"type": "string"},
                 },
-                "required": ["property", "value", "operator", "value_type"],
+                "required": ["property"],
             },
         },
     },
