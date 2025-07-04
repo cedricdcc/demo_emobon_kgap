@@ -71,6 +71,7 @@ prompt_check_properties = ChatPromptTemplate.from_messages(
             "You are a helpful assistant corrects a given dictionary and checks if values are filled in correctly."
             "the dictionary wil be in the following format: {schema}"
             "first check if any property filters should have been other values in the dictionary,"
+            "check if the key represents a key that is given in the json schema: {schema},"
             "then check if any of the property_fitlers are not in the list of properties: {properties}"
             "if not correct them to the closest related value in the list of properties,"
             "if there are no properties in the list that match the property filter, remove the property filter from the dictionary."
