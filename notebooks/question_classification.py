@@ -104,7 +104,7 @@ for index, row in dataset.head(30).iterrows():
         # make object with question and response
         question_variables = {
             "question": question,
-            "variables": response,
+            "variables": clean_answer(response),
         }
         print(f"Question Variables: {question_variables}")
         # Save the question variables to a JSON file
