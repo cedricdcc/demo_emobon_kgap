@@ -104,7 +104,11 @@ def validate_json(data):
 # function to clean up the answer of the llm
 def clean_answer(answer) -> dict | None:
     # Remove any leading or trailing whitespace
-    answer = answer.strip()
+    try:
+        answer = answer.strip()
+    except AttributeError:
+        print("The answer is not a string.")
+        return answer
     # Ensure the answer is a valid JSON string
     if not answer.startswith("{") or not answer.endswith("}"):
         print("The answer is not a valid JSON object.")
