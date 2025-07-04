@@ -86,3 +86,4 @@ for index, row in dataset.head(3).iterrows():
     print(f"Generating variables for:  {question}")
     messages = prompt.format_messages(question=question)
     response = llm.invoke(messages)
+    print(f"Response: {response}")
