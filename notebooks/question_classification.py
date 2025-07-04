@@ -1,18 +1,22 @@
 # python notebook to investigate the question classification for nl questions
 
 import json
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import json
+from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 import os
-import pandas as pd
 
-# Specify the model name
-MODEL_NAME = "Qwen/Qwen3-8B"
-
-# Initialize the tokenizer and model
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
-
+MODEL = "qwen3:8b"  # Specify the model you want to use
+llm = OllamaLLM(
+    model=MODEL,
+    base_url="http://localhost:11434",  # Specify the URL of your Ollama instance
+    temperature=0.7,
+    num_predict=-1,
+    repeat_penalty=1.3,
+    repeat_last_n=256,
+    num_ctx=8192,
+    format="json",  # Ensure the response is in JSON format
+)
 # Define the prompt template
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -78,14 +82,6 @@ for index, row in dataset.head(3).iterrows():
     question = row["question"]
     print(question)
 
+    print(f"Generating variables for:  {question}")
     messages = prompt.format_messages(question=question)
-
-    text = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
-    print(text)
-
-    # Generate a response
-    outputs = model.generate(text, max_length=150, num_return_sequences=1)
-
-    # Decode the response
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    print(response)
+    response = llm.invoke(messages)
