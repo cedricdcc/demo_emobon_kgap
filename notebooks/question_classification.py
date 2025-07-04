@@ -179,5 +179,5 @@ if cleaned := clean_answer(response):
         "variables": cleaned,
     }
     # Generate SPARQL query using the cleaned variables
-    sparql_query: str = generate_sparql("metagenomic_sampling_subset", **cleaned)
+    sparql_query: str = generate_sparql("metagenomic_sampling_subset.sparql", **cleaned)
     print(f"Generated SPARQL query: {sparql_query}")
