@@ -32,8 +32,8 @@ llm = OllamaLLM(
 )
 
 # there should be a qc on the values of the cleaned response
-    # to make sure that the inserted values are valid for the sparql query
-    sparql = """
+# to make sure that the inserted values are valid for the sparql query
+sparql = """
     PREFIX owl: <http://www.w3.org/2002/07/owl#> 
     PREFIX sosa: <http://www.w3.org/ns/sosa/>
     PREFIX purl: <http://purl.org/dc/terms/>
@@ -50,37 +50,37 @@ llm = OllamaLLM(
     ?property rdfs:label ?labelproperty .
     }
     """
-    result: QueryResult = GDB.query(sparql=sparql)
-    print(f"Distinct properties: {result.to_dict()}")
-    # for the sake of timesaving lets already get the properties.
-    properties: dict[str, list[str]] = {
-        "labelproperty": [
-            "redox_potential",
-            "sediment_temp",
-            "sea_surf_salinity",
-            "ph",
-            "sea_surf_temp",
-            "sea_subsurf_temp",
-            "sea_subsurf_salinity",
-            "chlorophyll",
-            "nitrate",
-            "diss_oxygen",
-            "organism_count",
-            "density",
-            "phaeopigments",
-            "ammonium",
-            "conduc",
-            "pigments",
-            "turbidity",
-            "silicate",
-            "nitrite",
-            "phosphate",
-            "down_par",
-            "pressure",
-        ]
-    }
-    
-    
+result: QueryResult = GDB.query(sparql=sparql)
+print(f"Distinct properties: {result.to_dict()}")
+# for the sake of timesaving lets already get the properties.
+properties: dict[str, list[str]] = {
+    "labelproperty": [
+        "redox_potential",
+        "sediment_temp",
+        "sea_surf_salinity",
+        "ph",
+        "sea_surf_temp",
+        "sea_subsurf_temp",
+        "sea_subsurf_salinity",
+        "chlorophyll",
+        "nitrate",
+        "diss_oxygen",
+        "organism_count",
+        "density",
+        "phaeopigments",
+        "ammonium",
+        "conduc",
+        "pigments",
+        "turbidity",
+        "silicate",
+        "nitrite",
+        "phosphate",
+        "down_par",
+        "pressure",
+    ]
+}
+
+
 # Define the prompt template
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -172,13 +172,13 @@ schema = {
     },
 }
 
+
 def run_check_json_validation(question, schema, object, properties, tries=3):
     """
     Function to validate the JSON object against the schema and check if properties are valid.
     If validation fails, it retries up to 'tries' times.
     """
-    
-    
+
     messages = prompt_check_properties.format_messages(
         schema=schema,
         dictionary=object,
@@ -191,13 +191,16 @@ def run_check_json_validation(question, schema, object, properties, tries=3):
         print(f"Validation failed: {message}")
         if tries > 0:
             print(f"Retrying... ({tries} attempts left)")
-            return run_check_json_validation(question, schema, object, properties, tries - 1)
+            return run_check_json_validation(
+                question, schema, object, properties, tries - 1
+            )
         else:
             print("Max retries reached. Exiting.")
             return None
     else:
         print("JSON is valid.")
         return object
+
 
 # Function to validate JSON
 def validate_json(data):
@@ -206,7 +209,6 @@ def validate_json(data):
         return True, "JSON is valid."
     except jsonschema.exceptions.ValidationError as err:
         return False, f"JSON validation error: {err.message}"
-
 
 
 # function to clean up the answer of the llm
@@ -227,6 +229,7 @@ def clean_answer(answer) -> dict | None:
 
     return json_answer if is_valid else None
 
+
 # Prompt the user for a question instead of reading from the file
 user_question = input("Enter your question: ")
 print(f"Generating variables for: {user_question}")
@@ -234,7 +237,7 @@ messages = prompt.format_messages(question=user_question, schema=schema)
 response = llm.invoke(messages)
 print(f"Response: {response}")
 
-cleaned =  run_check_json_validation(
+cleaned = run_check_json_validation(
     user_question, schema, response, properties, tries=3
 )
 sparql_query: str = generate_sparql("metagenomic_sampling_subset.sparql", **cleaned)
