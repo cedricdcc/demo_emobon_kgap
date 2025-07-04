@@ -8,6 +8,7 @@ import os
 import jsonschema
 from jsonschema import validate
 import pandas as pd
+from conneg_functions import generate_sparql
 
 MODEL = "qwen3:8b"  # Specify the model you want to use
 llm = OllamaLLM(
@@ -177,3 +178,6 @@ if cleaned := clean_answer(response):
         "question": user_question,
         "variables": cleaned,
     }
+    # Generate SPARQL query using the cleaned variables
+    sparql_query: str = generate_sparql("metagenomic_sampling_subset", **cleaned)
+    print(f"Generated SPARQL query: {sparql_query}")
