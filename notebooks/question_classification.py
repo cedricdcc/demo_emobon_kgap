@@ -47,7 +47,8 @@ prompt = ChatPromptTemplate.from_messages(
             "#   - property: The property to filter by."
             "#   - value: The value to filter by."
             "#   - operator: The operator to use for filtering (e.g., '=', '>', '<', '>=', '<=')."
-            "#   - value_type: The type of the value (e.g., 'int', 'float', 'str').",
+            "#   - value_type: The type of the value (e.g., 'int', 'float', 'str')."
+            "follow the json schema: {schema} provided to you, and do not include any other text in the response.",
         ),
         ("user", "Extract key information for the following questions: {question}"),
     ]
@@ -147,7 +148,7 @@ for index, row in dataset.iterrows():
     print(question)
 
     print(f"Generating variables for:  {question}")
-    messages = prompt.format_messages(question=question)
+    messages = prompt.format_messages(question=question, schema=schema)
     response = llm.invoke(messages)
     print(f"Response: {response}")
     if response := clean_answer(response):
