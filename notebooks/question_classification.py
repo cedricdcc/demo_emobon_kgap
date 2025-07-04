@@ -88,18 +88,6 @@ schema = {
             },
         },
     },
-    "required": [
-        "marine_region_id",
-        "marine_region",
-        "datetime_begin",
-        "datetime_end",
-        "sampling_method",
-        "species_name",
-        "taxon_rank",
-        "taxon_id",
-        "sampling_id",
-        "sampling_type",
-    ],
 }
 
 
