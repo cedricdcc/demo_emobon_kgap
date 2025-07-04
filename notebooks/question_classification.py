@@ -202,6 +202,7 @@ def run_check_json_validation(question, schema, object, properties, tries=3):
             return None
     else:
         print("JSON is valid.")
+        print(f"Validated response: {response_json}")
         return response_json
 
 
@@ -228,6 +229,9 @@ def clean_answer(answer) -> dict | None:
         return None
     json_answer = json.loads(answer)
     is_valid, message = validate_json(json_answer)
+    if json_answer == {}:
+        is_valid = False
+        message = "JSON is empty."
     print(message)
 
     return json_answer if is_valid else None
