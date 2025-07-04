@@ -20,7 +20,15 @@ peft
 transformers 
 datasets
 torch
-
+langchain
+langchain_community
+langchain-core
+langgraph
+rdflib
+langchain_ollama
+flask
+jsonify
+flask_cors
 
 # Include py-sema from GitHub
 # git+https://github.com/vliz-be-opsci/py-sema.git
