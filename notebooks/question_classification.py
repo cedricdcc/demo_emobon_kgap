@@ -186,13 +186,15 @@ def run_check_json_validation(question, schema, object, properties, tries=3):
         question=question,
     )
     response = llm.invoke(messages)
-    is_valid, message = validate_json(response)
+    response = response.strip()
+    response_json = json.loads(response)
+    is_valid, message = validate_json(response_json)
     if not is_valid:
         print(f"Validation failed: {message}")
         if tries > 0:
             print(f"Retrying... ({tries} attempts left)")
             return run_check_json_validation(
-                question, schema, object, properties, tries - 1
+                question, schema, response_json, properties, tries - 1
             )
         else:
             print("Max retries reached. Exiting.")
