@@ -147,6 +147,7 @@ data_file = "./all_generated_questions.json"
 dataset = load_and_filter_data(data_file)
 print(f"Loaded {len(dataset)} rows from {data_file}")
 
+"""
 for index, row in dataset.iterrows():
     question = row["question"]
     print(question)
@@ -162,3 +163,17 @@ for index, row in dataset.iterrows():
             "question": question,
             "variables": clean_answer(response),
         }
+"""
+
+# Prompt the user for a question instead of reading from the file
+user_question = input("Enter your question: ")
+print(f"Generating variables for: {user_question}")
+messages = prompt.format_messages(question=user_question, schema=schema)
+response = llm.invoke(messages)
+print(f"Response: {response}")
+if cleaned := clean_answer(response):
+    print(f"Cleaned Response: {cleaned}")
+    question_variables = {
+        "question": user_question,
+        "variables": cleaned,
+    }
