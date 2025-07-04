@@ -30,6 +30,57 @@ llm = OllamaLLM(
     num_ctx=8192,
     format="json",  # Ensure the response is in JSON format
 )
+
+# there should be a qc on the values of the cleaned response
+    # to make sure that the inserted values are valid for the sparql query
+    sparql = """
+    PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+    PREFIX sosa: <http://www.w3.org/ns/sosa/>
+    PREFIX purl: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX sampl: <https://data.emobon.embrc.eu/ns/sampling#>
+    SELECT DISTINCT ?labelproperty
+    WHERE  {
+    ?sample a sosa:Sample .
+    ?sample sosa:isResultOf ?event .
+    ?event sampl:linkedToObservatory ?observatory .
+    ?observations a sosa:Observation .
+    ?observations sosa:hasFeatureOfInterest ?sample .
+    ?observations sosa:observedProperty ?property .
+    ?property rdfs:label ?labelproperty .
+    }
+    """
+    result: QueryResult = GDB.query(sparql=sparql)
+    print(f"Distinct properties: {result.to_dict()}")
+    # for the sake of timesaving lets already get the properties.
+    properties: dict[str, list[str]] = {
+        "labelproperty": [
+            "redox_potential",
+            "sediment_temp",
+            "sea_surf_salinity",
+            "ph",
+            "sea_surf_temp",
+            "sea_subsurf_temp",
+            "sea_subsurf_salinity",
+            "chlorophyll",
+            "nitrate",
+            "diss_oxygen",
+            "organism_count",
+            "density",
+            "phaeopigments",
+            "ammonium",
+            "conduc",
+            "pigments",
+            "turbidity",
+            "silicate",
+            "nitrite",
+            "phosphate",
+            "down_par",
+            "pressure",
+        ]
+    }
+    
+    
 # Define the prompt template
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -121,6 +172,32 @@ schema = {
     },
 }
 
+def run_check_json_validation(question, schema, object, properties, tries=3):
+    """
+    Function to validate the JSON object against the schema and check if properties are valid.
+    If validation fails, it retries up to 'tries' times.
+    """
+    
+    
+    messages = prompt_check_properties.format_messages(
+        schema=schema,
+        dictionary=object,
+        properties=properties["labelproperty"],
+        question=question,
+    )
+    response = llm.invoke(messages)
+    is_valid, message = validate_json(response)
+    if not is_valid:
+        print(f"Validation failed: {message}")
+        if tries > 0:
+            print(f"Retrying... ({tries} attempts left)")
+            return run_check_json_validation(question, schema, object, properties, tries - 1)
+        else:
+            print("Max retries reached. Exiting.")
+            return None
+    else:
+        print("JSON is valid.")
+        return object
 
 # Function to validate JSON
 def validate_json(data):
@@ -129,6 +206,7 @@ def validate_json(data):
         return True, "JSON is valid."
     except jsonschema.exceptions.ValidationError as err:
         return False, f"JSON validation error: {err.message}"
+
 
 
 # function to clean up the answer of the llm
@@ -149,126 +227,15 @@ def clean_answer(answer) -> dict | None:
 
     return json_answer if is_valid else None
 
-
-"""
-# Load and filter data
-def load_and_filter_data(file_path):
-    # Load the JSON data
-    with open(file_path, "r", encoding="utf-8") as file:
-        data = json.load(file)
-
-    # Convert the data to a DataFrame
-    df = pd.DataFrame(data)
-
-    # Filter rows where 'question' starts with 'SELECT'
-    filtered_question = df[df["question"].str.startswith("{")]
-
-    # Filter rows where 'sparql_select' ends with '...'
-    filtered_sparql = df[df["sparql_query"].str.endswith("...")]
-
-    # Exclude the filtered rows
-    df = df[~df["question"].str.startswith("SELECT")]
-    df = df[~df["question"].str.startswith("{")]
-    df = df[~df["sparql_query"].str.endswith("...")]
-
-    return df
-
-
-data_file = "./all_generated_questions.json"
-dataset = load_and_filter_data(data_file)
-print(f"Loaded {len(dataset)} rows from {data_file}")
-
-
-for index, row in dataset.iterrows():
-    question = row["question"]
-    print(question)
-
-    print(f"Generating variables for:  {question}")
-    messages = prompt.format_messages(question=question, schema=schema)
-    response = llm.invoke(messages)
-    print(f"Response: {response}")
-    if response := clean_answer(response):
-        print(f"Cleaned Response: {response}")
-        # make object with question and response
-        question_variables = {
-            "question": question,
-            "variables": clean_answer(response),
-        }
-"""
-
 # Prompt the user for a question instead of reading from the file
 user_question = input("Enter your question: ")
 print(f"Generating variables for: {user_question}")
 messages = prompt.format_messages(question=user_question, schema=schema)
 response = llm.invoke(messages)
 print(f"Response: {response}")
-if cleaned := clean_answer(response):
-    print(f"Cleaned Response: {cleaned}")
 
-    # there should be a qc on the values of the cleaned response
-    # to make sure that the inserted values are valid for the sparql query
-    sparql = """
-    PREFIX owl: <http://www.w3.org/2002/07/owl#> 
-    PREFIX sosa: <http://www.w3.org/ns/sosa/>
-    PREFIX purl: <http://purl.org/dc/terms/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX sampl: <https://data.emobon.embrc.eu/ns/sampling#>
-    SELECT DISTINCT ?labelproperty
-    WHERE  {
-    ?sample a sosa:Sample .
-    ?sample sosa:isResultOf ?event .
-    ?event sampl:linkedToObservatory ?observatory .
-    ?observations a sosa:Observation .
-    ?observations sosa:hasFeatureOfInterest ?sample .
-    ?observations sosa:observedProperty ?property .
-    ?property rdfs:label ?labelproperty .
-    }
-    """
-    result: QueryResult = GDB.query(sparql=sparql)
-    print(f"Distinct properties: {result.to_dict()}")
-    # for the sake of timesaving lets already get the properties.
-    properties: dict[str, list[str]] = {
-        "labelproperty": [
-            "redox_potential",
-            "sediment_temp",
-            "sea_surf_salinity",
-            "ph",
-            "sea_surf_temp",
-            "sea_subsurf_temp",
-            "sea_subsurf_salinity",
-            "chlorophyll",
-            "nitrate",
-            "diss_oxygen",
-            "organism_count",
-            "density",
-            "phaeopigments",
-            "ammonium",
-            "conduc",
-            "pigments",
-            "turbidity",
-            "silicate",
-            "nitrite",
-            "phosphate",
-            "down_par",
-            "pressure",
-        ]
-    }
-
-    # Check if the property filters are valid
-    messages = prompt_check_properties.format_messages(
-        schema=schema,
-        dictionary=cleaned,
-        properties=properties["labelproperty"],
-        question=user_question,
-    )
-    response = llm.invoke(messages)
-    print(f"Response from property check: {response}")
-    cleaned = clean_answer(response)
-    if cleaned is None:
-        print("The response from the property check is not valid.")
-        exit(1)
-    print(f"Cleaned Response after property check: {cleaned}")
-
-    # Generate SPARQL query using the cleaned variables
-    sparql_query: str = generate_sparql("metagenomic_sampling_subset.sparql", **cleaned)
-    print(f"Generated SPARQL query: {sparql_query}")
+cleaned =  run_check_json_validation(
+    user_question, schema, response, properties, tries=3
+)
+sparql_query: str = generate_sparql("metagenomic_sampling_subset.sparql", **cleaned)
+print(f"Generated SPARQL query: {sparql_query}")
