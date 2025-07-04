@@ -61,46 +61,36 @@ SELECT
   {%- endif %}
 WHERE {
   ?sample a sosa:Sample .
-  # link event
   ?sample sosa:isResultOf ?event .
-  # link observatory
   ?event sampl:linkedToObservatory ?observatory .
-  # Optional filters
-  # name of observatory
   {% if observatories %}
   ?observatory emobon:observatoryId ?observatory_id .
   ?observatory_id onto:fts ("{{ observatories | join('~5 ') }}~5") .
   {%- endif -%}
-  # depth filter
   {% if depth %}
   ?observatory emobon:waterColumnDepth/qudt:numericValue ?depth_value .
   FILTER(?depth_value {{ depth.operator }} {{ depth.value }}{{ "^^xsd:" + depth.value_type if depth.value_type else "" }}) .
   {%- endif -%}
   {% if marine_region_id %}
-  # Marine Region (ID)
   ?observatory emobon:marineRegion ?mrgid . 
   FILTER regex(str(?mrgid), "{{ marine_region_id }}") .
   {%- endif -%}
   {% if marine_region %}
-  # marineregion name
   ?observatory emobon:marineRegionName ?mrgn . 
   ?mrgn onto:fts ("{{ marine_region }}~5") .
   {%- endif %}
   ?event prov:startedAtTime ?datetime_begin . 
   {% if datetime_begin %}
-  # dateTime event
   FILTER(?datetime_begin >= "{{ datetime_begin }}"^^xsd:date) .
   {%- endif -%}
   {% if datetime_end %}
   FILTER(?datetime_begin <= "{{ datetime_end }}"^^xsd:date) .
   {%- endif -%}
   {% if sampling_method %}
-  # Sampling Method
   ?event sosa:madeBySampler ?samplemethod .
   FILTER(?samplemethod = "{{ sampling_method }}"^^xsd:string) .
   {%- endif -%}
     {% if species_name or taxon_rank or taxon_id or abundance_threshold %}
-  # linking between taxon annotations and sample
   ?taxonannotation a prod:TaxonomicAnnotation .
   ?taxonannotation prod:ofSample ?sample .
   ?taxonannotation dct:identifier ?taxonid .

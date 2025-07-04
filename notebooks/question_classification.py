@@ -187,7 +187,23 @@ if cleaned := clean_answer(response):
 
     # there should be a qc on the values of the cleaned response
     # to make sure that the inserted values are valid for the sparql query
-    sparql = generate_sparql("distinct_properties.sparql")
+    sparql = """
+    PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+    PREFIX sosa: <http://www.w3.org/ns/sosa/>
+    PREFIX purl: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX sampl: <https://data.emobon.embrc.eu/ns/sampling#>
+    SELECT DISTINCT ?labelproperty
+    WHERE  {
+    ?sample a sosa:Sample .
+    ?sample sosa:isResultOf ?event .
+    ?event sampl:linkedToObservatory ?observatory .
+    ?observations a sosa:Observation .
+    ?observations sosa:hasFeatureOfInterest ?sample .
+    ?observations sosa:observedProperty ?property .
+    ?property rdfs:label ?labelproperty .
+    }
+    """
     result: QueryResult = GDB.query(sparql=sparql)
     result.to_dataframe()
     print(f"Distinct properties: {result.to_dataframe()}")
