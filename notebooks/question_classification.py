@@ -115,18 +115,12 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-prompt_check_properties = ChatPromptTemplate.from_messages(
+prompt_check_dictionary = ChatPromptTemplate.from_messages(
     [
         (
             "system",
             "You are a helpful assistant corrects a given dictionary and checks if values are filled in correctly."
             "the dictionary wil be in the following format: {schema}"
-            "first check if any property filters should have been other values in the dictionary,"
-            "check if the key represents a key that is given in the json schema: {schema},"
-            "then check if all given property_filters.property are in the list: {properties}"
-            "if the property_filters.property is not in the list look in the {properties} for the closest match,"
-            "if there is a match, replace the property_filters.property with the closest match,"
-            "if there are no properties in the list that match the property filter, remove the property filter from the dictionary."
             "Only return the corrected dictionary with key-value pairs, nothing else.",
         ),
         (
@@ -135,6 +129,25 @@ prompt_check_properties = ChatPromptTemplate.from_messages(
         ),
     ]
 )
+
+prompt_replace_properties_with_closest_match = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "You are a helpful assistant checks a given list of properties and corrects them if they are not valid."
+            "then check if all given properties are in the list: {properties}"
+            "if the property_filters.property is not in the list look in the {properties} for the closest match,"
+            "if there is a match, replace the property_filters.property with the closest match,"
+            "if there are no properties in the list that match the property filter, remove the property from the list"
+            "Only return the corrected list with key-value pairs, nothing else.",
+        ),
+        (
+            "user",
+            "correct the following list: {list_properties}",
+        ),
+    ]
+)
+
 
 schema = {
     "type": "object",
@@ -174,16 +187,44 @@ schema = {
 }
 
 
+def extract_properties_from_dictionary(dictionary) -> list:
+    """
+    Extracts the 'property_filters' from the given dictionary.
+    Returns a list of property names.
+    """
+    if "property_filters" in dictionary:
+        return [pf["property"] for pf in dictionary["property_filters"]]
+    return []
+
+
+def replace_property_filters(properties_to_replace, properties):
+    messages = prompt_replace_properties_with_closest_match.format_messages(
+        list_properties=properties_to_replace,
+        properties=properties["labelproperty"],
+    )
+    response = llm.invoke(messages)
+    response = response.strip()
+    try:
+        response_json = json.loads(response)
+        if isinstance(response_json, list):
+            return response_json
+        else:
+            print("Response is not a list, returning empty list.")
+            return []
+    except json.JSONDecodeError:
+        print("Response is not a valid JSON, returning empty list.")
+        return []
+
+
 def run_check_json_validation(question, schema, object, properties, tries=3):
     """
     Function to validate the JSON object against the schema and check if properties are valid.
     If validation fails, it retries up to 'tries' times.
     """
 
-    messages = prompt_check_properties.format_messages(
+    messages = prompt_check_dictionary.format_messages(
         schema=schema,
         dictionary=object,
-        properties=properties["labelproperty"],
         question=question,
     )
     response = llm.invoke(messages)
@@ -200,10 +241,12 @@ def run_check_json_validation(question, schema, object, properties, tries=3):
         else:
             print("Max retries reached. Exiting.")
             return None
-    else:
-        print("JSON is valid.")
-        print(f"Validated response: {response_json}")
-        return response_json
+    print("JSON is valid.")
+    print("Checking if all properties are in the list of properties")
+    properties_in_response = extract_properties_from_dictionary(response_json)
+
+    print(f"Validated response: {response_json}")
+    return response_json
 
 
 # Function to validate JSON
