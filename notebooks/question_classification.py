@@ -52,6 +52,17 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 
+# function to clean up the answer of the llm
+def clean_answer(answer) -> dict | None:
+    # Remove any leading or trailing whitespace
+    answer = answer.strip()
+    # Ensure the answer is a valid JSON string
+    if not answer.startswith("{") or not answer.endswith("}"):
+        print("The answer is not a valid JSON object.")
+        return None
+    return answer
+
+
 # Load and filter data
 def load_and_filter_data(file_path):
     # Load the JSON data
@@ -75,11 +86,12 @@ def load_and_filter_data(file_path):
     return df
 
 
+outfile = "./question_variables.json"
 data_file = "./all_generated_questions.json"
 dataset = load_and_filter_data(data_file)
 print(f"Loaded {len(dataset)} rows from {data_file}")
 
-for index, row in dataset.head(3).iterrows():
+for index, row in dataset.head(30).iterrows():
     question = row["question"]
     print(question)
 
@@ -87,3 +99,15 @@ for index, row in dataset.head(3).iterrows():
     messages = prompt.format_messages(question=question)
     response = llm.invoke(messages)
     print(f"Response: {response}")
+    if response := clean_answer(response):
+        print(f"Cleaned Response: {response}")
+        # make object with question and response
+        question_variables = {
+            "question": question,
+            "variables": response,
+        }
+        print(f"Question Variables: {question_variables}")
+        # Save the question variables to a JSON file
+        with open(outfile, "a") as f:
+            json.dump(question_variables, f, indent=2)
+        print(f"Question variables saved to {outfile}")
