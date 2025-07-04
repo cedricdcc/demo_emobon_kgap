@@ -201,7 +201,7 @@ def run_check_json_validation(question, schema, object, properties, tries=3):
             return None
     else:
         print("JSON is valid.")
-        return object
+        return response_json
 
 
 # Function to validate JSON
