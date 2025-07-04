@@ -111,7 +111,7 @@ schema = {
                 "type": "object",
                 "properties": {
                     "property": {"type": "string"},
-                    "value": {"type": "number"},
+                    "value": {},
                     "operator": {"type": "string"},
                     "value_type": {"type": "string"},
                 },
