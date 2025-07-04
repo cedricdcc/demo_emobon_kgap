@@ -187,7 +187,7 @@ if cleaned := clean_answer(response):
 
     # there should be a qc on the values of the cleaned response
     # to make sure that the inserted values are valid for the sparql query
-    sparql = generate_sparql("disctinct_properties.sparql")
+    sparql = generate_sparql("distinct_properties.sparql")
     result: QueryResult = GDB.query(sparql=sparql)
     result.to_dataframe()
     print(f"Distinct properties: {result.to_dataframe()}")
