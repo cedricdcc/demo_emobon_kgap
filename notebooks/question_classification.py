@@ -77,7 +77,10 @@ prompt_check_properties = ChatPromptTemplate.from_messages(
             "if there are no properties in the list that match the property filter, remove the property filter from the dictionary."
             "Only return the corrected dictionary with key-value pairs, nothing else.",
         ),
-        ("user", "correct the following dictionary: {dictionary}"),
+        (
+            "user",
+            "correct the following dictionary: {dictionary} for the question: {question}",
+        ),
     ]
 )
 
@@ -253,7 +256,10 @@ if cleaned := clean_answer(response):
 
     # Check if the property filters are valid
     messages = prompt_check_properties.format_messages(
-        schema=schema, dictionary=cleaned, properties=properties["labelproperty"]
+        schema=schema,
+        dictionary=cleaned,
+        properties=properties["labelproperty"],
+        question=user_question,
     )
     response = llm.invoke(messages)
     print(f"Response from property check: {response}")
