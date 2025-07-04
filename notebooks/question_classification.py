@@ -91,7 +91,7 @@ data_file = "./all_generated_questions.json"
 dataset = load_and_filter_data(data_file)
 print(f"Loaded {len(dataset)} rows from {data_file}")
 
-for index, row in dataset.head(30).iterrows():
+for index, row in dataset.iterrows():
     question = row["question"]
     print(question)
 
