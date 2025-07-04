@@ -5,6 +5,8 @@ import json
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 import os
+import jsonschema
+from jsonschema import validate
 import pandas as pd
 
 MODEL = "qwen3:8b"  # Specify the model you want to use
@@ -51,6 +53,64 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+schema = {
+    "type": "object",
+    "properties": {
+        "marine_region_id": {"type": "string"},
+        "marine_region": {"type": "string"},
+        "observatories": {"type": "array", "items": {"type": "string"}},
+        "depth": {
+            "type": "object",
+            "properties": {"value": {"type": "number"}, "operator": {"type": "string"}},
+            "required": ["value", "operator"],
+        },
+        "contact": {"type": "array", "items": {"type": "string"}},
+        "datetime_begin": {"type": "string", "format": "date-time"},
+        "datetime_end": {"type": "string", "format": "date-time"},
+        "sampling_method": {"type": "string"},
+        "species_name": {"type": "string"},
+        "taxon_rank": {"type": "string"},
+        "taxon_id": {"type": "string"},
+        "sampling_id": {"type": "string"},
+        "sampling_type": {"type": "string"},
+        "abundance_threshold": {"type": "number"},
+        "property_filters": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "property": {"type": "string"},
+                    "value": {},
+                    "operator": {"type": "string"},
+                    "value_type": {"type": "string"},
+                },
+                "required": ["property", "value", "operator", "value_type"],
+            },
+        },
+    },
+    "required": [
+        "marine_region_id",
+        "marine_region",
+        "datetime_begin",
+        "datetime_end",
+        "sampling_method",
+        "species_name",
+        "taxon_rank",
+        "taxon_id",
+        "sampling_id",
+        "sampling_type",
+    ],
+}
+
+
+# Function to validate JSON
+def validate_json(data):
+    try:
+        validate(instance=data, schema=schema)
+        return True, "JSON is valid."
+    except jsonschema.exceptions.ValidationError as err:
+        return False, f"JSON validation error: {err.message}"
+
 
 # function to clean up the answer of the llm
 def clean_answer(answer) -> dict | None:
@@ -60,7 +120,11 @@ def clean_answer(answer) -> dict | None:
     if not answer.startswith("{") or not answer.endswith("}"):
         print("The answer is not a valid JSON object.")
         return None
-    return answer
+    json_answer = json.loads(answer)
+    is_valid, message = validate_json(json_answer)
+    print(message)
+
+    return json_answer if is_valid else None
 
 
 # Load and filter data
@@ -86,7 +150,6 @@ def load_and_filter_data(file_path):
     return df
 
 
-outfile = "./question_variables.json"
 data_file = "./all_generated_questions.json"
 dataset = load_and_filter_data(data_file)
 print(f"Loaded {len(dataset)} rows from {data_file}")
@@ -106,8 +169,3 @@ for index, row in dataset.iterrows():
             "question": question,
             "variables": clean_answer(response),
         }
-        print(f"Question Variables: {question_variables}")
-        # Save the question variables to a JSON file
-        with open(outfile, "a") as f:
-            json.dump(question_variables, f, indent=2)
-        print(f"Question variables saved to {outfile}")

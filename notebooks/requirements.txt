@@ -29,6 +29,7 @@ langchain_ollama
 flask
 jsonify
 flask_cors
+jsonschema
 
 # Include py-sema from GitHub
 # git+https://github.com/vliz-be-opsci/py-sema.git
