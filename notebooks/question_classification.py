@@ -205,8 +205,7 @@ if cleaned := clean_answer(response):
     }
     """
     result: QueryResult = GDB.query(sparql=sparql)
-    result.to_dataframe()
-    print(f"Distinct properties: {result.to_dataframe()}")
+    print(f"Distinct properties: {result.to_dict()}")
 
     # Generate SPARQL query using the cleaned variables
     sparql_query: str = generate_sparql("metagenomic_sampling_subset.sparql", **cleaned)
