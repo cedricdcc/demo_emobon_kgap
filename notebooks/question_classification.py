@@ -55,7 +55,7 @@ prompt = ChatPromptTemplate.from_messages(
             "# - abundance_threshold: The threshold for sampling abundance to filter by (minimum value)."
             "# - property_filters: A list of dictionaries for filtering based on property values. Each dictionary contains:"
             "#   - property: The property to filter by."
-            "#   - value: The value to filter by."
+            "#   - value: The value to filter by. should be a number."
             "#   - operator: The operator to use for filtering (e.g., '=', '>', '<', '>=', '<=')."
             "#   - value_type: The type of the value (e.g., 'int', 'float', 'str')."
             "follow the json schema: {schema} provided to you, and do not include any other text in the response.",
