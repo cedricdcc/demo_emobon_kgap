@@ -32,6 +32,15 @@ assert:
         }
     paths:
       - "*"
+  - subjects: # get the data from all marine regions mentioned in the datasets
+      SPARQL: >
+        SELECT DISTINCT ?o
+        WHERE  {
+            ?observatory a emobon:Observatory .
+            ?observatory <https://data.emobon.embrc.eu/ns/core#marineRegion> ?o .
+        }
+    paths:
+      - "*"
   - subjects: # get the data from all distributions ttl files
       SPARQL: >
         SELECT DISTINCT ?o
