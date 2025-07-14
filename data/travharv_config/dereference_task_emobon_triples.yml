@@ -34,10 +34,11 @@ assert:
       - "*"
   - subjects: # get the data from all marine regions mentioned in the datasets
       SPARQL: >
+        PREFIX emobon: <https://data.emobon.embrc.eu/ns/core#>
         SELECT DISTINCT ?o
         WHERE  {
-            ?observatory a emobon:Observatory .
-            ?observatory <https://data.emobon.embrc.eu/ns/core#marineRegion> ?o .
+            ?observatory <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> emobon:Observatory .
+            ?observatory emobon:marineRegion ?o .
         }
     paths:
       - "*"
