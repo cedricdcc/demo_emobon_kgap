@@ -1,7 +1,7 @@
 travharv_task:
   func: harvest
   args:
-    config: /custom_travharv/
+    config: /data/travharv_config/
     target_store_info:
-      - https://emobon-kb.vliz.be/repositories/kgap
-      - https://emobon-kb.vliz.be/repositories/kgap/statements
+      - http://localhost:7200/repositories/kgap
+      - http://localhost:7200/repositories/kgap/statements
