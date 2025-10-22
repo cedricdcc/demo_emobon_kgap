@@ -2,13 +2,13 @@ sync_task:
   func: sync-fs-triples
   args:
     root: /data
-    read_uri: http://graphdb:7200/repositories/kgap
-    write_uri: http://graphdb:7200/repositories/kgap/statements
+    read_uri: https://emobon-kb.vliz.be/repositories/kgap
+    write_uri: https://emobon-kb.vliz.be/repositories/kgap/statements
 travharv_task:
   func: harvest
   args:
     config: /custom_travharv
     target_store_info:
-      - http://graphdb:7200/repositories/kgap
-      - http://graphdb:7200/repositories/kgap/statements
+      - https://emobon-kb.vliz.be/repositories/kgap
+      - https://emobon-kb.vliz.be/repositories/kgap/statements
 
