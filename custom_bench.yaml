@@ -1,9 +1,3 @@
-sync_task:
-  func: sync-fs-triples
-  args:
-    root: /data
-    read_uri: https://emobon-kb.vliz.be/repositories/kgap
-    write_uri: https://emobon-kb.vliz.be/repositories/kgap/statements
 travharv_task:
   func: harvest
   args:
@@ -11,4 +5,3 @@ travharv_task:
     target_store_info:
       - https://emobon-kb.vliz.be/repositories/kgap
       - https://emobon-kb.vliz.be/repositories/kgap/statements
-
